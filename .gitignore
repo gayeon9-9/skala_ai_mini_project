@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+.venv/
+session.db
+session.db-*
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
