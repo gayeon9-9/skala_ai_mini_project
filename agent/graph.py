@@ -21,6 +21,7 @@ from langsmith import traceable
 
 from .deps import SupervisorDeps
 from .retry import with_retry
+from .system_catalog import validate_selected_system
 
 
 def _load_known_systems() -> set[str]:
@@ -51,6 +52,8 @@ class AgentState(TypedDict, total=False):
     query: str
     thread_id: str
     history: list[dict]
+    # 화면에서 직원이 직접 고른 시스템. None이면 기존 자유 대화/진단 경로를 쓴다.
+    selected_system: str | None
     route: str
     needs_analysis: bool
     tasks: list[dict]
@@ -75,6 +78,16 @@ def _cost(state: AgentState, usage: dict) -> float:
 @traceable(name="route_node")
 async def route_node(state: AgentState, deps: SupervisorDeps) -> dict:
     """Wave 5 — 모든 쿼리가 무거운 파이프라인을 탈 필요는 없다."""
+    if state.get("selected_system") is not None:
+        # "로그인이 안 돼요"처럼 장애 키워드가 없는 문장도, 시스템을 선택해 접수한
+        # 문의라면 기본 점검 대상으로 취급한다. 모델이 일반 잡담으로 돌리거나
+        # 지원하지 않는 시스템을 임의의 기본 시스템으로 바꾸지 못하게 한다.
+        selected = validate_selected_system(state["selected_system"])
+        event = {"type": "RouteDecided", "route": "incident",
+                 "source": "explicit_selection", "selected_system": selected}
+        return {"route": "incident", "needs_analysis": False,
+                "selected_system": selected,
+                "events": state.get("events", []) + [event]}
     result, usage = deps.fast_llm.route(state["query"])
     event = {"type": "RouteDecided", "route": result["route"]}
     return {"route": result["route"], "needs_analysis": result["needs_analysis"],
@@ -104,6 +117,19 @@ async def plan_node(state: AgentState, deps: SupervisorDeps) -> dict:
 
     resource와 마찬가지로 이름을 어느 서버가 들고 있는지 미리 가정하지 않고,
     find_prompt()로 연결된 서버들을 먼저 조회해 찾은 뒤에만 get_prompt를 보낸다."""
+    if state.get("selected_system") is not None:
+        # 기본 점검의 대상은 사용자의 선택이 결정한다. 여기서 모델에게 다시 계획을
+        # 맡기면 fake 모델의 web-01 추가나 실모델의 대상 누락/변경이 끼어들 수 있다.
+        # 따라서 선택한 시스템을 조회하는 작업 하나만 코드로 만들고, 사용하지 않을
+        # MCP 진단 절차 프롬프트도 요청하지 않는다.
+        selected = validate_selected_system(state["selected_system"])
+        tasks = [{"id": "task-0", "agent": "research", "kind": "monitoring",
+                  "target": selected, "status": "pending"}]
+        event = {"type": "PlanCreated", "task_count": 1, "targets": [selected],
+                 "source": "explicit_selection"}
+        return {"tasks": tasks, "needs_analysis": False,
+                "selected_system": selected,
+                "events": state.get("events", []) + [event]}
     prompt_server = await deps.mcp.find_prompt("incident_analysis_prompt")
     procedure = await deps.mcp.get_prompt(
         "incident_analysis_prompt",
@@ -140,6 +166,16 @@ async def research_node(state: AgentState, deps: SupervisorDeps) -> dict:
     tasks = state["tasks"]
     research_indices = [i for i, t in enumerate(tasks)
                         if t["agent"] == "research" and t["status"] == "pending"]
+    if state.get("selected_system") is not None:
+        selected = validate_selected_system(state["selected_system"])
+        # 앞 단계에서 계획을 고정했더라도, 실제 도구 호출 직전에 다시 확인한다.
+        # 모든 대상을 먼저 검사해야 잘못된 작업 하나와 정상 작업 하나가 병렬로
+        # 실행되면서 다른 시스템을 먼저 조회하는 일을 막을 수 있다.
+        for idx in research_indices:
+            task = tasks[idx]
+            if task["kind"] == "monitoring" and task["target"] != selected:
+                raise ValueError(
+                    f"선택한 시스템({selected})과 조회 대상({task['target']})이 다릅니다.")
     # Wave 15 — 객체가 아니라 '실행할 목록'을 검사한다 (not research_agent 버그의 수정판)
     if not research_indices:
         return {"events": state["events"] +
@@ -202,7 +238,7 @@ _INCIDENT_TYPE_RULES = [
 ]
 
 
-def _classify_incident_type(collected: list[dict]) -> str:
+def _classify_incident_type(collected: list[dict]) -> str | None:
     text = " ".join(
         f"{c['data'].get('status', '')} " + " ".join(c["data"].get("alerts", []))
         for c in collected if c.get("source") == "monitoring"
@@ -210,7 +246,9 @@ def _classify_incident_type(collected: list[dict]) -> str:
     for keyword, incident_type in _INCIDENT_TYPE_RULES:
         if keyword in text:
             return incident_type
-    return "db-down"   # 매칭되는 증상이 없으면 가장 일반적인 장애 대응 절차로 폴백
+    # 매칭 실패는 장애 종류를 모른다는 뜻이다. 기본 점검에서 이를 DB 장애로
+    # 바꾸면 정상 시스템에도 장애 매뉴얼을 제시하게 되므로, 판단은 호출자가 한다.
+    return None
 
 
 @traceable(name="replan_check_node")
@@ -221,7 +259,26 @@ async def replan_check_node(state: AgentState, deps: SupervisorDeps) -> dict:
     if has_runbook or rounds >= 1:
         verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": True}
         return {"events": state["events"] + [verdict]}
-    incident_type = _classify_incident_type(state.get("collected", []))
+    collected = state.get("collected", [])
+    if state.get("selected_system") is not None:
+        selected = validate_selected_system(state["selected_system"])
+        # 선택한 시스템에서 실제 이상 상태로 반환된 관측값만 매뉴얼 선택의 근거로
+        # 쓴다. healthy/unknown을 장애로 단정하거나, 다른 시스템의 알림을 사용하지
+        # 않는다. 현재 샘플 조회로 사용자 문의의 원인까지 확정할 수는 없다.
+        evidence = [c for c in collected if c.get("source") == "monitoring"
+                    and c["data"].get("system_name") == selected
+                    and c["data"].get("status") in {"degraded", "down"}]
+        incident_type = _classify_incident_type(evidence)
+        if incident_type is None:
+            # _after_replan_check는 이 값을 보고 analysis로 이동한다. 매뉴얼이
+            # 없다는 이유만으로 research를 반복하지 않고, 관측 범위 안에서 안내한다.
+            verdict = {"type": "ReplanCheck", "round": rounds,
+                       "is_sufficient": True, "runbook_skipped": True,
+                       "reason": "선택한 시스템에서 매뉴얼과 일치하는 장애 근거가 없습니다."}
+            return {"events": state["events"] + [verdict]}
+    else:
+        # 시스템 선택 없이 호출하던 기존 실습 API의 기본 동작은 유지한다.
+        incident_type = _classify_incident_type(collected) or "db-down"
     gap_task = {"id": "task-gap-runbook", "agent": "research", "kind": "runbook",
                 "target": incident_type, "status": "pending"}
     verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": False,
@@ -260,8 +317,19 @@ async def write_node(state: AgentState, deps: SupervisorDeps) -> dict:
     그대로 노출)."""
     attempt = state.get("validation_attempts", 0) + 1
     writer = get_stream_writer()
+    write_query = state["query"]
+    if state.get("selected_system") is not None:
+        selected = validate_selected_system(state["selected_system"])
+        # 선택값은 실행 대상을 제한하는 코드에서 이미 사용했다. 작성 단계에도
+        # 대상과 샘플 데이터라는 점을 전달하되, query를 그대로 출력하는 fake
+        # 모델에서 긴 내부 지침이 사용자 답변에 노출되지 않도록 짧게 구성한다.
+        # 이 문맥 추가 자체가 답변의 사실 검증이나 자동 조치를 구현하지는 않는다.
+        write_query = (
+            f"선택한 대상: {selected} (실습용 샘플 데이터)\n"
+            f"사용자 증상: {state['query']}"
+        )
     draft, usage = await deps.quality_llm.write(
-        state["query"], state.get("collected", []),
+        write_query, state.get("collected", []),
         attempt, state.get("validation_feedback"),
         on_token=lambda piece: writer(
             {"type": "AnswerToken", "attempt": attempt, "delta": piece}))

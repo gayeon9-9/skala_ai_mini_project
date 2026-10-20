@@ -16,11 +16,12 @@ from dotenv import load_dotenv
 
 load_dotenv()   # LANGCHAIN_TRACING_V2 / API_KEY / PROJECT — import보다 먼저
 
-from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, StreamingResponse
 from langsmith import traceable
 from langsmith.run_helpers import get_current_run_tree
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError, field_validator
 
 from agent.deps import SupervisorDeps
 from agent.fake_llm import FastLLM, QualityLLM
@@ -28,6 +29,7 @@ from agent.graph import build_graph
 from agent.mcp_client import MCPClient
 from agent.session_store import SqliteSessionStore
 from agent.supervisor_v1 import run_v1
+from agent.system_catalog import SystemCatalogError, get_system_names, validate_selected_system
 
 CREATION_COUNT = 0   # Wave 1 — 프로세스 내 Agent 번들 생성 횟수 (항상 1이어야 정상)
 
@@ -35,6 +37,37 @@ CREATION_COUNT = 0   # Wave 1 — 프로세스 내 Agent 번들 생성 횟수 (�
 class ChatRequest(BaseModel):   # Wave 1 — Pydantic 요청 검증
     message: str
     thread_id: str = "default"
+    # 기존 실습용 API와의 호환성을 위해 생략은 허용한다.
+    # 새 웹 화면에서는 반드시 선택해서 보낸다. 빈 문자열은 '생략'이 아니라 입력 오류다.
+    selected_system: str | None = None
+
+    @field_validator("message", "thread_id")
+    @classmethod
+    def validate_required_text(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("공백만 입력할 수 없습니다.")
+        return value
+
+    @field_validator("selected_system")
+    @classmethod
+    def validate_system(cls, value: str | None) -> str | None:
+        return validate_selected_system(value) if value is not None else None
+
+
+def _stream_request(
+    message: str, thread_id: str = "default", selected_system: str | None = None,
+) -> ChatRequest:
+    """GET의 쿼리도 POST의 JSON 본문과 동일한 규칙으로 검증한다.
+
+    스트리밍 시작 후에는 HTTP 상태를 422로 바꿀 수 없다. 따라서 이 의존성에서
+    먼저 검증하고, 오류가 있으면 SSE 연결을 열기 전에 일반 오류 응답을 반환한다.
+    """
+    try:
+        return ChatRequest(message=message, thread_id=thread_id, selected_system=selected_system)
+    except ValidationError as exc:
+        errors = [{**error, "loc": ("query", *error["loc"])} for error in exc.errors()]
+        raise RequestValidationError(errors) from exc
 
 
 def _build_llms():
@@ -90,6 +123,18 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
+@app.exception_handler(SystemCatalogError)
+async def system_catalog_error(_request: Request, exc: SystemCatalogError):
+    # 서버의 목록 파일 문제는 사용자 입력 오류(422)가 아닌 일시적인 서비스 오류다.
+    return JSONResponse({"detail": str(exc)}, status_code=503)
+
+
+@app.get("/systems")
+async def systems():
+    """화면의 선택 목록. 실시간 운영 시스템이 아닌 샘플 목록임을 함께 전달한다."""
+    return {"systems": get_system_names(), "data_source": "sample"}
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "instance_id": app.state.instance_id,
@@ -119,19 +164,39 @@ def _metadata(result: dict, run_id: str | None) -> dict:
         "supervisor_version": app.state.deps.version,
         "instance_id": app.state.instance_id,
         "langsmith_run_id": run_id,
+        "selected_system": result.get("selected_system"),
+        "data_source": "sample" if result.get("selected_system") else None,
+    }
+
+
+def _initial_state(req: ChatRequest) -> dict:
+    """일반 응답과 SSE 응답에 같은 대상·질문·이력을 전달한다."""
+    deps = app.state.deps
+    if req.selected_system is not None and deps.version != "v2":
+        # v1은 선택값을 이해하지 못하므로 조용히 무시해서 다른 시스템을 조회하지 않는다.
+        raise HTTPException(
+            status_code=409,
+            detail="시스템 선택 기능은 SUPERVISOR_VERSION=v2에서 사용할 수 있습니다.",
+        )
+    return {
+        "query": req.message, "thread_id": req.thread_id,
+        "selected_system": req.selected_system,
+        "history": deps.session_store.load(req.thread_id),
+        "events": [], "cost_usd": 0.0,
     }
 
 
 @traceable(name="chat_request")
-async def _handle_chat(message: str, thread_id: str) -> tuple[dict, str | None]:
+async def _handle_chat(
+    message: str, thread_id: str, selected_system: str | None = None,
+) -> tuple[dict, str | None]:
     deps = app.state.deps
-    history = deps.session_store.load(thread_id)   # Wave 12
+    req = ChatRequest(message=message, thread_id=thread_id, selected_system=selected_system)
+    state = _initial_state(req)
     if deps.version == "v2":
-        result = await app.state.graph.ainvoke(
-            {"query": message, "thread_id": thread_id, "history": history,
-             "events": [], "cost_usd": 0.0})
+        result = await app.state.graph.ainvoke(state)
     else:
-        result = await run_v1(deps, message, thread_id, history)   # Wave 14
+        result = await run_v1(deps, message, thread_id, state["history"])   # Wave 14
     deps.session_store.append(thread_id, "user", message) ##이번 대화의 사용자 질문을 DB에 저장 
     deps.session_store.append(thread_id, "assistant", result["final"]) ##이번 대화의 최종 답변을 DB에 저장
     rt = get_current_run_tree()
@@ -140,22 +205,24 @@ async def _handle_chat(message: str, thread_id: str) -> tuple[dict, str | None]:
 
 @app.post("/chat")
 async def chat(req: ChatRequest):
-    result, run_id = await _handle_chat(req.message, req.thread_id)
+    result, run_id = await _handle_chat(req.message, req.thread_id, req.selected_system)
     return {"reply": result["final"], "events": result.get("events", []),
             "metadata": _metadata(result, run_id)}
 
 
 @app.get("/chat/stream")
-async def chat_stream(message: str, thread_id: str = "default"):
+async def chat_stream(req: ChatRequest = Depends(_stream_request)):
     """Wave 3 — 그래프의 노드별 진행 상황을 SSE로 스트리밍.
 
     이벤트마다 'data: {json}\\n\\n' 형태로 내려보내고 마지막에 data: [DONE] 센티널을
     보낸다 — 프론트엔드는 \\n\\n 경계로 이벤트를 분리해 파싱해야 한다(Wave 3b).
     """
     deps = app.state.deps
+    state = _initial_state(req)   # 버전 확인과 이력 로딩도 SSE 헤더 전송 전에 수행한다.
+    message, thread_id = req.message, req.thread_id
 
     async def gen():
-        history = deps.session_store.load(thread_id)
+        history = state["history"]
         if deps.version != "v2":
             result = await run_v1(deps, message, thread_id, history)
             for ev in result["events"]:
@@ -169,8 +236,7 @@ async def chat_stream(message: str, thread_id: str = "default"):
             # 노드가 끝날 때마다의 상태 델타, "custom"은 write_node/chat_answer_node가
             # get_stream_writer()로 실행 중에 즉시 흘려보내는 토큰(AnswerToken) 이벤트다.
             async for mode, payload in app.state.graph.astream(
-                    {"query": message, "thread_id": thread_id, "history": history,
-                     "events": [], "cost_usd": 0.0}, stream_mode=["updates", "custom"]):
+                    state, stream_mode=["updates", "custom"]):
                 if mode == "custom":
                     yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
                     continue
@@ -184,7 +250,12 @@ async def chat_stream(message: str, thread_id: str = "default"):
                         final = delta["final"]
                     if delta.get("last_prompt"):
                         last_prompt = delta["last_prompt"]
-            yield f"data: {json.dumps({'type': 'FinalAnswer', 'reply': final, 'prompt': last_prompt}, ensure_ascii=False)}\n\n"
+            # 화면 외의 API 사용자도 답변이 어느 선택 대상/데이터 출처에 대한 것인지
+            # 확인할 수 있도록 최종 이벤트에 동일한 메타데이터를 넣는다.
+            answer = {"type": "FinalAnswer", "reply": final, "prompt": last_prompt,
+                      "selected_system": req.selected_system,
+                      "data_source": "sample" if req.selected_system else None}
+            yield f"data: {json.dumps(answer, ensure_ascii=False)}\n\n"
             deps.session_store.append(thread_id, "user", message)
             deps.session_store.append(thread_id, "assistant", final)
         yield "data: [DONE]\n\n"

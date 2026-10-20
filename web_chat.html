@@ -23,6 +23,20 @@
     font-weight: 600; font-size: 15px;
   }
   header span { color: #8b8bd8; font-weight: 400; font-size: 13px; margin-left: 8px; }
+  .system-panel {
+    flex-shrink: 0; padding: 12px 20px; background: #222233;
+    border-bottom: 1px solid #3a3a52; display: flex; flex-direction: column; gap: 8px;
+  }
+  .system-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .system-controls label { font-size: 13px; }
+  select {
+    min-width: 220px; padding: 8px 10px; border: 1px solid #3a3a52; border-radius: 8px;
+    background: #1e1e2e; color: #e2e2f0; font-size: 14px;
+  }
+  select:disabled { opacity: 0.65; }
+  .system-note { margin: 0; color: #b5b5d3; font-size: 12px; line-height: 1.5; }
+  .catalog-error { color: #ffb4b4; }
+  .retry-button { padding: 7px 10px; font-size: 12px; }
   #log {
     flex: 1; min-height: 0;   /* flex 자식 기본 최소높이(콘텐츠 크기)를 풀어줘야
                                  내용이 길어져도 바디가 안 늘어나고 여기서만 스크롤됨 */
@@ -40,6 +54,8 @@
   }
   .row.user .bubble { background: #5b5bd6; color: white; border-bottom-right-radius: 4px; }
   .row.agent .bubble { background: #2e2e42; border-bottom-left-radius: 4px; }
+  .message-target { margin-bottom: 5px; font-size: 12px; opacity: 0.85; }
+  .row.error .bubble { background: #442c38; color: #ffcece; border: 1px solid #80505d; }
   .steps {
     max-width: 70%; font-size: 12px; color: #9a9ac0; padding: 6px 14px;
     display: flex; flex-direction: column; gap: 3px;
@@ -80,10 +96,25 @@
 <body>
 <div id="app">
   <header>운영 인시던트 대응 에이전트 <span>{{ backendLabel }}</span></header>
+  <section class="system-panel" aria-label="점검 대상 선택" :aria-busy="catalogLoading">
+    <div class="system-controls">
+      <label for="selected-system">점검 대상 시스템</label>
+      <select id="selected-system" v-model="selectedSystem"
+              :disabled="sending || catalogLoading || !!catalogError">
+        <option disabled value="">{{ catalogLoading ? '시스템 목록을 불러오는 중…' : '시스템을 선택해주세요' }}</option>
+        <option v-for="system in systems" :key="system" :value="system">{{ system }}</option>
+      </select>
+      <button v-if="catalogError" type="button" class="retry-button"
+              :disabled="catalogLoading || sending" @click="loadSystems">목록 다시 불러오기</button>
+    </div>
+    <p v-if="dataSource === 'sample'" class="system-note">샘플 모니터링 데이터로 기초 점검합니다. 실제 운영 지표가 아닙니다.</p>
+    <p v-if="catalogError" class="system-note catalog-error" role="alert">{{ catalogError }}</p>
+    <p v-else class="system-note">시스템을 직접 선택한 뒤, 발생한 증상을 자유롭게 입력해주세요.</p>
+  </section>
   <div id="log" ref="logEl">
     <template v-for="item in log" :key="item.id">
       <div v-if="item.kind === 'user'" class="row user">
-        <div class="bubble">{{ item.text }}</div>
+        <div class="bubble"><div class="message-target">점검 대상: {{ item.target }}</div>{{ item.text }}</div>
       </div>
 
       <div v-else-if="item.kind === 'steps'" class="steps">
@@ -91,6 +122,10 @@
       </div>
 
       <div v-else-if="item.kind === 'agent'" class="row agent">
+        <div class="bubble">{{ item.text }}</div>
+      </div>
+
+      <div v-else-if="item.kind === 'error'" class="row error" role="alert">
         <div class="bubble">{{ item.text }}</div>
       </div>
 
@@ -104,15 +139,17 @@
     <input
       v-model="input"
       autocomplete="off"
-      placeholder="예: auth-service 로그인 응답이 느려졌어요. 원인 확인해주세요"
+      :disabled="sending"
+      aria-label="장애 증상"
+      placeholder="예: 로그인이 느려졌어요. 원인을 확인해주세요"
     />
-    <button type="submit" :disabled="sending">보내기</button>
+    <button type="submit" :disabled="!canSend">{{ sending ? '점검 중…' : '보내기' }}</button>
   </form>
 </div>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
-const { createApp, ref, reactive, nextTick } = Vue;
+const { createApp, ref, reactive, computed, nextTick } = Vue;
 
 const STEP_LABELS = {
   PlanCreated: e => `계획 수립: 할 일 ${e.task_count}가지${e.targets?.length ? ` (시스템: ${e.targets.join(', ')})` : ''}`,
@@ -120,7 +157,8 @@ const STEP_LABELS = {
   TaskCompleted: e => (e.source === 'monitoring'
       ? `모니터링 지표 확인 (시스템: ${e.target})`
       : `대응 매뉴얼(runbook) 조회 (장애유형: ${e.target})`) + (e.retries ? ' (재시도 성공)' : ''),
-  ReplanCheck: e => e.is_sufficient ? null : `정보 부족 → 장애유형 "${e.target}"로 추가 조사`,
+  ReplanCheck: e => e.runbook_skipped ? (e.reason || '정상 상태로 대응 매뉴얼 조회를 건너뛰었습니다.')
+      : e.is_sufficient ? null : `정보 부족 → 장애유형 "${e.target}"로 추가 조사`,
   DraftWritten: e => `답변 초안 작성 (시도 ${e.attempt})`,
   Validation: e => e.verdict === '합격' ? '검수 통과' : '검수 반려 → 다시 작성',
   Finalize: () => '최종 답변 완성',
@@ -133,12 +171,51 @@ createApp({
     const input = ref('');
     const sending = ref(false);
     const logEl = ref(null);
+    const systems = ref([]);
+    // 첫 항목을 자동 선택하면 사용자가 고르지 않은 서버를 점검할 수 있어 빈 값으로 시작한다.
+    const selectedSystem = ref('');
+    const catalogLoading = ref(true);
+    const catalogError = ref('');
+    const dataSource = ref('');
+    const canSend = computed(() => !sending.value && !catalogLoading.value &&
+      !catalogError.value && systems.value.includes(selectedSystem.value) && !!input.value.trim());
     const thread = 't-web-' + Math.random().toString(36).slice(2, 8);
     let nextId = 0;
 
-    fetch('/health').then(r => r.json()).then(h => {
-      backendLabel.value = `${h.llm_backend} 실모델(${h.fast_llm}/${h.quality_llm}) · all_total_vue`;
-    }).catch(() => {});
+    async function loadSystems() {
+      if (sending.value) return;
+      catalogLoading.value = true;
+      catalogError.value = '';
+      systems.value = [];
+      selectedSystem.value = '';
+      dataSource.value = '';
+      try {
+        const response = await fetch('/systems');
+        if (!response.ok) throw new Error('시스템 목록을 불러올 수 없습니다. 에이전트 서버 실행 상태를 확인해주세요.');
+        const catalog = await response.json();
+        if (!Array.isArray(catalog.systems) || !catalog.systems.length ||
+            catalog.systems.some(system => typeof system !== 'string' || !system.trim())) {
+          throw new Error('선택 가능한 시스템이 없습니다. 백엔드의 시스템 목록을 확인해주세요.');
+        }
+        systems.value = catalog.systems;
+        dataSource.value = catalog.data_source;
+      } catch (error) {
+        catalogError.value = error instanceof TypeError
+          ? '서버에 연결할 수 없습니다. 서버 실행 상태를 확인한 뒤 목록을 다시 불러와주세요.'
+          : error.message;
+      } finally {
+        catalogLoading.value = false;
+      }
+    }
+
+    loadSystems();
+    fetch('/health').then(response => {
+      if (!response.ok) throw new Error('상태 확인 실패');
+      return response.json();
+    }).then(health => {
+      // fake 모드를 실제 모델로 표시하지 않도록 실행 모드를 그대로 보여준다.
+      backendLabel.value = `${health.llm_backend} (${health.fast_llm}/${health.quality_llm}) · all_total_vue`;
+    }).catch(() => { backendLabel.value = '서버 상태 확인 필요'; });
 
     async function scrollToBottom() {
       await nextTick();
@@ -146,10 +223,13 @@ createApp({
     }
 
     function onSubmit() {
+      // 버튼 비활성화뿐 아니라 함수에서도 검사해 중복 전송과 선택 누락을 막는다.
+      if (!canSend.value) return;
       const text = input.value.trim();
-      if (!text) return;
+      const target = selectedSystem.value;
 
-      log.value.push({ id: nextId++, kind: 'user', text });
+      // 요청 시점의 대상을 메시지에 남겨, 다음 질문에서 선택을 바꿔도 이력이 명확하게 보인다.
+      log.value.push({ id: nextId++, kind: 'user', text, target });
       input.value = '';
       sending.value = true;
       scrollToBottom();
@@ -158,15 +238,38 @@ createApp({
       log.value.push(stepsItem);
       scrollToBottom();
 
-      const url = `/chat/stream?message=${encodeURIComponent(text)}&thread_id=${encodeURIComponent(thread)}`;
+      const params = new URLSearchParams({ message: text, thread_id: thread, selected_system: target });
+      const url = `/chat/stream?${params}`;
       const es = new EventSource(url);
       let streamItem = null;
       let streamAttempt = null;   // write_node 재작성(attempt 증가) 시 새 말풍선으로 끊는다
+      let receivedFinal = false;
+      let streamClosed = false;
+
+      function showStreamError(message) {
+        if (streamClosed) return;
+        streamClosed = true;
+        // EventSource의 자동 재연결을 끊어 같은 점검이 뜻하지 않게 반복되지 않게 한다.
+        es.close();
+        sending.value = false;
+        log.value.push({ id: nextId++, kind: 'error', text: message });
+        scrollToBottom();
+      }
 
       es.onmessage = (event) => {
-        if (event.data === '[DONE]') { es.close(); sending.value = false; return; }
+        if (event.data === '[DONE]') {
+          streamClosed = true;
+          es.close();
+          sending.value = false;
+          return;
+        }
         let e;
         try { e = JSON.parse(event.data); } catch { return; }
+
+        if (e.type === 'Error') {
+          showStreamError(e.message || '점검 중 오류가 발생했습니다. 서버 상태를 확인한 뒤 다시 요청해주세요.');
+          return;
+        }
 
         if (e.type === 'AnswerToken') {
           if (!streamItem || streamAttempt !== e.attempt) {
@@ -180,6 +283,7 @@ createApp({
         }
 
         if (e.type === 'FinalAnswer') {
+          receivedFinal = true;
           if (!streamItem) {
             streamItem = reactive({ id: nextId++, kind: 'agent', text: '' });
             log.value.push(streamItem);
@@ -200,10 +304,16 @@ createApp({
         scrollToBottom();
       };
 
-      es.onerror = () => { es.close(); sending.value = false; };
+      es.onerror = () => {
+        // EventSource는 422/409/503의 본문을 읽을 수 없으므로 확인할 항목을 안내한다.
+        showStreamError(receivedFinal
+          ? '답변을 받은 뒤 연결이 종료되었습니다. 대화 저장 여부는 확인하지 못했습니다.'
+          : '점검을 완료하지 못했습니다. 서버 연결과 선택한 시스템을 확인해주세요. 시스템 선택 지원 설정은 관리자에게 확인해주세요.');
+      };
     }
 
-    return { backendLabel, log, input, sending, logEl, onSubmit };
+    return { backendLabel, log, input, sending, logEl, systems, selectedSystem,
+      catalogLoading, catalogError, dataSource, canSend, loadSystems, onSubmit };
   },
 }).mount('#app');
 </script>
