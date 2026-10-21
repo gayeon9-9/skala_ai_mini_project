@@ -10,10 +10,18 @@
 > 아래 Wave 설명은 기존 실습 구조를 설명한다. 선택값이 있는 요청에서는 LLM의
 > 대상 추측 대신 선택한 시스템 하나만 조회하도록 코드가 계획을 만든다.
 
+### 변경 설명과 비교 자료
+
+- [앞으로의 단계별 구현 계획](implementation_plan.md): RAG·모듈화·자동 테스트·LangSmith를 실제 파일에 적용하는 순서와 단계별 완료 기준을 확인한다. 2~6단계는 계획이며 아직 구현되지 않았다.
+- [1단계 코드 해설](step_01_code_walkthrough.md): 이전 코드와 바꾼 코드를 함수별로 읽고, 변경 이유와 처리 흐름을 확인한다.
+- [1단계 비교 화면·검증 근거](evidence/step_01/README.md): 고정 커밋의 실행 조건, 원본 캡처, 실제 관찰 결과와 한계를 확인한다.
+- [앞으로의 변경 기록 방법](change_evidence_workflow.md): 수정 전 기준을 남기고 같은 조건으로 비교·검증한 뒤 코드와 증거를 함께 저장한다.
+
 Wave 1~15가 각각 증명한 패턴(싱글턴·MCP·SSE·라우팅·게이트·재계획·검증·재시도·병렬·비용분리·
 세션·주입·버전 토글·가드)을 전부 조립한 **실제 동작하는 에이전트 서비스**다. LLM 자리는
 `fake`(결정론)/`ollama`(로컬 실모델)/`openai`(실제 API) 세 백엔드 중 아무거나 꽂을 수 있고,
-요청 한 건이 처리되는 전 과정은 LangSmith에 계층 트리로 기록·평가·피드백된다.
+LangSmith 추적을 위한 코드가 포함되어 있다. 실제 기록 수집에는 유효한 설정과 연결이
+필요하며, 이번 헬프데스크용 평가 데이터셋·평가 실행 도구는 앞으로 추가할 예정이다.
 
 ## 주요 실행 방법
 
@@ -91,7 +99,7 @@ flowchart TB
     Deps --> LLM["fast_llm / quality_llm<br/>(fake · ollama · openai 중 택1)"]
     Deps --> Session["SqliteSessionStore<br/>(session.db)"]
 
-    Graph --> Trace["LangSmith<br/>(계층 트리 trace · Dataset 평가 · Feedback)"]
+    Graph --> Trace["LangSmith<br/>(추적 코드 포함 · 헬프데스크 평가는 구현 예정)"]
 ```
 
 - **싱글턴**: `server.py`의 `lifespan`에서 `SupervisorDeps`(LLM·세션·MCP 연결)를 정확히
