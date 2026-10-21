@@ -12,6 +12,8 @@
 
 ### 변경 설명과 비교 자료
 
+- [7단계 OpenAI 임베딩 선택](step_07_openai_embeddings.md): Qwen 답변 생성 유지, 공급자 선택·캐시·관리자 모델 표시. 실제 OpenAI 성능 비교는 측정 대기.
+- [Ollama / OpenAI 비교 실행과 검증 상태](evidence/embedding_comparison/README.md): 기존 버전 태그, 검증 결과, 같은 질문의 재현 절차.
 - [기획·분석 발표용 보고서](final_report.md): 기존 코드 → 문제 → 사용자·관리자 영향 → 개선 → 반영 코드 → 전후 비교 → 활용 예시 순서.
 - [6단계 관리자·추적·평가](step_06_admin_evaluation.md): 저장된 문의의 통합 조회, LangSmith 실행 메타데이터, 평가 CLI.
 - [최종 전후 비교](evidence/final/README.md): 원본과 완료 버전의 실행 결과·캡처·측정 조건.
@@ -42,6 +44,8 @@ bash sh/setup_venv.sh
 |---|---|---|---|
 | Python 가상환경 준비 | `bash sh/setup_venv.sh` | 없음 | `.venv` 생성 + `requirements.txt` 설치(최초 1회, 이미 있으면 설치만 재확인) |
 | 로컬 Ollama 환경 준비 | `bash sh/setup_ollama.sh` | 없음(로컬 추론) | 모델(`qwen3:0.6b`/`8b`)이 이미 있으면 재사용, 없으면 새로 pull — `OLLAMA_FORCE_REFRESH=1`을 주면 지우고 재구성 |
+| 새 기본: Qwen 답변 + OpenAI 임베딩 | `bash sh/run_agent_hybrid.sh` | **임베딩 API 과금** | 생성 모델은 로컬 유지. 기존 포트 보호·로컬 생성 모델 사전 확인 |
+| 새 코드에서 Ollama 검색 비교 | `bash sh/run_agent_hybrid.sh --embedding-provider ollama` | 로컬 추론 | 기존 Qwen 임베딩·점수 .50 유지 |
 | 에이전트만 기동 (로컬) | `bash sh/run_agent_ollma.sh` | 없음 | 서버만 띄워두고 직접 curl/웹으로 테스트 |
 | 에이전트만 기동 (OpenAI) | `bash sh/run_agent_openai.sh` | **과금** | 위와 동일하되 실제 API 사용 (y/N 확인) |
 | 브라우저 채팅 화면 | `bash sh/run_frontend.sh` (서버 기동 후) | 백엔드에 따름 | `http://localhost:8600`에서 실제 채팅 UI로 사용 |
@@ -50,7 +54,7 @@ bash sh/setup_venv.sh
 꽂아 쓰기만 한다(`.venv`가 없으면 시스템 `python3`로 조용히 떨어져 패키지
 누락 오류가 날 수 있다) — `setup_venv.sh`를 먼저 돌려야 하는 이유다.
 
-모든 스크립트는 `.env`가 없으면 `cp .env.example .env` 후 본인 API 키를 채우라는 안내를
+기존 스크립트는 `.env`가 없으면 `cp .env.example .env` 후 본인 API 키를 채우라는 안내를
 출력하고 종료하며(외부 경로에 의존하지 않음 — 이 폴더만 떼어가도 그대로 동작),
 LangSmith 프로젝트를 백엔드별로 분리해 기록한다(`capstone-all-total[-ollama|-openai]`).
 

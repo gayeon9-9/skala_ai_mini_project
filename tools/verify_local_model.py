@@ -1,6 +1,7 @@
-"""현재 기본 Ollama 모델 한 건으로 실제 처리 흐름의 호환성을 확인한다.
+"""Ollama 생성 모델 + 선택한 임베딩 한 건으로 실제 흐름의 호환성을 확인한다.
 
-LangSmith 전송과 dotenv 로딩을 끄고 합성 문의·임시 DB만 사용한다.
+LangSmith 전송과 전체 dotenv 로딩을 끄고 합성 문의·임시 DB만 사용한다.
+--embedding-provider openai는 필요한 API 키만 읽고 실제 API를 호출/과금한다.
 실패·검증 후 대체 답변도 결과로 보존한다. 한 건의 작동 확인을 일반적인 답변
 정확도나 장애 진단 성능으로 설명하지 않는다. 모델 옵션·프롬프트는 수정하지 않는다.
 """
@@ -44,21 +45,29 @@ async def verify(args) -> dict:
     from agent.observability import runtime_context
     from agent.ollama_llm import OllamaFastLLM, OllamaQualityLLM
     from agent.retrieval import KnowledgeRetriever
+    from agent.embeddings import create_embedder
+    from tools.embedding_support import load_embedding_environment
     from agent.session_store import SqliteSessionStore
+    if args.embedding_provider == "openai":
+        load_embedding_environment(keys=("OPENAI_API_KEY",))
+    embedding_model = args.embedding_model or (
+        "text-embedding-3-small" if args.embedding_provider == "openai" else "qwen3-embedding:0.6b")
 
     report = {
         "created_at": datetime.now(timezone.utc).isoformat(), "synthetic": True,
-        "scope": "실제 Ollama 기본 생성 모델 1건 + 실제 MCP 샘플 조회 + 실제 임베딩의 호환성 확인. 일반 답변 정확도·운영 장애 진단 성능 평가가 아닙니다.",
+        "scope": "실제 Ollama 생성 모델 1건 + MCP 샘플 조회 + 선택한 실제 임베딩의 호환성 확인. 일반 답변 정확도·운영 장애 진단 성능 평가가 아닙니다.",
         "query": QUERY, "selected_system": "auth-service", "status": "failed",
         "models": {"fast": args.fast_model, "quality": args.quality_model,
-                   "embedding": "qwen3-embedding:0.6b"},
+                   "embedding_provider": args.embedding_provider, "embedding": embedding_model},
+        "min_score": args.min_score,
         "langsmith_enabled": False, "timed_out": False,
         "timeout_seconds": args.timeout_seconds,
         "errors": [], "cleanup_errors": [],
     }
     with tempfile.TemporaryDirectory(prefix="helpdesk-local-model-") as temp:
         store = SqliteSessionStore(Path(temp) / "session.db")
-        retriever = KnowledgeRetriever()
+        retriever = KnowledgeRetriever(embedder=create_embedder(
+            provider=args.embedding_provider, model=embedding_model), min_score=args.min_score)
         # 교육용 첫 호출 실패는 꺼서 모델 호환성 확인과 의도적 재시도를 섞지 않는다.
         mcp = MCPClient(flaky_first_tool_call=False)
         deps = SupervisorDeps(
@@ -136,9 +145,14 @@ def parse_args(argv=None):
     parser.add_argument("--timeout-seconds", type=float, default=180)
     parser.add_argument("--fast-model", default="qwen3:0.6b")
     parser.add_argument("--quality-model", default="qwen3:8b")
+    parser.add_argument("--embedding-provider", choices=("ollama", "openai"), default="ollama")
+    parser.add_argument("--embedding-model")
+    parser.add_argument("--min-score", type=float, default=0.50)
     args = parser.parse_args(argv)
     if not 0 < args.timeout_seconds <= 180:
         parser.error("--timeout-seconds는 0보다 크고 180 이하이어야 합니다.")
+    if not 0 <= args.min_score <= 1:
+        parser.error("--min-score는 0~1 범위여야 합니다.")
     return args
 
 

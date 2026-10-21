@@ -151,7 +151,17 @@
         <div class="panel"><h3>저장된 최종 답변</h3><p v-if="detail.answer" class="answer">{{ detail.answer }}</p><p v-else class="muted">완료된 답변이 없습니다.</p></div>
         <details class="panel"><summary>원문 대화 · {{ messages.length }}개 메시지</summary><div v-for="(message, index) in messages" :key="index" class="message"><strong>{{ message.role === 'user' ? '사용자' : 'AI 답변' }}</strong><p>{{ message.content }}</p></div></details>
         <details class="panel"><summary>요청 처리 이력 · {{ requests.length }}건</summary><div v-for="request in requests" :key="request.request_id" class="request"><div class="toolbar between"><span class="mono">{{ request.request_id }}</span><span class="badge" :class="request.status">{{ statusLabel(request.status) }}</span></div><p>{{ request.message }}</p><p v-if="request.error" class="review-note">처리 기록: {{ request.error }}</p><small class="muted">{{ formatDate(request.created_at) }} → {{ formatDate(request.updated_at) }}</small></div></details>
-        <details v-if="detail.langsmith_run_id || detail.telemetry" class="panel"><summary>실행 기록 식별 정보</summary><p class="muted">추적 ID만으로 외부 LangSmith 수집 성공을 뜻하지 않습니다.</p><p v-if="detail.langsmith_run_id" class="mono">실행 ID: {{ detail.langsmith_run_id }}</p></details>
+        <details class="panel" open><summary>실행 모델 및 기록</summary>
+          <p class="muted">이 문의의 근거 요청에 저장된 설정입니다. 현재 서버 설정으로 과거 기록을 바꾸지 않습니다.</p>
+          <dl class="fields">
+            <div><dt>답변 모델</dt><dd>{{ executionModels.answer }}</dd></div>
+            <div><dt>문의 정보 정리 모델</dt><dd>{{ executionModels.intake }}</dd></div>
+            <div><dt>문서 검색 모델</dt><dd>{{ executionModels.provider }} · {{ executionModels.search }}</dd></div>
+            <div><dt>검색 벡터 차원</dt><dd>{{ executionModels.dimensions }}</dd></div>
+          </dl>
+          <p class="muted">검색 질의 형식: {{ executionModels.queryFormat }}</p>
+          <p class="muted">추적 ID만으로 외부 LangSmith 수집 성공을 뜻하지 않습니다.</p><p v-if="detail.langsmith_run_id" class="mono">실행 ID: {{ detail.langsmith_run_id }}</p>
+        </details>
       </template>
     </section>
   </main>
@@ -182,6 +192,21 @@ createApp({
     const requests = computed(() => Array.isArray(detail.value?.requests) ? [...detail.value.requests].reverse() : []);
     const validationLabel = computed(() => ({ passed: '규칙 검증 통과', fallback: '추가 확인 필요 · 제한된 안내 제공' })[detail.value?.validation?.status] || '검증 결과 없음');
     const validationErrors = computed(() => Array.isArray(detail.value?.validation?.errors) ? detail.value.validation.errors : []);
+    const executionModels = computed(() => {
+      const telemetry = detail.value?.telemetry || {}, retrieval = detail.value?.retrieval || {};
+      const text = value => typeof value === 'string' && value.trim() ? value : '';
+      const dimension = value => Number.isInteger(value) && value > 0 ? value : null;
+      // 저장된 결과만 사용한다. 예전 기록의 모델 이름을 보고 공급자를 추측하거나
+      // 현재 서버의 기본값을 채우면 변경 전후가 뒤섞이므로 누락은 그대로 표시한다.
+      const provider = text(telemetry.embedding_provider) || text(retrieval.provider);
+      const queryFormat = text(telemetry.embedding_query_format) || text(retrieval.query_format);
+      return { answer: text(telemetry.quality_model) || '기록 없음',
+        intake: text(telemetry.fast_model) || '기록 없음',
+        provider: ({ ollama: '로컬 Ollama', openai: 'OpenAI API' })[provider] || '공급자 기록 없음',
+        search: text(telemetry.embedding_model) || text(retrieval.model) || '기록 없음',
+        dimensions: dimension(telemetry.embedding_dimensions) || dimension(retrieval.dimensions) || '기록 없음',
+        queryFormat: queryFormat === 'raw' ? '사용자 질의 원문' : queryFormat || '기록 없음' };
+    });
     const documentGroups = computed(() => [{ key: 'retrieval', label: '사용자 안내 자료', audience: 'user' },
       { key: 'operator_retrieval', label: '운영자 확인 자료', audience: 'operator' }].map(group => {
         const result = detail.value?.[group.key];
@@ -248,7 +273,7 @@ createApp({
     loadList(0);
     return { items, limit, offset, hasMore, statusFilter, listLoading, listError, selectedId,
       detail, detailLoading, detailError, detailStale, previousEvidence, intakeRows, missingLabels,
-      observations, messages, requests, validationLabel, validationErrors, documentGroups,
+      observations, messages, requests, validationLabel, validationErrors, documentGroups, executionModels,
       statusLabel, retrievalLabel, formatDate, metric, formatScore, elapsed, loadList,
       refreshList, changeFilter, selectInquiry };
   },

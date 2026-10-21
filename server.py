@@ -104,36 +104,42 @@ def _build_llms():
 async def lifespan(app: FastAPI):
     global CREATION_COUNT
     CREATION_COUNT += 1
-    mcp = MCPClient()
-    await mcp.start()   # Wave 2 — MCP subprocess는 서버 수명 동안 딱 1개
     backend, fast_llm, quality_llm = _build_llms()
-    from agent.retrieval import KnowledgeRetriever, OllamaEmbedder
-    retriever = KnowledgeRetriever(embedder=OllamaEmbedder(
-        model=os.environ.get("RAG_EMBEDDING_MODEL", "qwen3-embedding:0.6b"),
-        base_url=os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")),
-        min_score=float(os.environ.get("RAG_MIN_SCORE", "0.50")))
-    app.state.llm_backend = backend
-    deps = SupervisorDeps(
-        fast_llm=fast_llm,
-        quality_llm=quality_llm,
-        mcp=mcp,
-        session_store=SqliteSessionStore(),
-        version=os.environ.get("SUPERVISOR_VERSION", "v2"),
-        retriever=retriever,
-    )
-    inquiry_store(deps).recover_interrupted()  # 이전 프로세스에서 중단된 접수를 재시도 가능하게 한다.
-    from agent.observability import runtime_context
-    deps.trace_context = runtime_context(deps)
-    app.state.deps = deps
-    app.state.graph = build_graph(deps) if deps.version == "v2" else None
-    app.state.instance_id = id(deps)
+    from agent.embeddings import create_embedder
+    from agent.retrieval import KnowledgeRetriever
+    # 답변 생성과 임베딩 제공자는 별도 설정이다. 구성 오류는 MCP를 띄우기 전에
+    # 발견하고, OpenAI 연결 실패를 이유로 몰래 Ollama 검색으로 전환하지 않는다.
+    min_score = float(os.environ.get("RAG_MIN_SCORE", "0.50"))
+    if not 0 <= min_score <= 1:
+        raise ValueError("RAG_MIN_SCORE는 0~1 범위여야 합니다.")
+    retriever = KnowledgeRetriever(embedder=create_embedder(), min_score=min_score)
+    mcp, store = MCPClient(), None
     try:
+        await mcp.start()   # Wave 2 — MCP subprocess는 서버 수명 동안 딱 1개
+        store = SqliteSessionStore()
+        app.state.llm_backend = backend
+        deps = SupervisorDeps(
+            fast_llm=fast_llm, quality_llm=quality_llm, mcp=mcp,
+            session_store=store, version=os.environ.get("SUPERVISOR_VERSION", "v2"),
+            retriever=retriever,
+        )
+        inquiry_store(deps).recover_interrupted()
+        from agent.observability import runtime_context
+        deps.trace_context = runtime_context(deps)
+        app.state.deps = deps
+        app.state.graph = build_graph(deps) if deps.version == "v2" else None
+        app.state.instance_id = id(deps)
         yield
     finally:
-        # 애플리케이션 종료가 예외로 시작되어도 직접 연 연결을 정리한다.
-        await mcp.stop()
-        await retriever.aclose()
-        deps.session_store.close()
+        # 초기화 도중 실패해도 연 자원은 닫는다. 기존 실행 중 서버에는 손대지 않는다.
+        try:
+            await mcp.stop()
+        finally:
+            try:
+                await retriever.aclose()
+            finally:
+                if store is not None:
+                    store.close()
         try:
             from langchain_core.tracers.langchain import wait_for_all_tracers
             wait_for_all_tracers()
@@ -210,7 +216,11 @@ async def health():
             "llm_backend": app.state.llm_backend,
             "fast_llm": app.state.deps.fast_llm.name,
             "quality_llm": app.state.deps.quality_llm.name,
-            "code_revision": (app.state.deps.trace_context or {}).get("code_revision")}
+            "code_revision": (app.state.deps.trace_context or {}).get("code_revision"),
+            # 이 경로는 구성 정보만 보여 준다. 매 health 호출마다 과금되는 API를
+            # 부르지 않으며, 실제 연결 확인은 build_rag_index --probe로 수행한다.
+            "embedding_provider": (app.state.deps.trace_context or {}).get("embedding_provider"),
+            "embedding_model": (app.state.deps.trace_context or {}).get("embedding_model")}
 
 
 @app.get("/version")

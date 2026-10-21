@@ -10,6 +10,7 @@ BASE_FIELDS = ("inquiry_id", "thread_id", "selected_system", "status", "created_
 REQUEST_FIELDS = ("request_id", "status", "message", "error", "created_at", "updated_at", "run_id")
 TELEMETRY_FIELDS = (
     "code_revision", "code_dirty", "catalog_version", "fast_model", "quality_model", "embedding_model",
+    "embedding_provider", "embedding_dimensions", "embedding_query_format",
     "inquiry_id", "request_id", "thread_id", "selected_system", "data_source", "validation_status",
     "retrieved_document_ids", "index_version", "processing_seconds", "processing_scope", "tracing_enabled",
 )
@@ -33,7 +34,8 @@ def _intake(value):
 def _retrieval(value):
     if not isinstance(value, dict):
         return {}
-    result = _pick(value, ("status", "error", "index_version", "model", "min_score"))
+    result = _pick(value, ("status", "error", "index_version", "model", "min_score",
+                           "provider", "dimensions", "query_format"))
     # 문서 본문은 관리자에게 필요한 근거이지만 모델 프롬프트나 원격 응답 전체는 아니다.
     result["documents"] = [_pick(doc, (
         "document_id", "chunk_id", "title", "text", "path", "audience", "systems", "version",

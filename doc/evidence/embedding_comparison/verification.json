@@ -1,0 +1,61 @@
+{
+  "recorded_at": "2026-10-21T05:57:12.036799+00:00",
+  "baseline_tag": "v1.0-ollama",
+  "baseline_git_sha": "f30ef7848ec6c0af54e5d5015d21d402a1dbb811",
+  "status": "implementation_verified_real_openai_measurement_pending",
+  "test_command": ".venv/bin/python -m pytest -q --junitxml=/tmp/helpdesk-openai-embedding-tests.xml",
+  "junit": {
+    "tests": "298",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "8.772"
+  },
+  "tested_worktree_source_sha256": {
+    "agent/embeddings.py": "f12807fffaee124d5a37c82db720efcdc4fb6a1251e256b3b4628426417a05aa",
+    "agent/inquiry_summary.py": "afccdd75223d8785de93b6bc74782bdd572a2487f59060d7efc3155480ca739e",
+    "agent/observability.py": "0a45a17ec9ed7f34c2a3e51311b3dd504eba1a31f0d1850d040a8c70d4868c9f",
+    "agent/retrieval.py": "7ba44622661e2152e8ed39ed79c0ce0b7ee89cf51aed02a7900abc7a21183ffc",
+    "evals/compare_embeddings.py": "7d7491f4c803f4304a260bdf1218c98a7c411cc3e0524068efd9a7841ad69dcf",
+    "server.py": "d1f149d394a32b5243a7e68b7b5d61cf1a19b7817caa1634c2b6db242f8bce3c",
+    "sh/run_agent_hybrid.sh": "349885415bc3c9dfc2712cd3cd4f4b4ef4b41deba356b2a0ace76a132ab4f64c",
+    "tests/test_embedding_cli.py": "28a3e9719e218de41b7a9e065578cb308339cda1a87e18000c00e96c05e404f6",
+    "tests/test_embedding_comparison.py": "ff02455783870aedf4324e22db3c97d1bb6c6fd818ae14bf5c04416759315795",
+    "tests/test_embedding_integration.py": "23a30e217ab86c7bb3fd9474300d9475228fd3c31fa49133c17cc45341dd52ca",
+    "tests/test_embedding_metadata.py": "3e91c94892bea6b3631b8f7bd0331473bbc407aed9f7d20a318635cc313f8697",
+    "tests/test_embeddings.py": "6da93d6a58876da7b973ccb21379f53a203047460fd6c10d71ce361e1278e146",
+    "tools/build_rag_index.py": "81b7ea7cc3cc5ea10de2f20dd61671941abfd539aef8a50305f5eaaa4a837890",
+    "tools/embedding_support.py": "adcc286a821f12a9634816655894becbd8c7d73928c617b9d945be8374c0b9f7",
+    "tools/run_hybrid.py": "e101b87a2644353f76d2d3d2807339478e2a50a61e0a5e7bffbc8f9dfa5fe6f0",
+    "tools/verify_local_model.py": "51aaaa9f39b1947965bc9340ee864030db6ec9d0e540dffdc164395c6147782e",
+    "web_admin.html": "46321e6c1433075c16a78c3cd39916c77ace6369abc7f751b6235f1d39ae2fc1"
+  },
+  "external_api_probe": {
+    "sandbox_attempt": "connection_error",
+    "error": "OpenAI 임베딩 서비스에 연결하지 못했습니다.",
+    "escalated_execution": "permission_rejected_by_user",
+    "retried_after_rejection": false,
+    "authentication_verified": false
+  },
+  "real_openai_comparison": "not_run",
+  "openai_min_score": {
+    "value": 0.5,
+    "status": "provisional_not_calibrated"
+  },
+  "baseline_results": "../final/rag_test.json",
+  "runtime_changes": {
+    "existing_servers_restarted": false,
+    "actual_dotenv_modified": false,
+    "actual_inquiry_db_used": false
+  },
+  "notes": [
+    "오프라인 테스트의 가짜 응답/벡터는 OpenAI 실측 성능이 아닙니다.",
+    "과거 Ollama 결과와 신규 OpenAI 개선율을 계산하지 않습니다."
+  ],
+  "pytest_summary": {
+    "passed": 187,
+    "subtests_passed": 111,
+    "failed": 0,
+    "junit_tests_includes_subtests": true
+  }
+}

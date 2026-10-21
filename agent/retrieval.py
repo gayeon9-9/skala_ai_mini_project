@@ -1,4 +1,4 @@
-"""FAQ와 Runbook을 실제 임베딩으로 검색하는 작은 로컬 RAG 검색기.
+"""FAQ와 Runbook을 실제 임베딩으로 검색하는 작은 RAG 검색기.
 
 검색과 답변 생성은 분리한다. 이 모듈은 근거 후보만 반환하며, 찾은 문서만으로
 사용자의 장애 원인을 확정하지 않는다. 테스트는 embedder를 교체해 네트워크 없이
@@ -13,16 +13,11 @@ import os
 import tempfile
 from pathlib import Path
 
-import httpx
+from agent.embeddings import QUERY_INSTRUCTION, RetrievalError, OllamaEmbedder
 
 ROOT = Path(__file__).resolve().parents[1]
-QUERY_INSTRUCTION = "Retrieve relevant IT helpdesk guidance or incident response procedures for the query."
 CHUNK_SIZE = 900
 CHUNK_OVERLAP = 100
-
-
-class RetrievalError(RuntimeError):
-    """문서/모델/색인 문제. 관련 문서가 없는 정상 검색과 구분한다."""
 
 
 def _hash(value) -> str:
@@ -52,45 +47,11 @@ def _normalise(vectors, count: int, dimensions: int | None = None) -> list[list[
     return result
 
 
-class OllamaEmbedder:
-    """이미 설치된 Ollama 모델만 사용한다. 서버 실행 중 자동 다운로드하지 않는다."""
-
-    def __init__(self, model="qwen3-embedding:0.6b", base_url="http://127.0.0.1:11434",
-                 timeout=60):
-        self.model = model
-        self.base_url = base_url.rstrip("/")
-        self.client = httpx.AsyncClient(base_url=self.base_url, timeout=timeout, trust_env=False)
-
-    async def identity(self) -> dict:
-        # 같은 태그의 모델이 교체되면 예전 문서 벡터와 새 질의 벡터를 섞지 않는다.
-        response = await self.client.get("/api/tags")
-        response.raise_for_status()
-        models = response.json().get("models", [])
-        item = next((m for m in models if m.get("name") == self.model), None)
-        if not item or not item.get("digest"):
-            raise RetrievalError(f"임베딩 모델 {self.model}이 설치되지 않았습니다.")
-        capabilities = item.get("capabilities")
-        if capabilities is not None and "embedding" not in capabilities:
-            raise RetrievalError("선택한 모델은 임베딩 전용 모델이 아닙니다.")
-        return {"model": self.model, "digest": item["digest"],
-                "dimensions": item.get("details", {}).get("embedding_length")}
-
-    async def embed(self, texts: list[str]) -> list[list[float]]:
-        response = await self.client.post("/api/embed", json={
-            "model": self.model, "input": texts, "truncate": False,
-        })
-        response.raise_for_status()
-        return response.json().get("embeddings")
-
-    async def aclose(self):
-        await self.client.aclose()
-
-
 class KnowledgeRetriever:
     """문서별 최고 청크를 반환한다. 사용자/운영자와 적용 대상 필터를 먼저 적용한다."""
 
     def __init__(self, embedder=None, root=ROOT, catalog_path=None, cache_dir=None,
-                 min_score=0.50):
+                 min_score=0.50, include_raw_scores=False):
         self.root = Path(root).resolve()
         self.catalog_path = Path(catalog_path or self.root / "data/knowledge_catalog.json")
         self.cache_dir = Path(cache_dir or self.root / ".rag_cache")
@@ -98,6 +59,9 @@ class KnowledgeRetriever:
         if not 0 <= min_score <= 1:
             raise ValueError("min_score는 0~1 범위여야 합니다.")
         self.min_score = min_score
+        # 평가 도구만 원래 점수로 dev 문턱값을 계산한다. 화면용 반올림 점수로
+        # 재필터하면 경계에서 실제 search의 문턱값 판정과 달라질 수 있다.
+        self.include_raw_scores = include_raw_scores
         self._lock = asyncio.Lock()
         self._index = None
 
@@ -156,8 +120,11 @@ class KnowledgeRetriever:
             dimensions = identity.get("dimensions")
             if dimensions is not None and (type(dimensions) is not int or dimensions <= 0):
                 raise RetrievalError("모델의 임베딩 차원이 올바르지 않습니다.")
+            # 제공자별 벡터 공간·질의 형식을 캐시 서명에 포함한다. 기존 Qwen은
+            # 과거 서명을 그대로 유지하고 OpenAI는 별도 색인을 만들어 섞이지 않는다.
+            query_format = getattr(self.embedder, "query_format", QUERY_INSTRUCTION)
             manifest = {"schema_version": 1, "catalog_version": version,
-                        "embedding": identity, "query_instruction": QUERY_INSTRUCTION,
+                        "embedding": identity, "query_instruction": query_format,
                         "chunk_size": CHUNK_SIZE, "chunk_overlap": CHUNK_OVERLAP,
                         "content_hash": _hash(chunks)}
             signature = _hash(manifest)
@@ -198,6 +165,8 @@ class KnowledgeRetriever:
         index = await self._ensure_index()
         return {"status": "ok", "index_version": index["index_version"],
                 "model": index["manifest"]["embedding"]["model"],
+                "provider": getattr(self.embedder, "provider", "custom"),
+                "query_format": index["manifest"]["query_instruction"],
                 "document_count": len({c["document_id"] for c in index["chunks"]}),
                 "chunk_count": len(index["chunks"]), "dimensions": len(index["vectors"][0])}
 
@@ -231,17 +200,25 @@ class KnowledgeRetriever:
                           and (system in chunk["systems"] or "*" in chunk["systems"])]
             metadata = {"index_version": index["index_version"],
                         "model": index["manifest"]["embedding"]["model"],
+                        "provider": getattr(self.embedder, "provider", "custom"),
+                        "dimensions": len(index["vectors"][0]),
+                        "query_format": index["manifest"]["query_instruction"],
                         "min_score": self.min_score}
             if not candidates:
                 return {"status": "no_match", "documents": [], **metadata}
-            prompt = f"Instruct: {QUERY_INSTRUCTION}\nQuery:{query.strip()}"
+            format_query = getattr(self.embedder, "format_query", None)
+            # 예전 DI 테스트 대역은 format_query가 없으므로 기존 Qwen 계약을 유지한다.
+            # OpenAI에는 Qwen 전용 Instruct 지시문을 덧붙이지 않고 원래 질문을 보낸다.
+            prompt = (format_query(query.strip()) if format_query
+                      else f"Instruct: {QUERY_INSTRUCTION}\nQuery:{query.strip()}")
             vector = _normalise(await self.embedder.embed([prompt]), 1,
                                 len(index["vectors"][0]))[0]
             ranked = []
             for chunk, stored in candidates:
                 score = sum(a * b for a, b in zip(vector, stored))
                 if score >= self.min_score:
-                    ranked.append({**chunk, "score": round(score, 6)})
+                    ranked.append({**chunk, "score": round(score, 6),
+                                   **({"raw_score": score} if self.include_raw_scores else {})})
             ranked.sort(key=lambda c: (-c["score"], c["chunk_id"]))
             # 긴 문서 하나의 여러 청크가 상위 3개를 모두 차지하지 않도록 문서별 최고점만 남긴다.
             documents, seen = [], set()
