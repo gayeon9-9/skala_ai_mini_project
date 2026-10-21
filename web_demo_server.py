@@ -12,6 +12,7 @@ server.py는 평소처럼(fake/ollama/openai 아무 백엔드로나) 8100에 미
     python3 web_demo_server.py        # http://localhost:8600 에서 채팅 화면 오픈
 """
 import json
+import os
 from pathlib import Path
 from urllib.parse import quote
 
@@ -22,7 +23,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from starlette.background import BackgroundTask
 
-BACKEND = "http://127.0.0.1:8100"
+# 전후 비교는 별도 서버 포트를 사용한다. 지정하지 않으면 기존 로컬 실행값을 유지한다.
+BACKEND = os.environ.get("AGENT_BACKEND_URL", "http://127.0.0.1:8100").rstrip("/")
 HERE = Path(__file__).parent
 
 app = FastAPI()
@@ -30,7 +32,7 @@ app = FastAPI()
 
 def _backend_unavailable() -> JSONResponse:
     return JSONResponse(
-        {"detail": "에이전트 서버에 연결할 수 없습니다. 8100 포트의 서버 실행 상태를 확인해주세요."},
+        {"detail": "에이전트 서버에 연결할 수 없습니다. 백엔드 서버 실행 상태를 확인해주세요."},
         status_code=503,
     )
 
@@ -44,10 +46,10 @@ def _forward_response(response: httpx.Response) -> Response:
     )
 
 
-async def _proxy_get(path: str) -> Response:
+async def _proxy_get(path: str, params=None) -> Response:
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(f"{BACKEND}{path}")
+            response = await client.get(f"{BACKEND}{path}", params=params)
         return _forward_response(response)
     except httpx.RequestError:
         return _backend_unavailable()
@@ -56,6 +58,22 @@ async def _proxy_get(path: str) -> Response:
 @app.get("/")
 async def index():
     return FileResponse(HERE / "web_chat.html")
+
+
+@app.get("/admin")
+async def admin_index():
+    return FileResponse(HERE / "web_admin.html")
+
+
+@app.get("/admin/inquiries")
+async def proxy_admin_inquiries(req: Request):
+    # 목록의 페이지/상태 조건과 잘못된 값도 그대로 넘겨 백엔드가 일관되게 검증한다.
+    return await _proxy_get("/admin/inquiries", params=req.query_params)
+
+
+@app.get("/admin/inquiries/{inquiry_id}")
+async def proxy_admin_inquiry(inquiry_id: str):
+    return await _proxy_get(f"/admin/inquiries/{quote(inquiry_id, safe='')}")
 
 
 @app.get("/health")

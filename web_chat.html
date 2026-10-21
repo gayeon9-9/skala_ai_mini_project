@@ -23,6 +23,7 @@
     font-weight: 600; font-size: 15px;
   }
   header span { color: #8b8bd8; font-weight: 400; font-size: 13px; margin-left: 8px; }
+  header a { float: right; color: #b8b8ff; font-size: 13px; text-decoration: none; }
   .system-panel {
     flex-shrink: 0; padding: 12px 20px; background: #222233;
     border-bottom: 1px solid #3a3a52; display: flex; flex-direction: column; gap: 8px;
@@ -94,7 +95,7 @@
 </head>
 <body>
 <div id="app">
-  <header>운영 인시던트 대응 에이전트 <span>{{ backendLabel }}</span></header>
+  <header>운영 인시던트 대응 에이전트 <span>{{ backendLabel }}</span><a href="/admin">관리자 접수 조회 →</a></header>
   <section class="system-panel" aria-label="점검 대상 선택" :aria-busy="catalogLoading">
     <div class="system-controls">
       <label for="selected-system">점검 대상 시스템</label>

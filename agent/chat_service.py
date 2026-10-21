@@ -4,12 +4,14 @@
 보낸다. 연결이 끊겨도 문의 원문은 남고 완료하지 못한 요청은 재시도할 수 있다.
 """
 import asyncio
+import time
 
 from langsmith import traceable
 from langsmith.run_helpers import get_current_run_tree
 
 from .inquiry_store import SqliteInquiryStore
 from .supervisor_v1 import run_v1
+from .observability import annotate_run, completion_metadata
 
 
 def inquiry_store(deps):
@@ -32,13 +34,29 @@ class ChatService:
             "intake_previous": self.store.get_thread(request.thread_id)["details"].get("intake", {}),
         }
         self.finished = self.started["replayed"]
+        self.started_at = None
+        self.trace_metadata = {**(deps.trace_context or {}),
+            "inquiry_id": self.started["inquiry_id"], "request_id": request.request_id,
+            "thread_id": request.thread_id, "selected_system": request.selected_system,
+            "data_source": "sample" if request.selected_system else None}
+
+    def _trace_start(self):
+        # traceable 내부에서 실행해야 현재 요청의 root run에 연결된다.
+        self.started_at = time.perf_counter()
+        annotate_run({**self.trace_metadata, "replayed": self.started["replayed"]})
 
     def _complete(self, result):
         rt = get_current_run_tree()
         run_id = str(rt.id) if rt else None
         result = {**result, "inquiry_id": self.started["inquiry_id"],
                   "request_id": self.request.request_id, "langsmith_run_id": run_id}
+        telemetry = {**self.trace_metadata,
+                     **completion_metadata(result, time.perf_counter() - self.started_at),
+                     "tracing_enabled": rt is not None}
+        annotate_run(telemetry)
+        result["telemetry"] = telemetry
         self.store.complete(self.request.request_id, result, run_id=run_id)
+        annotate_run({"request_status": "completed"})
         self.finished = True
         return result
 
@@ -46,10 +64,12 @@ class ChatService:
         """SSE 생성기가 시작되기 전에 끊겨도 BackgroundTask에서 상태를 정리한다."""
         if not self.finished:
             self.store.fail(self.request.request_id, "응답 연결이 중단되었습니다.", interrupted=True)
+            annotate_run({"request_status": "interrupted"})
             self.finished = True
 
     @traceable(name="chat_request")
     async def invoke(self):
+        self._trace_start()
         if self.started["replayed"]:
             return self.started["result"]
         try:
@@ -64,12 +84,14 @@ class ChatService:
             raise
         except Exception as exc:
             # 외부 예외 원문에는 경로·요청 정보가 섞일 수 있어 분류명만 저장한다.
+            annotate_run({"request_status": "failed", "error_type": type(exc).__name__})
             self.store.fail(self.request.request_id, type(exc).__name__)
             self.finished = True
             raise
 
     @traceable(name="chat_request_stream")
     async def stream(self):
+        self._trace_start()
         try:
             if self.started["replayed"]:
                 result = self.started["result"]
@@ -106,6 +128,7 @@ class ChatService:
             self.interrupted()
             raise
         except Exception as exc:
+            annotate_run({"request_status": "failed", "error_type": type(exc).__name__})
             self.store.fail(self.request.request_id, type(exc).__name__)
             self.finished = True
             yield {"type": "Error", "message": "처리를 완료하지 못했습니다. 같은 요청을 다시 시도해 주세요."}

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>문의 접수 관리 · AI 헬프데스크</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "Apple SD Gothic Neo", sans-serif; background: #1e1e2e; color: #e2e2f0; }
+  button, select { font: inherit; }
+  button, a, select { -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; }
+  button:disabled { cursor: default; opacity: .45; }
+  button:focus-visible, a:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid #acacff; outline-offset: 3px; }
+  [v-cloak] { display: none; }
+  header { padding: 20px 28px; background: #262638; border-bottom: 1px solid #3a3a52; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  h1 { margin: 0; font-size: 21px; }
+  h2 { margin: 0; font-size: 18px; }
+  h3 { margin: 0 0 12px; font-size: 15px; }
+  p { line-height: 1.6; }
+  a { color: #b8b8ff; text-decoration: none; }
+  .subtitle { margin: 6px 0 0; color: #b5b5d3; font-size: 12px; }
+  .workspace { display: grid; grid-template-columns: minmax(290px, 340px) minmax(0, 1fr); min-height: calc(100vh - 94px); }
+  .sidebar { border-right: 1px solid #3a3a52; background: #222233; padding: 22px 18px; }
+  .toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .toolbar.between { justify-content: space-between; }
+  .label { color: #b5b5d3; font-size: 12px; }
+  .button, select { border: 1px solid #505074; border-radius: 8px; padding: 8px 10px; background: #2e2e42; color: #e2e2f0; font-size: 12px; }
+  .filter { margin: 16px 0; }
+  .filter select { flex: 1; }
+  .case-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .case { width: 100%; border: 1px solid #3a3a52; border-radius: 10px; padding: 14px; color: #e2e2f0; background: #262638; text-align: left; }
+  .case:hover { border-color: #7979b2; }
+  .case.selected { border-color: #a4a4ff; background: #353553; box-shadow: inset 3px 0 #a4a4ff; }
+  .case strong { font-size: 14px; }
+  .case p { margin: 9px 0; font-size: 13px; overflow-wrap: anywhere; }
+  .case small { display: block; font-size: 11px; color: #b5b5d3; line-height: 1.7; overflow-wrap: anywhere; }
+  .badge { display: inline-block; border-radius: 5px; padding: 3px 6px; background: #3a3a52; font-size: 11px; white-space: nowrap; }
+  .badge.completed, .badge.passed, .badge.provided { color: #a9e4b9; background: #283e37; }
+  .badge.processing { color: #c9c9ff; background: #414166; }
+  .badge.failed, .badge.interrupted, .badge.fallback { color: #f1c49a; background: #493c35; }
+  .pagination { margin-top: 18px; }
+  .detail { min-width: 0; padding: 24px 28px 48px; }
+  .detail-head { margin-bottom: 18px; }
+  .muted { color: #b5b5d3; font-size: 12px; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; overflow-wrap: anywhere; }
+  .notice { padding: 12px 14px; border: 1px solid #6d5c47; border-radius: 9px; color: #f1d294; background: #302b2d; font-size: 13px; line-height: 1.6; margin: 14px 0; }
+  .error { color: #ffcece; background: #442c38; border-color: #80505d; }
+  .review-note { color: #f1d294; }
+  .empty { padding: 24px 8px; color: #b5b5d3; line-height: 1.8; font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .panel { min-width: 0; background: #262638; border: 1px solid #3a3a52; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .grid .panel { margin-bottom: 0; }
+  .grid + .panel, .grid + .grid { margin-top: 16px; }
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; }
+  dt { font-size: 12px; color: #b5b5d3; }
+  dt .badge { margin-left: 5px; }
+  dd { margin: 7px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.5; }
+  .evidence { display: block; color: #9d9dbb; font-size: 11px; margin-top: 5px; }
+  .observation + .observation { margin-top: 12px; padding-top: 12px; border-top: 1px solid #3a3a52; }
+  .metrics { display: flex; gap: 18px; flex-wrap: wrap; margin: 12px 0; }
+  .metric { color: #b5b5d3; font-size: 12px; }
+  .metric strong { display: block; margin-top: 4px; font-size: 19px; color: #e2e2f0; }
+  ul { padding-left: 20px; margin: 10px 0 0; line-height: 1.7; font-size: 13px; }
+  summary { cursor: pointer; font-size: 13px; line-height: 1.6; }
+  .document { margin: 10px 0; }
+  .document p { margin: 6px 0; }
+  .document pre, .answer, .message p { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 13px; line-height: 1.7; }
+  .document pre { max-height: 240px; overflow: auto; background: #1e1e2e; padding: 12px; border-radius: 6px; }
+  .answer { margin: 0; }
+  .message { border-top: 1px solid #3a3a52; padding: 12px 0 4px; }
+  .message p { margin: 7px 0; }
+  .message strong { font-size: 12px; color: #b8b8ff; }
+  .request { border-top: 1px solid #3a3a52; padding: 12px 0; }
+  .request p { margin: 7px 0; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  @media (max-width: 900px) { .workspace { grid-template-columns: minmax(260px, 300px) minmax(0, 1fr); } .grid, .fields { grid-template-columns: 1fr; } .detail { padding: 20px; } }
+  @media (max-width: 650px) { header { padding: 18px; } h1 { font-size: 18px; } .workspace { display: block; } .sidebar { border-right: none; border-bottom: 1px solid #3a3a52; } .case-list { max-height: 360px; overflow: auto; } .detail { padding: 20px 18px; } }
+</style>
+</head>
+<body>
+<div id="app" v-cloak>
+  <header>
+    <div><h1>IT 헬프데스크 · 문의 접수 관리</h1><p class="subtitle">로컬 시연용 조회 화면 · 샘플 점검 데이터 · 로그인 및 관리자 권한 분리 미적용</p></div>
+    <a href="/">← 사용자 채팅</a>
+  </header>
+  <main class="workspace">
+    <aside class="sidebar" aria-label="문의 목록">
+      <div class="toolbar between"><h2>접수 목록</h2><button class="button" @click="refreshList" :disabled="listLoading">새로고침</button></div>
+      <div class="toolbar filter"><label for="status-filter" class="label">최근 요청</label><select id="status-filter" v-model="statusFilter" @change="changeFilter" :disabled="listLoading">
+        <option value="">전체 상태</option><option value="processing">처리 중</option><option value="completed">답변 저장</option><option value="failed">처리 실패</option><option value="interrupted">응답 중단</option>
+      </select></div>
+      <p class="muted">‘답변 저장’은 문의 응답이 저장됐다는 뜻이며 장애 해결을 의미하지 않습니다.</p>
+      <p v-if="listLoading" class="muted" role="status">목록을 불러오는 중…</p>
+      <p v-if="listError" class="notice error" role="alert">{{ listError }} 기존 목록은 마지막 조회 결과입니다.</p>
+      <div v-if="!items.length && !listLoading && !listError" class="empty">이 조건에 해당하는 문의가 없습니다.</div>
+      <div class="case-list" :aria-busy="listLoading">
+        <button v-for="item in items" :key="item.inquiry_id" class="case" :class="{ selected: selectedId === item.inquiry_id }" @click="selectInquiry(item.inquiry_id)" :aria-pressed="selectedId === item.inquiry_id">
+          <div class="toolbar between"><strong>{{ item.selected_system || '대상 미선택' }}</strong><span class="badge" :class="item.status">{{ statusLabel(item.status) }}</span></div>
+          <p>{{ item.symptom || '증상 정리 전 · 원문을 확인해주세요' }}</p>
+          <small>최근 변경 {{ formatDate(item.updated_at) }} · 요청 {{ item.request_count }}건</small><small class="mono">{{ item.inquiry_id }}</small>
+        </button>
+      </div>
+      <div class="toolbar between pagination"><button class="button" @click="loadList(offset - limit)" :disabled="listLoading || offset === 0">이전</button><span class="muted">{{ Math.floor(offset / limit) + 1 }} 페이지</span><button class="button" @click="loadList(offset + limit)" :disabled="listLoading || !hasMore">다음</button></div>
+    </aside>
+    <section class="detail" aria-label="문의 상세" :aria-busy="detailLoading">
+      <p v-if="detailLoading" class="muted" role="status">선택한 문의를 불러오는 중…</p>
+      <div v-if="detailError" class="notice error" role="alert">{{ detailError }} <button class="button" @click="selectInquiry(selectedId)" :disabled="detailLoading">다시 조회</button></div>
+      <div v-if="!detail && !detailLoading && !detailError" class="empty">목록에서 문의를 선택하면 접수 정보, 점검 근거와 원문 대화를 확인할 수 있습니다.</div>
+      <template v-if="detail">
+        <div v-if="detailStale" class="notice">아래는 마지막으로 조회한 문의 {{ detail.inquiry_id }}의 결과입니다. 현재 선택한 문의 또는 최신 처리 상태의 결과로 간주하지 마세요.</div>
+        <div class="toolbar between detail-head"><div><h2>{{ detail.selected_system || '대상 미선택' }} 문의</h2><p class="muted mono">접수 {{ detail.inquiry_id }}</p></div><button class="button" @click="selectInquiry(detail.inquiry_id)" :disabled="detailLoading">상세 새로고침</button></div>
+        <div class="panel">
+          <div class="toolbar between"><h3>최근 요청 상태</h3><span class="badge" :class="detail.status">{{ statusLabel(detail.status) }}</span></div>
+          <p class="muted">접수 {{ formatDate(detail.created_at) }} · 최근 변경 {{ formatDate(detail.updated_at) }}</p>
+          <p v-if="previousEvidence" class="notice">최신 요청은 {{ statusLabel(detail.status) }} 상태입니다. 아래 점검·문서·답변은 이전에 완료된 요청의 저장 자료입니다.<br>근거 요청: <span class="mono">{{ detail.evidence_request_id }}</span> · {{ formatDate(detail.evidence_created_at) }}</p>
+          <p v-else-if="detail.evidence_request_id" class="muted">아래 근거와 답변은 최신 완료 요청에 연결됩니다. <span class="mono">{{ detail.evidence_request_id }}</span></p>
+          <p v-else class="muted">아직 완료된 응답이 없습니다. 아래 원문과 요청 이력에서 접수 내용을 확인해주세요.</p>
+        </div>
+        <div class="panel">
+          <h3>사용자가 알려준 정보</h3>
+          <p v-if="detail.intake?.source === 'rules_fallback'" class="muted review-note">자동 추출에 확인이 필요한 내용이 있어, 원문에서 명시적인 표현만 규칙으로 반영했습니다.</p>
+          <p v-else-if="detail.intake?.source === 'rules'" class="muted">시연 모드: 정해진 표현을 바탕으로 접수 정보를 정리했습니다.</p>
+          <p v-else-if="detail.intake?.source === 'model'" class="muted">모델이 정리한 내용을 사용자 원문과 함께 확인해주세요.</p>
+          <dl class="fields"><div v-for="field in intakeRows" :key="field.key"><dt>{{ field.label }}<span class="badge" :class="field.status">{{ field.statusLabel }}</span></dt><dd>{{ field.text }}<span v-if="field.evidence" class="evidence">원문: {{ field.evidence }}</span></dd></div></dl>
+          <p v-if="missingLabels.length" class="muted">추가 확인 항목: {{ missingLabels.join(', ') }}</p>
+          <p class="muted">발생 시각은 사용자 표현 그대로입니다. 미언급·없음·모름은 서로 다른 접수 상태로 보존합니다.</p>
+        </div>
+        <div class="grid">
+          <div class="panel"><h3>기초 점검 결과</h3><p class="muted">샘플 모니터링 관측이며 실제 원인이나 복구 여부를 확정하지 않습니다.</p>
+            <p v-if="!observations.length" class="muted">저장된 점검 결과가 없습니다.</p>
+            <div v-for="(observation, index) in observations" :key="index" class="observation"><strong>{{ observation.system_name || detail.selected_system }}</strong><span class="badge" style="margin-left: 8px">{{ observation.status || '상태 미확인' }}</span>
+              <div class="metrics"><span class="metric">CPU<strong>{{ metric(observation.cpu_percent) }}</strong></span><span class="metric">메모리<strong>{{ metric(observation.memory_percent) }}</strong></span></div>
+              <ul v-if="Array.isArray(observation.alerts) && observation.alerts.length"><li v-for="(alert, alertIndex) in observation.alerts" :key="alertIndex">{{ alert }}</li></ul><p v-else class="muted">기록된 알림 없음</p>
+              <p v-if="observation.last_checked || observation.timestamp" class="muted">관측 시각 {{ formatDate(observation.last_checked || observation.timestamp) }}</p>
+            </div>
+          </div>
+          <div class="panel"><h3>답변 검증</h3><span class="badge" :class="detail.validation?.status">{{ validationLabel }}</span>
+            <p class="muted">규칙 검사는 모든 잘못된 답변을 발견하는 보장이 아닙니다. 실제 오류 로그와 환경을 함께 확인해주세요.</p>
+            <ul v-if="validationErrors.length"><li v-for="(error, index) in validationErrors" :key="index">{{ error }}</li></ul>
+            <p v-if="detail.telemetry?.processing_seconds != null" class="muted">처리 시간(저장 전) {{ elapsed(detail.telemetry.processing_seconds) }} · HTTP 전송 시간 제외</p>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="panel" v-for="group in documentGroups" :key="group.key"><h3>{{ group.label }}</h3><p class="muted">{{ retrievalLabel(group.result?.status) }}</p>
+            <details v-for="(document, index) in group.documents" :key="document.chunk_id || index" class="document"><summary>{{ document.title || '제목 없음' }} <span class="muted">[{{ document.document_id }}]</span></summary>
+              <p class="muted mono">{{ document.path }}</p><p v-if="document.score != null" class="muted">검색 유사도 {{ formatScore(document.score) }} · 진단 정확도나 발생 확률이 아닙니다.</p><pre v-if="document.text">{{ document.text }}</pre>
+            </details>
+          </div>
+        </div>
+        <div class="panel"><h3>저장된 최종 답변</h3><p v-if="detail.answer" class="answer">{{ detail.answer }}</p><p v-else class="muted">완료된 답변이 없습니다.</p></div>
+        <details class="panel"><summary>원문 대화 · {{ messages.length }}개 메시지</summary><div v-for="(message, index) in messages" :key="index" class="message"><strong>{{ message.role === 'user' ? '사용자' : 'AI 답변' }}</strong><p>{{ message.content }}</p></div></details>
+        <details class="panel"><summary>요청 처리 이력 · {{ requests.length }}건</summary><div v-for="request in requests" :key="request.request_id" class="request"><div class="toolbar between"><span class="mono">{{ request.request_id }}</span><span class="badge" :class="request.status">{{ statusLabel(request.status) }}</span></div><p>{{ request.message }}</p><p v-if="request.error" class="review-note">처리 기록: {{ request.error }}</p><small class="muted">{{ formatDate(request.created_at) }} → {{ formatDate(request.updated_at) }}</small></div></details>
+        <details v-if="detail.langsmith_run_id || detail.telemetry" class="panel"><summary>실행 기록 식별 정보</summary><p class="muted">추적 ID만으로 외부 LangSmith 수집 성공을 뜻하지 않습니다.</p><p v-if="detail.langsmith_run_id" class="mono">실행 ID: {{ detail.langsmith_run_id }}</p></details>
+      </template>
+    </section>
+  </main>
+</div>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const { createApp, ref, computed } = Vue;
+createApp({
+  setup() {
+    const items = ref([]), limit = 20, offset = ref(0), hasMore = ref(false), statusFilter = ref('');
+    const listLoading = ref(false), listError = ref(''), selectedId = ref('');
+    const detail = ref(null), detailLoading = ref(false), detailError = ref('');
+    let listSequence = 0, detailSequence = 0;
+    const statusLabel = status => ({ processing: '처리 중', completed: '답변 저장', failed: '처리 실패', interrupted: '응답 중단' })[status] || '상태 미확인';
+    const fieldLabels = { symptom: '증상', occurred_at: '발생 시각', error_message: '오류 메시지', environment: '사용 환경' };
+    const fieldStatusLabels = { unmentioned: '미언급', none: '없음', unknown: '모름', provided: '값 있음' };
+    const detailStale = computed(() => detail.value && (detailLoading.value || !!detailError.value || detail.value.inquiry_id !== selectedId.value));
+    const previousEvidence = computed(() => !!detail.value?.evidence_request_id && detail.value.evidence_is_current === false);
+    const intakeRows = computed(() => Object.entries(fieldLabels).map(([key, label]) => {
+      const field = detail.value?.intake?.fields?.[key] || {};
+      const status = Object.hasOwn(fieldStatusLabels, field.status) ? field.status : 'unmentioned';
+      return { key, label, status, statusLabel: fieldStatusLabels[status], evidence: typeof field.evidence === 'string' ? field.evidence : '',
+        text: status === 'provided' ? field.value : { unmentioned: '아직 전달되지 않은 정보', none: '사용자가 없다고 답함', unknown: '사용자가 모른다고 답함' }[status] };
+    }));
+    const missingLabels = computed(() => intakeRows.value.filter(field => field.status === 'unmentioned').map(field => field.label));
+    const observations = computed(() => Array.isArray(detail.value?.observations) ? detail.value.observations : []);
+    const messages = computed(() => Array.isArray(detail.value?.messages) ? detail.value.messages : []);
+    const requests = computed(() => Array.isArray(detail.value?.requests) ? [...detail.value.requests].reverse() : []);
+    const validationLabel = computed(() => ({ passed: '규칙 검증 통과', fallback: '추가 확인 필요 · 제한된 안내 제공' })[detail.value?.validation?.status] || '검증 결과 없음');
+    const validationErrors = computed(() => Array.isArray(detail.value?.validation?.errors) ? detail.value.validation.errors : []);
+    const documentGroups = computed(() => [{ key: 'retrieval', label: '사용자 안내 자료', audience: 'user' },
+      { key: 'operator_retrieval', label: '운영자 확인 자료', audience: 'operator' }].map(group => {
+        const result = detail.value?.[group.key];
+        // 운영자 자료를 사용자 안내와 분리한다. 문서 본문은 항상 보간 텍스트로만 렌더링한다.
+        return { ...group, result, documents: result?.status === 'ok' && Array.isArray(result?.documents)
+          ? result.documents.filter(document => document && document.audience === group.audience) : [] };
+      }));
+    function retrievalLabel(status) {
+      return { ok: '검색된 문서입니다. 적용 여부는 담당자가 확인해주세요.', no_match: '관련 문서 근거가 없습니다.', error: '검색에 실패했습니다. 문서 없음과 구분하여 검색 기능을 확인해주세요.' }[status] || '저장된 검색 결과가 없습니다.';
+    }
+    function formatDate(value) {
+      if (!value) return '기록 없음';
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('ko-KR', { hour12: false });
+    }
+    const metric = value => typeof value === 'number' && Number.isFinite(value) ? value + '%' : '미확인';
+    const formatScore = value => typeof value === 'number' && Number.isFinite(value) ? value.toFixed(3) : '미확인';
+    const elapsed = value => typeof value === 'number' && Number.isFinite(value) ? value.toFixed(2) + '초' : '미확인';
+
+    async function loadList(nextOffset = 0) {
+      const sequence = ++listSequence;
+      listLoading.value = true;
+      listError.value = '';
+      const params = new URLSearchParams({ limit: String(limit), offset: String(Math.max(0, nextOffset)) });
+      if (statusFilter.value) params.set('status', statusFilter.value);
+      try {
+        const response = await fetch('/admin/inquiries?' + params);
+        if (!response.ok) throw new Error('접수 목록을 불러오지 못했습니다. 서버 상태를 확인하고 다시 조회해주세요.');
+        const data = await response.json();
+        if (!Array.isArray(data.items) || typeof data.has_more !== 'boolean') throw new Error('접수 목록 응답 형식을 확인할 수 없습니다.');
+        // 상태 필터/페이지가 빠르게 바뀌어도 늦게 도착한 이전 응답이 새 목록을 덮지 않는다.
+        if (sequence !== listSequence) return;
+        items.value = data.items;
+        offset.value = data.offset;
+        hasMore.value = data.has_more;
+      } catch (error) {
+        if (sequence === listSequence) listError.value = error instanceof TypeError ? '서버에 연결할 수 없습니다.' : error.message;
+      } finally {
+        if (sequence === listSequence) listLoading.value = false;
+      }
+    }
+    function refreshList() { return loadList(offset.value); }
+    function changeFilter() { return loadList(0); }
+    async function selectInquiry(inquiryId) {
+      if (!inquiryId) return;
+      const sequence = ++detailSequence;
+      selectedId.value = inquiryId;
+      detailLoading.value = true;
+      detailError.value = '';
+      try {
+        const response = await fetch('/admin/inquiries/' + encodeURIComponent(inquiryId));
+        if (response.status === 404) throw new Error('선택한 문의를 찾지 못했습니다. 목록을 새로고침해주세요.');
+        if (!response.ok) throw new Error('문의 상세를 불러오지 못했습니다. 서버 상태를 확인하고 다시 조회해주세요.');
+        const data = await response.json();
+        if (data.inquiry_id !== inquiryId) throw new Error('선택한 문의와 응답이 일치하지 않습니다.');
+        // 상세 원본을 수정하거나 별도 LLM으로 요약하지 않는다. 저장된 접수·근거를 보여준다.
+        if (sequence === detailSequence) detail.value = data;
+      } catch (error) {
+        if (sequence === detailSequence) detailError.value = error instanceof TypeError ? '서버에 연결할 수 없습니다.' : error.message;
+      } finally {
+        if (sequence === detailSequence) detailLoading.value = false;
+      }
+    }
+    loadList(0);
+    return { items, limit, offset, hasMore, statusFilter, listLoading, listError, selectedId,
+      detail, detailLoading, detailError, detailStale, previousEvidence, intakeRows, missingLabels,
+      observations, messages, requests, validationLabel, validationErrors, documentGroups,
+      statusLabel, retrievalLabel, formatDate, metric, formatScore, elapsed, loadList,
+      refreshList, changeFilter, selectInquiry };
+  },
+}).mount('#app');
+</script>
+</body>
+</html>

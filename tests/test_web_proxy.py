@@ -109,6 +109,42 @@ class WebProxyTests(unittest.TestCase):
                 self.assertEqual(self.requests[-1].url.path, "/threads/t-web-123")
                 self.assert_resources_closed()
 
+    def test_admin_page_serves_local_html(self):
+        result = self.browser.get("/admin")
+        self.assertEqual(result.status_code, 200)
+        self.assertIn("문의 접수 관리", result.text)
+        self.assertIn("/admin/inquiries", result.text)
+        self.assertEqual(self.requests, [])
+
+    def test_admin_list_forwards_pagination_filter_and_validation_errors(self):
+        for status in (200, 422):
+            with self.subTest(status=status):
+                payload = {"items": [], "limit": 20, "offset": 40, "has_more": False} if status == 200 else {"detail": "잘못된 상태"}
+                self.handler = lambda request: self.response(status, payload=payload)
+                params = {"limit": "20", "offset": "40", "status": "failed" if status == 200 else "invalid"}
+
+                result = self.browser.get("/admin/inquiries", params=params)
+
+                self.assertEqual(result.status_code, status)
+                self.assertEqual(result.json(), payload)
+                self.assertEqual(self.requests[-1].url.path, "/admin/inquiries")
+                self.assertEqual(dict(self.requests[-1].url.params), params)
+                self.assert_resources_closed()
+
+    def test_admin_detail_preserves_stale_evidence_and_404_status(self):
+        for status in (200, 404):
+            with self.subTest(status=status):
+                payload = {"inquiry_id": "inq-1", "status": "failed", "evidence_request_id": "previous",
+                           "evidence_is_current": False} if status == 200 else {"detail": "문의 없음"}
+                self.handler = lambda request: self.response(status, payload=payload)
+
+                result = self.browser.get("/admin/inquiries/inq-1")
+
+                self.assertEqual(result.status_code, status)
+                self.assertEqual(result.json(), payload)
+                self.assertEqual(self.requests[-1].url.path, "/admin/inquiries/inq-1")
+                self.assert_resources_closed()
+
     def test_stream_forwards_selection_message_and_thread(self):
         chunks = [
             b'data: {"type":"FinalAnswer","reply":"ok"}\n\n',
@@ -194,6 +230,8 @@ class WebProxyTests(unittest.TestCase):
         for method, path, kwargs in (
             ("GET", "/systems", {}),
             ("GET", "/threads/t-web-unavailable", {}),
+            ("GET", "/admin/inquiries", {}),
+            ("GET", "/admin/inquiries/inq-unavailable", {}),
             ("GET", "/chat/stream", {"params": {"message": "로그인 지연"}}),
             ("POST", "/chat", {"json": {"message": "로그인 지연"}}),
         ):

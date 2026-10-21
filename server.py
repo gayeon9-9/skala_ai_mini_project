@@ -25,6 +25,9 @@ from pydantic import BaseModel, Field, ValidationError, field_validator
 
 from agent.chat_service import ChatService, inquiry_store
 from agent.inquiry_store import InquiryConflict
+from fastapi import Query
+from typing import Literal
+from agent.inquiry_summary import inquiry_detail, inquiry_list_item
 
 from agent.deps import SupervisorDeps
 from agent.fake_llm import FastLLM, QualityLLM
@@ -119,6 +122,8 @@ async def lifespan(app: FastAPI):
         retriever=retriever,
     )
     inquiry_store(deps).recover_interrupted()  # 이전 프로세스에서 중단된 접수를 재시도 가능하게 한다.
+    from agent.observability import runtime_context
+    deps.trace_context = runtime_context(deps)
     app.state.deps = deps
     app.state.graph = build_graph(deps) if deps.version == "v2" else None
     app.state.instance_id = id(deps)
@@ -142,6 +147,30 @@ app = FastAPI(lifespan=lifespan)
 @app.exception_handler(InquiryConflict)
 async def inquiry_conflict(_request: Request, exc: InquiryConflict):
     return JSONResponse({"detail": str(exc)}, status_code=409)
+
+
+@app.get("/admin/inquiries")
+async def admin_inquiries(
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    status: Literal["processing", "completed", "failed", "interrupted"] | None = None,
+):
+    """로컬 시연용 읽기 목록. 사내 배포 전에는 인증·관리자 권한 검사가 필요하다."""
+    store = inquiry_store(app.state.deps)
+    rows = store.list_inquiries(limit=limit + 1, offset=offset, status=status)
+    # 하나를 더 조회해 다음 페이지 존재를 표시한다. 소규모 로컬 데모에서만 개별
+    # 상세를 조회하며, 운영 규모가 커지면 count/요약 컬럼을 SQL 집계로 옮길 수 있다.
+    items = [inquiry_list_item(store.get_inquiry(row["inquiry_id"])) for row in rows[:limit]]
+    return {"items": items, "limit": limit, "offset": offset, "has_more": len(rows) > limit}
+
+
+@app.get("/admin/inquiries/{inquiry_id}")
+async def admin_inquiry_detail(inquiry_id: str):
+    """저장된 근거와 문의를 읽기만 한다. 조회 중 AI를 다시 호출하거나 조치하지 않는다."""
+    inquiry = inquiry_store(app.state.deps).get_inquiry(inquiry_id)
+    if inquiry is None:
+        raise HTTPException(status_code=404, detail="저장된 접수가 없습니다.")
+    return inquiry_detail(inquiry)
 
 
 @app.get("/threads/{thread_id}")
@@ -180,7 +209,8 @@ async def health():
             "supervisor_version": app.state.deps.version,
             "llm_backend": app.state.llm_backend,
             "fast_llm": app.state.deps.fast_llm.name,
-            "quality_llm": app.state.deps.quality_llm.name}
+            "quality_llm": app.state.deps.quality_llm.name,
+            "code_revision": (app.state.deps.trace_context or {}).get("code_revision")}
 
 
 @app.get("/version")
@@ -207,6 +237,7 @@ def _metadata(result: dict, run_id: str | None) -> dict:
         "intake": result.get("intake"),
         "retrieval": result.get("retrieval"),
         "validation": result.get("validation"),
+        "telemetry": result.get("telemetry"),
         "selected_system": result.get("selected_system"),
         "data_source": "sample" if result.get("selected_system") else None,
     }

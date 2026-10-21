@@ -102,7 +102,9 @@ def serve(args):
                 log = (runtime / f"{label}-{name}.log").open("w", encoding="utf-8")
                 logs.append(log)
                 children.append(subprocess.Popen([str(PYTHON), "-c", code], cwd=runtime / label,
-                                                 env=env, stdout=log, stderr=log, start_new_session=True))
+                                                 env={**env, "APP_REVISION": refs[label],
+                                                      "SESSION_DB_PATH": str(runtime / label / "session.db")},
+                                                 stdout=log, stderr=log, start_new_session=True))
         deadline, pending = time.monotonic() + 30, {p for pair in PORTS.values() for p in pair}
         with httpx.Client(timeout=0.5, trust_env=False) as client:
             while pending and time.monotonic() < deadline:
