@@ -9,6 +9,7 @@ import math
 import re
 
 from .system_catalog import SystemCatalogError, get_system_names
+from .answer_grounding import applicable_documents, unsupported_http_error_codes
 
 
 def _number(value):
@@ -21,11 +22,14 @@ def _same(value: float, candidates: set[float]) -> bool:
     return any(abs(value - candidate) <= 0.000001 for candidate in candidates)
 
 
-def _documents(collected, retrieval):
+def _documents(collected, retrieval, intake=None):
     collected_docs = {item["data"]["document_id"]: item["data"] for item in collected
                       if item.get("source") == "knowledge" and isinstance(item.get("data"), dict)
                       and item["data"].get("audience") == "user"
                       and isinstance(item["data"].get("document_id"), str)}
+    # 작성 문맥에서 제외한 문서는 검증 단계에서도 안내의 인용 근거로 허용하지 않는다.
+    collected_docs = {doc["document_id"]: doc
+                      for doc in applicable_documents(list(collected_docs.values()), intake)}
     if isinstance(retrieval, dict) and "documents" in retrieval:
         # 실제 사용자 검색 결과와 작성 문맥 양쪽에 존재하는 문서만 인용할 수 있다.
         searched_ids = {doc.get("document_id") for doc in retrieval.get("documents", [])
@@ -95,7 +99,8 @@ def _metric_errors(draft, selected_system, collected, docs):
 
 
 def validate_answer(draft: str, selected_system: str | None,
-                    collected: list[dict], retrieval: dict | None = None) -> dict:
+                    collected: list[dict], retrieval: dict | None = None,
+                    intake: dict | None = None) -> dict:
     """실패 이유를 한국어로 반환해 제한된 재작성과 관리자 검토에 함께 사용한다."""
     errors = []
     if not isinstance(draft, str):
@@ -107,7 +112,7 @@ def validate_answer(draft: str, selected_system: str | None,
         errors.append("답변은 30자 이상이며 1) 또는 1. 번호 목록을 포함해야 합니다.")
 
     citations = list(dict.fromkeys(re.findall(r"\[([A-Za-z][A-Za-z0-9_-]*:[A-Za-z0-9:_-]+)\]", draft)))
-    docs = _documents(collected, retrieval)
+    docs = _documents(collected, retrieval, intake)
     if selected_system:
         target_text = re.sub(r"\[[A-Za-z][A-Za-z0-9_-]*:[A-Za-z0-9:_-]+\]", "", draft)
         mentioned = set(re.findall(r"(?<![A-Za-z0-9_-])([A-Za-z0-9][A-Za-z0-9_-]*-(?:service|\d+))(?![A-Za-z0-9_-])", target_text, re.I))
@@ -130,11 +135,20 @@ def validate_answer(draft: str, selected_system: str | None,
 
     for citation in citations:
         if citation not in docs:
-            errors.append(f"인용 [{citation}]은 이번 사용자 검색 결과에 없습니다.")
+            if citation in _documents(collected, retrieval):
+                errors.append(f"인용 [{citation}]은 현재 접수에 적용할 작성 근거에서 제외됐습니다.")
+            else:
+                errors.append(f"인용 [{citation}]은 이번 사용자 검색 결과에 없습니다.")
     if docs and not any(citation in docs for citation in citations):
         errors.append("검색 문서를 사용한 답변에는 실제 문서 ID 인용이 필요합니다.")
 
     errors.extend(_metric_errors(draft, selected_system, collected, docs))
+    # 출처가 맞아도 문서의 오류 사례가 이번 사용자에게 발생한 것은 아니다.
+    # 기존의 제한된 재작성→fallback 흐름으로 돌려 검증 전 안내가 노출되지 않게 한다.
+    unsupported = unsupported_http_error_codes(draft, intake)
+    if unsupported:
+        errors.append("접수된 오류 메시지에서 확인되지 않은 HTTP 오류 코드는 안내에서 제외해야 합니다: "
+                      + ", ".join(sorted(unsupported)))
     for sentence in re.split(r"[.!?\n,;]+", draft):
         uncertain = re.search(
             r"(?:확정|확인|단정)(?:되지|하지)\s*(?:않|못)|(?:확정|확인|단정)할\s*수\s*없"

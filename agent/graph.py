@@ -369,11 +369,27 @@ async def write_node(state: AgentState, deps: SupervisorDeps) -> dict:
             if field.get("status") != "unmentioned":
                 value = field.get("value") or {"none": "없음", "unknown": "모름"}.get(field.get("status"), "미확인")
                 write_query += f"\n{labels.get(key, key)}: {value}"
-    draft, usage = await deps.quality_llm.write(
-        write_query, state.get("collected", []),
-        attempt, state.get("validation_feedback"),
-        # 검증 전 문장은 전송하지 않는다. 진행 단계 이벤트와 저장된 최종 답변만 공개한다.
-        on_token=None)
+    write_context = list(state.get("collected", []))
+    if state.get("selected_system") is not None:
+        # 작성용 복사본에 검증된 접수 상태를 전달한다. 공유 collected를 수정하면
+        # 재작성마다 같은 접수 항목이 쌓이고 저장된 검색 근거까지 달라질 수 있다.
+        write_context.append({"source": "intake", "data": state.get("intake", {})})
+    from .answer_generation import clean_internal_annotations, evidence_fallback, user_documents
+    from .answer_grounding import applicable_documents
+    documents = user_documents(write_context)
+    intake = state.get("intake") if state.get("selected_system") is not None else None
+    if documents and not applicable_documents(documents, intake):
+        # 검색은 성공했지만 적용할 문서가 전부 제외됐다면 조치를 추측시키지 않는다.
+        # 고정된 제한 안내도 아래 validate 노드를 거쳐 관측 수치·대상 검사를 받는다.
+        draft = evidence_fallback(state.get("selected_system"), write_context, intake=intake)
+        usage = {"usd": 0}
+    else:
+        draft, usage = await deps.quality_llm.write(
+            write_query, write_context,
+            attempt, state.get("validation_feedback"),
+            # 검증 전 문장은 전송하지 않는다. 진행 단계 이벤트와 저장된 최종 답변만 공개한다.
+            on_token=None)
+    draft = clean_internal_annotations(draft)
     return {"draft": draft, "last_prompt": usage.get("prompt"),
             "cost_usd": _cost(state, usage),
             "events": state["events"] + [{"type": "DraftWritten", "attempt": attempt,
@@ -388,7 +404,8 @@ async def validate_node(state: AgentState, deps: SupervisorDeps) -> dict:
     if state.get("selected_system") is not None:
         from .answer_validation import validate_answer
         checked = validate_answer(draft, state["selected_system"],
-                                  state.get("collected", []), state.get("retrieval", {}))
+                                  state.get("collected", []), state.get("retrieval", {}),
+                                  intake=state.get("intake", {}))
     else:
         # 선택 없는 실습용 경로는 이전 형식 검사를 유지한다.
         valid = len(draft) >= 30 and "1)" in draft
@@ -413,7 +430,8 @@ async def finalize_node(state: AgentState, deps: SupervisorDeps) -> dict:
     final = state["draft"]
     if state.get("validation", {}).get("status") == "fallback":
         from .answer_generation import evidence_fallback
-        final = evidence_fallback(state.get("selected_system"), state.get("collected", []))
+        final = evidence_fallback(state.get("selected_system"), state.get("collected", []),
+                                  intake=state.get("intake"))
     questions = state.get("intake", {}).get("questions", [])
     if questions:
         final += "\n\n추가 확인: " + " ".join(questions)

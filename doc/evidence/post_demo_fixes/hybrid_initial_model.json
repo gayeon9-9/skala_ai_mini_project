@@ -1,0 +1,174 @@
+{
+  "created_at": "2026-10-21T07:24:57.153159+00:00",
+  "synthetic": true,
+  "scope": "실제 Ollama 생성 모델 1건 + MCP 샘플 조회 + 선택한 실제 임베딩의 호환성 확인. 일반 답변 정확도·운영 장애 진단 성능 평가가 아닙니다.",
+  "query": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+  "selected_system": "auth-service",
+  "status": "completed_with_fallback",
+  "models": {
+    "fast": "qwen3:0.6b",
+    "quality": "qwen3:8b",
+    "embedding_provider": "openai",
+    "embedding": "text-embedding-3-small"
+  },
+  "min_score": 0.3,
+  "langsmith_enabled": false,
+  "timed_out": false,
+  "timeout_seconds": 180,
+  "errors": [
+    "접수된 오류 메시지에서 확인되지 않은 HTTP 오류 코드는 안내에서 제외해야 합니다: 504"
+  ],
+  "cleanup_errors": [],
+  "runtime_context": {
+    "code_revision": "adce28f0b2b28a38549e471a102a567dcf3a4f36",
+    "code_dirty": true,
+    "catalog_version": "2026-10-21-v1",
+    "fast_model": "ollama:qwen3:0.6b",
+    "quality_model": "ollama:qwen3:8b",
+    "embedding_provider": "openai",
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dimensions": 1536,
+    "embedding_query_format": "raw"
+  },
+  "retrieval_health": {
+    "status": "ok",
+    "embedding": {
+      "provider": "openai",
+      "model": "text-embedding-3-small",
+      "dimensions": 1536,
+      "query_format": "raw",
+      "cache_revision": "openai-v1"
+    },
+    "catalog_version": "2026-10-21-v1",
+    "document_count": 10
+  },
+  "graph_wall_seconds": 141.43678,
+  "result": {
+    "final": "1) 샘플 점검: auth-service: 상태=degraded, CPU 75.9%, 메모리 59.9%, 알림 2건\n2) 문서 확인: 로그인 후 화면이 넘어가지 않을 때 [faq:login]; 브라우저에서 업무 화면이 하얗거나 비어 보일 때 [faq:browser]; 검색 문서 [faq:connectivity]. 답변 검증을 마치지 못해 구체적인 조치 안내는 보류합니다.\n3) 추가 확인: 실습용 샘플 결과만으로 실제 원인을 확정할 수 없습니다. 담당자가 실제 오류 로그와 사용자 환경을 확인해야 합니다.",
+    "intake": {
+      "fields": {
+        "symptom": {
+          "status": "provided",
+          "value": "로그인 후 화면이 넘어가지 않아요",
+          "evidence": "로그인 후 화면이 넘어가지 않아요"
+        },
+        "occurred_at": {
+          "status": "provided",
+          "value": "오전 9시",
+          "evidence": "오전 9시"
+        },
+        "error_message": {
+          "status": "none",
+          "value": null,
+          "evidence": "오류 메시지는 없어요"
+        },
+        "environment": {
+          "status": "provided",
+          "value": "윈도우 크롬",
+          "evidence": "윈도우 크롬"
+        }
+      },
+      "questions": [],
+      "missing_fields": [],
+      "asked_fields": [],
+      "last_question_field": null,
+      "source": "model",
+      "warnings": [],
+      "usage": {
+        "model": "ollama:qwen3:0.6b",
+        "tokens": 702,
+        "usd": 0.000105
+      }
+    },
+    "unvalidated_draft": "1. **샘플 점검**  \n   - [faq:login]에 따르면, 로그인 후 화면 전환 실패 시 사용자 확인 절차는 다음과 같습니다:  \n     - 발생 시각(오전 9시), 사용 환경(윈도우 크롬), 오류 메시지(없음)를 기록했습니다.  \n     - 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 재시도해야 합니다.  \n     - 다른 브라우저 또는 시크릿 창에서 동일한 현상이 발생하는지 확인해야 합니다.  \n     - 현재 사용자 요청에 따라 이 절차를 수행할 수 없습니다.  \n\n2. **문서 안내**  \n   - [faq:login]에 따르면, 로그인 후 화면 전환 실패 시 **브라우저 문제** 또는 **서버 응답 지연**이 원인일 수 있습니다.  \n     - 샘플 모니터링 데이터에서 `auth-service`의 CPU(75.9%) 및 메모리 사용률(59.9%)이 높고, `p95 latency 2.4s`와 `connection pool 92% used` 알림이 발생했습니다. 이는 서버 처리 지연 가능성이 있습니다.  \n     - **HTTP 504 Gateway Timeout**은 확인되지 않았으나, 서버 응답 지연이 화면 전환 실패로 이어질 수 있습니다.  \n   - [faq:browser]에 따르면, 브라우저 환경 문제로 인해 화면이 비어 보일 수 있으나, 사용자가 다른 브라우저를 시도하지 않았습니다.  \n\n3. **추가 확인 순서**  \n   - [faq:login]에 따라 **다른 브라우저 또는 시크릿 창에서 재시도**를 권장합니다.  \n   - [faq:connectivity]에 따르면, 네트워크 환경 또는 서버 응답 지연이 원인일 수 있으나, 사용자가 추가 확인을 수행하지 않았습니다.  \n   - **모니터링 데이터**는 서버 상태를 반영하지만, 실제 장애 원인을 확정할 수 없습니다.  \n\n**결론**:  \n- 사용자가 제공한 정보는 [faq:login]과 [faq:connectivity]에 해당하며, **서버 응답 지연** 또는 **브라우저 문제**가 원인일 수 있습니다.  \n- 추가 확인이 필요합니다.",
+    "validation": {
+      "status": "fallback",
+      "errors": [
+        "접수된 오류 메시지에서 확인되지 않은 HTTP 오류 코드는 안내에서 제외해야 합니다: 504"
+      ],
+      "citations": [
+        "faq:login",
+        "faq:browser",
+        "faq:connectivity"
+      ]
+    },
+    "validation_attempts": 3,
+    "retrieval": {
+      "status": "ok",
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.658141,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.425203,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.352657,
+          "audience": "user"
+        }
+      ]
+    },
+    "operator_retrieval": {
+      "status": "ok",
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.461712,
+          "audience": "operator"
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.337731,
+          "audience": "operator"
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.334202,
+          "audience": "operator"
+        }
+      ]
+    },
+    "telemetry": {
+      "code_revision": "adce28f0b2b28a38549e471a102a567dcf3a4f36",
+      "code_dirty": true,
+      "catalog_version": "2026-10-21-v1",
+      "fast_model": "ollama:qwen3:0.6b",
+      "quality_model": "ollama:qwen3:8b",
+      "embedding_provider": "openai",
+      "embedding_model": "text-embedding-3-small",
+      "embedding_dimensions": 1536,
+      "embedding_query_format": "raw",
+      "inquiry_id": "f9434c69-574b-46e5-8b1f-8d55be9740b2",
+      "request_id": "8bc5ebd8-6a17-4374-9282-01303be8fedb",
+      "thread_id": "synthetic-local-93628bf4-cb6b-4820-ac49-3858848ae044",
+      "selected_system": "auth-service",
+      "data_source": "sample",
+      "validation_status": "fallback",
+      "retrieved_document_ids": [
+        "faq:login",
+        "faq:browser",
+        "faq:connectivity"
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "processing_seconds": 141.432426,
+      "processing_scope": "graph_until_persistence",
+      "tracing_enabled": false
+    },
+    "inquiry_id": "f9434c69-574b-46e5-8b1f-8d55be9740b2",
+    "request_id": "8bc5ebd8-6a17-4374-9282-01303be8fedb"
+  },
+  "processing_seconds": 142.242605
+}

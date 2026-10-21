@@ -1,0 +1,14 @@
+{
+  "scope": "실제 모델 결과를 현재 코드의 표시 정리 함수로 다시 처리. 새 모델/API 호출이나 UI 캡처가 아님.",
+  "source_artifact": "doc/evidence/post_demo_fixes/hybrid_model.json",
+  "source_answer_sha256": "e467443695674cefba6864dd5d8715d2ec4d3518918f183a1a8b747f52bbee20",
+  "function": "agent.answer_generation.clean_internal_annotations",
+  "rendered_answer": "1. **샘플 점검**:  \n   - 선택한 대상인 `auth-service`는 샘플 모니터링 데이터에 따라 `degraded` 상태로, CPU 80.4%, 메모리 62.2% 사용 중입니다.  \n   - 알림 내용은 `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`로, 이는 시스템 성능 저하를 나타내지만, 실제 장애 원인을 확정할 수 없습니다.  \n\n2. **문서 안내**:  \n   - 사용자 증상(`로그인 후 화면이 넘어가지 않음`)에 해당하는 문서는 [faq:login]입니다.  \n     - **확인 사항**:  \n       - 오류 메시지가 없으므로 \"없음\"으로 기록합니다. [faq:login]  \n       - 브라우저 재시도 및 다른 브라우저/시크릿 창에서의 테스트를 권장합니다. [faq:login]  \n       - 모니터링 상태와 화면 문제는 별도로 확인이 필요합니다. [faq:browser]  \n\n3. **추가 확인**:  \n   - 샘플 데이터로 실제 시스템 상태를 판단할 수 없으므로, 사용자가 로그인 후 화면 전환 실패 시 보이는 구체적인 현상(예: 로딩 상태 지속, 특정 페이지만 빈 화면)을 추가로 제공해야 합니다.  \n   - 브라우저 캐시/확장 프로그램 간섭 가능성도 고려해, 시크릿 창에서의 테스트를 권장합니다.  \n   - HTTP 4xx/5xx 코드는 확인되지 않았으므로, 추가 오류 메시지나 네트워크 상태 확인이 필요합니다.  \n\n**근거 부족 사항**:  \n- 샘플 모니터링 데이터는 시스템 상태를 반영하지 않으므로, 실제 서버 장애 여부는 확인되지 않았습니다.  \n- 사용자 환경(크롬 버전, 확장 프로그램, 네트워크 설정)에 대한 추가 정보가 없어 정확한 원인 추정이 어렵습니다.",
+  "checks": {
+    "internal_annotation_removed": true,
+    "real_document_citations_preserved": true,
+    "unreported_504_absent": true,
+    "content_preserved_except_known_annotations": true
+  },
+  "remaining_limits": "HTTP 4xx/5xx 일반 문구나 자연어의 모든 의미를 제거·검증하는 기능은 아니다. 문서 전체 제외는 일반 안내까지 제한할 수 있다."
+}

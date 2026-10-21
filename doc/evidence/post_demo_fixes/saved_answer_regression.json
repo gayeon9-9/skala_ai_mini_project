@@ -1,0 +1,38 @@
+{
+  "scope": "최종 시연에 저장된 동일 답변/접수/문서/관측의 현재 작성문맥·검증기 회귀 확인. 모델/API 호출 없음.",
+  "baseline_commit": "adce28f0b2b28a38549e471a102a567dcf3a4f36",
+  "baseline_artifact": "doc/evidence/final_openai/admin_detail.json",
+  "baseline_validation": {
+    "status": "passed",
+    "errors": [],
+    "citations": [
+      "faq:login",
+      "faq:connectivity"
+    ]
+  },
+  "current_validation_of_same_answer": {
+    "ok": false,
+    "errors": [
+      "인용 [faq:connectivity]은 현재 접수에 적용할 작성 근거에서 제외됐습니다.",
+      "접수된 오류 메시지에서 확인되지 않은 HTTP 오류 코드는 안내에서 제외해야 합니다: 504"
+    ],
+    "citations": [
+      "faq:login",
+      "faq:connectivity"
+    ]
+  },
+  "generation_document_ids": [
+    "faq:login",
+    "faq:browser"
+  ],
+  "withheld_document_count": 1,
+  "fallback": "1) 샘플 점검: auth-service: 상태=degraded, CPU 81.6%, 메모리 62.8%, 알림 2건\n2) 문서 확인: 로그인 후 화면이 넘어가지 않을 때 [faq:login]; 브라우저에서 업무 화면이 하얗거나 비어 보일 때 [faq:browser]. 답변 검증을 마치지 못해 구체적인 조치 안내는 보류합니다.\n3) 추가 확인: 실습용 샘플 결과만으로 실제 원인을 확정할 수 없습니다. 담당자가 실제 오류 로그와 사용자 환경을 확인해야 합니다.",
+  "checks": {
+    "archived_504_advice_rejected": true,
+    "fallback_omits_504_and_withheld_citation": true,
+    "applicable_document_citations_preserved": true,
+    "original_retrieval_documents_unchanged": true,
+    "filtered_generation_documents": true,
+    "fallback_passes_current_validator": true
+  }
+}

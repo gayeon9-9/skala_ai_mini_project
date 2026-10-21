@@ -1,0 +1,169 @@
+{
+  "created_at": "2026-10-21T07:30:23.832527+00:00",
+  "synthetic": true,
+  "scope": "실제 Ollama 생성 모델 1건 + MCP 샘플 조회 + 선택한 실제 임베딩의 호환성 확인. 일반 답변 정확도·운영 장애 진단 성능 평가가 아닙니다.",
+  "query": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+  "selected_system": "auth-service",
+  "status": "completed",
+  "models": {
+    "fast": "qwen3:0.6b",
+    "quality": "qwen3:8b",
+    "embedding_provider": "openai",
+    "embedding": "text-embedding-3-small"
+  },
+  "min_score": 0.3,
+  "langsmith_enabled": false,
+  "timed_out": false,
+  "timeout_seconds": 180,
+  "errors": [],
+  "cleanup_errors": [],
+  "runtime_context": {
+    "code_revision": "adce28f0b2b28a38549e471a102a567dcf3a4f36",
+    "code_dirty": true,
+    "catalog_version": "2026-10-21-v1",
+    "fast_model": "ollama:qwen3:0.6b",
+    "quality_model": "ollama:qwen3:8b",
+    "embedding_provider": "openai",
+    "embedding_model": "text-embedding-3-small",
+    "embedding_dimensions": 1536,
+    "embedding_query_format": "raw"
+  },
+  "retrieval_health": {
+    "status": "ok",
+    "embedding": {
+      "provider": "openai",
+      "model": "text-embedding-3-small",
+      "dimensions": 1536,
+      "query_format": "raw",
+      "cache_revision": "openai-v1"
+    },
+    "catalog_version": "2026-10-21-v1",
+    "document_count": 10
+  },
+  "graph_wall_seconds": 49.474701,
+  "result": {
+    "final": "1. **샘플 점검**:  \n   - 선택한 대상인 `auth-service`는 샘플 모니터링 데이터에 따라 `degraded` 상태로, CPU 80.4%, 메모리 62.2% 사용 중입니다. [sample_monitoring]  \n   - 알림 내용은 `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`로, 이는 시스템 성능 저하를 나타내지만, 실제 장애 원인을 확정할 수 없습니다.  \n\n2. **문서 안내**:  \n   - 사용자 증상(`로그인 후 화면이 넘어가지 않음`)에 해당하는 문서는 [faq:login]입니다.  \n     - **확인 사항**:  \n       - 오류 메시지가 없으므로 \"없음\"으로 기록합니다. [faq:login]  \n       - 브라우저 재시도 및 다른 브라우저/시크릿 창에서의 테스트를 권장합니다. [faq:login]  \n       - 모니터링 상태와 화면 문제는 별도로 확인이 필요합니다. [faq:browser]  \n\n3. **추가 확인**:  \n   - 샘플 데이터로 실제 시스템 상태를 판단할 수 없으므로, 사용자가 로그인 후 화면 전환 실패 시 보이는 구체적인 현상(예: 로딩 상태 지속, 특정 페이지만 빈 화면)을 추가로 제공해야 합니다.  \n   - 브라우저 캐시/확장 프로그램 간섭 가능성도 고려해, 시크릿 창에서의 테스트를 권장합니다.  \n   - HTTP 4xx/5xx 코드는 확인되지 않았으므로, 추가 오류 메시지나 네트워크 상태 확인이 필요합니다. [confirmed_http_error_codes]  \n\n**근거 부족 사항**:  \n- 샘플 모니터링 데이터는 시스템 상태를 반영하지 않으므로, 실제 서버 장애 여부는 확인되지 않았습니다. [sample_monitoring]  \n- 사용자 환경(크롬 버전, 확장 프로그램, 네트워크 설정)에 대한 추가 정보가 없어 정확한 원인 추정이 어렵습니다.",
+    "intake": {
+      "fields": {
+        "symptom": {
+          "status": "provided",
+          "value": "로그인 후 화면이 넘어가지 않아요",
+          "evidence": "로그인 후 화면이 넘어가지 않아요"
+        },
+        "occurred_at": {
+          "status": "provided",
+          "value": "오전 9시",
+          "evidence": "오전 9시"
+        },
+        "error_message": {
+          "status": "none",
+          "value": null,
+          "evidence": "오류 메시지는 없어요"
+        },
+        "environment": {
+          "status": "provided",
+          "value": "윈도우 크롬",
+          "evidence": "윈도우 크롬"
+        }
+      },
+      "questions": [],
+      "missing_fields": [],
+      "asked_fields": [],
+      "last_question_field": null,
+      "source": "model",
+      "warnings": [],
+      "usage": {
+        "model": "ollama:qwen3:0.6b",
+        "tokens": 702,
+        "usd": 0.000105
+      }
+    },
+    "unvalidated_draft": "1. **샘플 점검**:  \n   - 선택한 대상인 `auth-service`는 샘플 모니터링 데이터에 따라 `degraded` 상태로, CPU 80.4%, 메모리 62.2% 사용 중입니다. [sample_monitoring]  \n   - 알림 내용은 `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`로, 이는 시스템 성능 저하를 나타내지만, 실제 장애 원인을 확정할 수 없습니다.  \n\n2. **문서 안내**:  \n   - 사용자 증상(`로그인 후 화면이 넘어가지 않음`)에 해당하는 문서는 [faq:login]입니다.  \n     - **확인 사항**:  \n       - 오류 메시지가 없으므로 \"없음\"으로 기록합니다. [faq:login]  \n       - 브라우저 재시도 및 다른 브라우저/시크릿 창에서의 테스트를 권장합니다. [faq:login]  \n       - 모니터링 상태와 화면 문제는 별도로 확인이 필요합니다. [faq:browser]  \n\n3. **추가 확인**:  \n   - 샘플 데이터로 실제 시스템 상태를 판단할 수 없으므로, 사용자가 로그인 후 화면 전환 실패 시 보이는 구체적인 현상(예: 로딩 상태 지속, 특정 페이지만 빈 화면)을 추가로 제공해야 합니다.  \n   - 브라우저 캐시/확장 프로그램 간섭 가능성도 고려해, 시크릿 창에서의 테스트를 권장합니다.  \n   - HTTP 4xx/5xx 코드는 확인되지 않았으므로, 추가 오류 메시지나 네트워크 상태 확인이 필요합니다. [confirmed_http_error_codes]  \n\n**근거 부족 사항**:  \n- 샘플 모니터링 데이터는 시스템 상태를 반영하지 않으므로, 실제 서버 장애 여부는 확인되지 않았습니다. [sample_monitoring]  \n- 사용자 환경(크롬 버전, 확장 프로그램, 네트워크 설정)에 대한 추가 정보가 없어 정확한 원인 추정이 어렵습니다.",
+    "validation": {
+      "status": "passed",
+      "errors": [],
+      "citations": [
+        "faq:login",
+        "faq:browser"
+      ]
+    },
+    "validation_attempts": 1,
+    "retrieval": {
+      "status": "ok",
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.658141,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.425203,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.352657,
+          "audience": "user"
+        }
+      ]
+    },
+    "operator_retrieval": {
+      "status": "ok",
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.461712,
+          "audience": "operator"
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.337731,
+          "audience": "operator"
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.334202,
+          "audience": "operator"
+        }
+      ]
+    },
+    "telemetry": {
+      "code_revision": "adce28f0b2b28a38549e471a102a567dcf3a4f36",
+      "code_dirty": true,
+      "catalog_version": "2026-10-21-v1",
+      "fast_model": "ollama:qwen3:0.6b",
+      "quality_model": "ollama:qwen3:8b",
+      "embedding_provider": "openai",
+      "embedding_model": "text-embedding-3-small",
+      "embedding_dimensions": 1536,
+      "embedding_query_format": "raw",
+      "inquiry_id": "7992bf5b-22dc-4568-af59-38dbf65d6398",
+      "request_id": "c810508e-96c3-4783-81eb-1e784739e0d1",
+      "thread_id": "synthetic-local-490ed5f2-6ea0-433f-bca0-1ea410ee1fab",
+      "selected_system": "auth-service",
+      "data_source": "sample",
+      "validation_status": "passed",
+      "retrieved_document_ids": [
+        "faq:login",
+        "faq:browser",
+        "faq:connectivity"
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "processing_seconds": 49.469294,
+      "processing_scope": "graph_until_persistence",
+      "tracing_enabled": false
+    },
+    "inquiry_id": "7992bf5b-22dc-4568-af59-38dbf65d6398",
+    "request_id": "c810508e-96c3-4783-81eb-1e784739e0d1"
+  },
+  "processing_seconds": 50.526152
+}

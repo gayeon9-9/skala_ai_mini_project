@@ -7,6 +7,19 @@
 import json
 import re
 
+from .answer_grounding import applicable_documents, collected_intake, reported_http_error_codes
+
+
+def clean_internal_annotations(draft: str) -> str:
+    """모델이 출처처럼 붙인 내부 JSON 항목명만 제거한다.
+
+    실제 문서 ID·오류 코드·문장 내용은 그대로 두어 이후 검증을 피할 수 없게 한다.
+    예를 들어 [confirmed_http_error_codes]는 사용자가 열 수 있는 문서 출처가 아니다.
+    """
+    return re.sub(
+        r"[ \t]*\[(?:sample_monitoring|confirmed_http_error_codes|verified_intake|"
+        r"applicability_status|withheld_document_count)\]", "", draft)
+
 
 def user_documents(collected: list[dict]) -> list[dict]:
     return [item["data"] for item in collected
@@ -28,6 +41,9 @@ def is_rag_answer(collected: list[dict]) -> bool:
 def build_answer_prompt(query: str, collected: list[dict], feedback: str | None = None) -> tuple[str, str]:
     """Ollama/OpenAI에 같은 근거·인용 규칙을 전달한다. 레거시 경로도 지원한다."""
     rag = is_rag_answer(collected)
+    intake = collected_intake(collected)
+    searched_docs = user_documents(collected)
+    docs = applicable_documents(searched_docs, intake)
     system = (
         "당신은 사용자 IT 헬프데스크 안내를 작성한다. 한국어로 1) 샘플 점검, "
         "2) 문서 안내, 3) 추가 확인 순서로 답하라. 선택한 대상만 설명하라. "
@@ -45,6 +61,17 @@ def build_answer_prompt(query: str, collected: list[dict], feedback: str | None 
             "검색 상태 no_match는 관련 문서 없음, error는 검색 실패로 정확히 구분하라. "
             "문서가 없거나 검색 실패이면 조치 방법을 추측하지 말고 근거 부족과 추가 확인을 안내하라."
         )
+    if intake is not None:
+        system += (
+            " verified_intake는 사용자 원문을 확인한 누적 접수 정보다. "
+            "문서에 여러 오류 사례가 있어도 이번 증상에 해당하는 안내만 선택하고 모든 사례를 나열하지 마라. "
+            "HTTP 4xx/5xx 코드는 confirmed_http_error_codes에 있는 것만 언급하라. "
+            "문서나 샘플 알림의 오류 코드를 사용자에게 표시된 오류로 옮기지 마라. "
+            "오류 메시지 상태가 none이면 사용자가 오류 메시지가 없다고 했음을 존중하고, "
+            "unknown/unmentioned이면 구체적인 오류를 추측하지 말고 확인이 필요하다고 안내하라."
+            " applicability_status가 no_applicable_documents이면 검색 결과는 있으나 "
+            "현재 접수에 적용할 문서를 확인하지 못했다고 안내하라. 제외된 문서 내용은 추측하지 마라."
+        )
     facts = []
     for item in collected:
         source, data = item.get("source"), item.get("data")
@@ -59,8 +86,13 @@ def build_answer_prompt(query: str, collected: list[dict], feedback: str | None 
         "retrieval_status": retrieval_status(collected),
         "user_documents": [{"document_id": doc.get("document_id"), "title": doc.get("title"),
                             "text": doc.get("text", ""), "path": doc.get("path")}
-                           for doc in user_documents(collected)],
+                           for doc in docs],
     }
+    if intake is not None:
+        context["verified_intake"] = intake.get("fields", {})
+        context["confirmed_http_error_codes"] = sorted(reported_http_error_codes(intake))
+        context["applicability_status"] = "no_applicable_documents" if searched_docs and not docs else "ok"
+        context["withheld_document_count"] = len(searched_docs) - len(docs)
     user = json.dumps(context, ensure_ascii=False)
     if feedback:
         user += "\n\n이전 초안 검증 결과(수정에 반영):\n" + feedback
@@ -86,7 +118,7 @@ def _monitoring_lines(selected_system: str | None, collected: list[dict]) -> lis
     return lines
 
 
-def evidence_fallback(selected_system: str | None, collected: list[dict]) -> str:
+def evidence_fallback(selected_system: str | None, collected: list[dict], intake: dict | None = None) -> str:
     """검증 실패 시 모델을 다시 믿지 않고 확인된 최소 정보만 반환한다.
 
     문서 본문의 조치 절차까지 복사하면 실패한 답변과 같은 위험이 생길 수 있으므로
@@ -95,11 +127,17 @@ def evidence_fallback(selected_system: str | None, collected: list[dict]) -> str
     observations = _monitoring_lines(selected_system, collected)
     target = f"{selected_system} " if selected_system else ""
     lines = ["1) 샘플 점검: " + (" · ".join(observations) if observations else f"{target}확인된 점검 데이터가 없습니다.")]
-    docs = user_documents(collected)
+    searched_docs = user_documents(collected)
+    docs = applicable_documents(searched_docs, intake)
     if docs:
-        lines.append("2) 문서 확인: " + "; ".join(
-            f"{doc.get('title', '제목 없음')} [{doc['document_id']}]" for doc in docs if doc.get("document_id"))
+        # 대체 답변에서도 같은 적용 조건을 사용해 제외된 오류 제목이 재등장하지
+        # 않게 한다. 검색 원본과 전체 출처는 저장된 검색 결과에서 그대로 확인한다.
+        references = [f"{doc.get('title', '제목 없음')} [{doc['document_id']}]"
+                      for doc in docs if doc.get("document_id")]
+        lines.append("2) 문서 확인: " + "; ".join(references)
                      + ". 답변 검증을 마치지 못해 구체적인 조치 안내는 보류합니다.")
+    elif searched_docs:
+        lines.append("2) 문서 확인: 검색 결과는 있으나 현재 접수에 적용할 문서를 확인하지 못해 구체적인 조치 안내는 보류합니다.")
     elif retrieval_status(collected) == "error":
         lines.append("2) 문서 확인: 검색에 실패하여 문서 근거를 확인하지 못했습니다.")
     else:
@@ -114,7 +152,8 @@ def deterministic_rag_answer(query: str, collected: list[dict]) -> str:
     selected_system = selected.group(1) if selected else None
     observations = _monitoring_lines(selected_system, collected)
     lines = ["1) 샘플 점검: " + (" · ".join(observations) if observations else "확인된 점검 데이터가 없습니다.")]
-    docs = user_documents(collected)
+    searched_docs = user_documents(collected)
+    docs = applicable_documents(searched_docs, collected_intake(collected))
     if docs:
         # 고정 로컬 FAQ의 검색 본문을 실제로 답변에 사용하고 해당 문서 ID를 붙인다.
         advice = []
@@ -122,6 +161,8 @@ def deterministic_rag_answer(query: str, collected: list[dict]) -> str:
             body = " ".join(line.strip().lstrip("# ") for line in doc.get("text", "").splitlines() if line.strip())
             advice.append(f"{doc.get('title', '사용자 안내')}: {body} [{doc['document_id']}]")
         lines.append("2) 문서 안내: " + "\n".join(advice))
+    elif searched_docs:
+        lines.append("2) 문서 안내: 검색 결과는 있으나 현재 접수에 적용할 문서를 확인하지 못했습니다. 담당자 확인이 필요합니다.")
     elif retrieval_status(collected) == "error":
         lines.append("2) 문서 안내: 검색에 실패하여 문서 근거를 확인하지 못했습니다. 담당자 확인이 필요합니다.")
     else:

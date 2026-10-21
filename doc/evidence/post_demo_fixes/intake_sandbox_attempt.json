@@ -1,0 +1,42 @@
+{
+  "created_at": "2026-10-21T07:14:28.182664+00:00",
+  "synthetic": true,
+  "model": "qwen3:0.6b",
+  "query": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+  "previous": {},
+  "baseline_commit": "adce28f0b2b28a38549e471a102a567dcf3a4f36",
+  "head_commit": "adce28f0b2b28a38549e471a102a567dcf3a4f36",
+  "new_intake_llm_sha256": "01caa0e041d00b9f3c905c920b7fc94a87d1da3d8a9000c80db8d1091816e5a3",
+  "conditions": {
+    "endpoint": "http://127.0.0.1:11434/api/chat",
+    "temperature": 0.0,
+    "think": false,
+    "num_predict": 2048,
+    "stream": false,
+    "repetitions": 1,
+    "order": [
+      "before",
+      "after"
+    ],
+    "langsmith_enabled": false,
+    "dotenv_loaded": false,
+    "generation_adapter": "current OllamaFastLLM._chat, same for both"
+  },
+  "scope": "동일 합성 문의 한 건의 접수 추출 전후 확인. 스키마와 지시문이 함께 바뀌며 일반 정확도 개선율이나 공정한 속도 벤치마크가 아니다. 모델 캐시와 실행 순서는 통제하지 않았다.",
+  "results": [
+    {
+      "variant": "before",
+      "schema_sha256": "441b0661c403bad90a6dec3f7cfebe1843f1546345a0d6dbfd9ba7fe72813b49",
+      "status": "error",
+      "error_type": "ConnectError",
+      "generation_seconds": 0.018928
+    },
+    {
+      "variant": "after",
+      "schema_sha256": "3c159b8e46279e32c459ab181872e79af57781b9f5e058eaf124c3ce31fdded7",
+      "status": "error",
+      "error_type": "ConnectError",
+      "generation_seconds": 0.00328
+    }
+  ]
+}
