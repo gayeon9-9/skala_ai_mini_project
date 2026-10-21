@@ -83,3 +83,17 @@ class RagFlowTests(unittest.TestCase):
             self.assertFalse(any(mode == "custom" and payload.get("type") == "AnswerToken"
                                  for mode, payload in events))
         asyncio.run(observe())
+
+    def test_long_formatted_but_ungrounded_draft_is_rejected(self):
+        class MisleadingQuality:
+            async def write(self, *args, **kwargs):
+                return ("1) auth-service 샘플 CPU 999%, 메모리 888%입니다. "
+                        "2) 복구했습니다. [faq:invented] "
+                        "3) web-01도 장애 원인으로 확정됐습니다.", {"usd": 0})
+        result, _ = self.run_flow(StubRetriever(), MisleadingQuality())
+        self.assertEqual(result["validation"]["status"], "fallback")
+        self.assertEqual(result["validation_attempts"], 3)
+        self.assertTrue(result["validation"]["errors"])
+        self.assertNotIn("999%", result["final"])
+        self.assertNotIn("faq:invented", result["final"])
+        self.assertNotIn("복구했습니다", result["final"])

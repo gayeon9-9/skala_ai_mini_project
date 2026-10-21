@@ -382,21 +382,29 @@ async def write_node(state: AgentState, deps: SupervisorDeps) -> dict:
 
 @traceable(name="validate_node")
 async def validate_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 8 — 코드 기준 검증: 30자 이상 + 절차 번호 포함이어야 합격."""
+    """형식뿐 아니라 선택 대상·문서 인용·관측값의 일치를 검사한다."""
     draft = state["draft"]
     attempts = state.get("validation_attempts", 0) + 1
-    ok = len(draft) >= 30 and "1)" in draft
+    if state.get("selected_system") is not None:
+        from .answer_validation import validate_answer
+        checked = validate_answer(draft, state["selected_system"],
+                                  state.get("collected", []), state.get("retrieval", {}))
+    else:
+        # 선택 없는 실습용 경로는 이전 형식 검사를 유지한다.
+        valid = len(draft) >= 30 and "1)" in draft
+        checked = {"ok": valid, "errors": [] if valid else ["30자 이상과 번호 절차가 필요합니다."],
+                   "citations": []}
+    ok = checked["ok"]
     verdict = "합격" if ok else "불합격"
     exhausted = not ok and attempts >= 3
     if exhausted:
         verdict = "추가 확인 필요(검증 실패)"
-    feedback = None if ok or exhausted else (
-        f"응답이 너무 짧습니다({len(draft)}자, 최소 30자). 절차를 1) 2) 3) 번호로 "
-        f"구체적으로 설명하세요.")
-    event = {"type": "Validation", "attempt": attempts, "verdict": verdict}
+    feedback = None if ok or exhausted else "\n".join(checked["errors"])
+    event = {"type": "Validation", "attempt": attempts, "verdict": verdict,
+             "errors": checked["errors"]}
     return {"validation_attempts": attempts, "validation_feedback": feedback,
             "validation": {"status": "passed" if ok else ("fallback" if exhausted else "retry"),
-                           "errors": [] if ok else ["답변 형식 검사 실패"]},
+                           "errors": checked["errors"], "citations": checked["citations"]},
             "events": state["events"] + [event]}
 
 
