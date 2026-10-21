@@ -11,6 +11,8 @@
 import json
 import os
 from contextlib import asynccontextmanager
+from uuid import uuid4
+from starlette.background import BackgroundTask
 
 from dotenv import load_dotenv
 
@@ -19,29 +21,30 @@ load_dotenv()   # LANGCHAIN_TRACING_V2 / API_KEY / PROJECT — import보다 먼�
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, StreamingResponse
-from langsmith import traceable
-from langsmith.run_helpers import get_current_run_tree
-from pydantic import BaseModel, ValidationError, field_validator
+from pydantic import BaseModel, Field, ValidationError, field_validator
+
+from agent.chat_service import ChatService, inquiry_store
+from agent.inquiry_store import InquiryConflict
 
 from agent.deps import SupervisorDeps
 from agent.fake_llm import FastLLM, QualityLLM
 from agent.graph import build_graph
 from agent.mcp_client import MCPClient
 from agent.session_store import SqliteSessionStore
-from agent.supervisor_v1 import run_v1
 from agent.system_catalog import SystemCatalogError, get_system_names, validate_selected_system
 
 CREATION_COUNT = 0   # Wave 1 — 프로세스 내 Agent 번들 생성 횟수 (항상 1이어야 정상)
 
 
 class ChatRequest(BaseModel):   # Wave 1 — Pydantic 요청 검증
-    message: str
-    thread_id: str = "default"
+    message: str = Field(min_length=1, max_length=8000)
+    thread_id: str = Field(default="default", min_length=1, max_length=128)
+    request_id: str = Field(default_factory=lambda: str(uuid4()), min_length=1, max_length=128)
     # 기존 실습용 API와의 호환성을 위해 생략은 허용한다.
     # 새 웹 화면에서는 반드시 선택해서 보낸다. 빈 문자열은 '생략'이 아니라 입력 오류다.
     selected_system: str | None = None
 
-    @field_validator("message", "thread_id")
+    @field_validator("message", "thread_id", "request_id")
     @classmethod
     def validate_required_text(cls, value: str) -> str:
         value = value.strip()
@@ -57,6 +60,7 @@ class ChatRequest(BaseModel):   # Wave 1 — Pydantic 요청 검증
 
 def _stream_request(
     message: str, thread_id: str = "default", selected_system: str | None = None,
+    request_id: str | None = None,
 ) -> ChatRequest:
     """GET의 쿼리도 POST의 JSON 본문과 동일한 규칙으로 검증한다.
 
@@ -64,7 +68,8 @@ def _stream_request(
     먼저 검증하고, 오류가 있으면 SSE 연결을 열기 전에 일반 오류 응답을 반환한다.
     """
     try:
-        return ChatRequest(message=message, thread_id=thread_id, selected_system=selected_system)
+        return ChatRequest(message=message, thread_id=thread_id, selected_system=selected_system,
+                           **({"request_id": request_id} if request_id is not None else {}))
     except ValidationError as exc:
         errors = [{**error, "loc": ("query", *error["loc"])} for error in exc.errors()]
         raise RequestValidationError(errors) from exc
@@ -107,20 +112,46 @@ async def lifespan(app: FastAPI):
         session_store=SqliteSessionStore(),
         version=os.environ.get("SUPERVISOR_VERSION", "v2"),
     )
+    inquiry_store(deps).recover_interrupted()  # 이전 프로세스에서 중단된 접수를 재시도 가능하게 한다.
     app.state.deps = deps
     app.state.graph = build_graph(deps) if deps.version == "v2" else None
     app.state.instance_id = id(deps)
-    yield
-    await mcp.stop()
-    deps.session_store.close()
-    try:   # 종료 전 LangSmith 배치 전송 플러시 — kill 시 run이 pending으로 남는 것 방지
-        from langchain_core.tracers.langchain import wait_for_all_tracers
-        wait_for_all_tracers()
-    except Exception:
-        pass
+    try:
+        yield
+    finally:
+        # 애플리케이션 종료가 예외로 시작되어도 직접 연 연결을 정리한다.
+        await mcp.stop()
+        deps.session_store.close()
+        try:
+            from langchain_core.tracers.langchain import wait_for_all_tracers
+            wait_for_all_tracers()
+        except Exception:
+            pass
 
 
 app = FastAPI(lifespan=lifespan)
+
+
+@app.exception_handler(InquiryConflict)
+async def inquiry_conflict(_request: Request, exc: InquiryConflict):
+    return JSONResponse({"detail": str(exc)}, status_code=409)
+
+
+@app.get("/threads/{thread_id}")
+async def thread_detail(thread_id: str):
+    """로컬 시연용 대화 복원. thread ID 자체를 사용자 인증으로 간주하지 않는다."""
+    inquiry = inquiry_store(app.state.deps).get_thread(thread_id)
+    if inquiry is None:
+        raise HTTPException(status_code=404, detail="저장된 문의가 없습니다.")
+    # 화면 복원에는 모델 프롬프트·전체 그래프 상태가 필요하지 않다.
+    public = {key: inquiry[key] for key in (
+        "inquiry_id", "thread_id", "selected_system", "status", "details", "created_at", "updated_at")}
+    public["requests"] = [{key: item[key] for key in (
+        "request_id", "status", "message", "error")} for item in inquiry["requests"]]
+    return {"thread_id": thread_id, "selected_system": inquiry["selected_system"],
+            "inquiry_id": inquiry["inquiry_id"], "messages": inquiry["messages"],
+            "inquiry": public}
+
 
 
 @app.exception_handler(SystemCatalogError)
@@ -164,6 +195,8 @@ def _metadata(result: dict, run_id: str | None) -> dict:
         "supervisor_version": app.state.deps.version,
         "instance_id": app.state.instance_id,
         "langsmith_run_id": run_id,
+        "inquiry_id": result.get("inquiry_id"),
+        "request_id": result.get("request_id"),
         "selected_system": result.get("selected_system"),
         "data_source": "sample" if result.get("selected_system") else None,
     }
@@ -186,81 +219,44 @@ def _initial_state(req: ChatRequest) -> dict:
     }
 
 
-@traceable(name="chat_request")
+def _service(req: ChatRequest) -> ChatService:
+    # 버전·대상 검증과 접수 충돌 검사는 SSE 헤더를 보내기 전에 끝낸다.
+    _initial_state(req)
+    return ChatService(app.state.deps, app.state.graph, req)
+
+
 async def _handle_chat(
     message: str, thread_id: str, selected_system: str | None = None,
+    request_id: str | None = None,
 ) -> tuple[dict, str | None]:
-    deps = app.state.deps
-    req = ChatRequest(message=message, thread_id=thread_id, selected_system=selected_system)
-    state = _initial_state(req)
-    if deps.version == "v2":
-        result = await app.state.graph.ainvoke(state)
-    else:
-        result = await run_v1(deps, message, thread_id, state["history"])   # Wave 14
-    deps.session_store.append(thread_id, "user", message) ##이번 대화의 사용자 질문을 DB에 저장 
-    deps.session_store.append(thread_id, "assistant", result["final"]) ##이번 대화의 최종 답변을 DB에 저장
-    rt = get_current_run_tree()
-    return result, (str(rt.id) if rt else None)
+    req = ChatRequest(message=message, thread_id=thread_id, selected_system=selected_system,
+                      **({"request_id": request_id} if request_id is not None else {}))
+    service = _service(req)
+    try:
+        result = await service.invoke()
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="처리를 완료하지 못했습니다. 같은 요청으로 재시도해 주세요.") from exc
+    return result, result.get("langsmith_run_id")
 
 
 @app.post("/chat")
 async def chat(req: ChatRequest):
-    result, run_id = await _handle_chat(req.message, req.thread_id, req.selected_system)
+    result, run_id = await _handle_chat(req.message, req.thread_id, req.selected_system, req.request_id)
     return {"reply": result["final"], "events": result.get("events", []),
             "metadata": _metadata(result, run_id)}
 
 
 @app.get("/chat/stream")
 async def chat_stream(req: ChatRequest = Depends(_stream_request)):
-    """Wave 3 — 그래프의 노드별 진행 상황을 SSE로 스트리밍.
-
-    이벤트마다 'data: {json}\\n\\n' 형태로 내려보내고 마지막에 data: [DONE] 센티널을
-    보낸다 — 프론트엔드는 \\n\\n 경계로 이벤트를 분리해 파싱해야 한다(Wave 3b).
-    """
-    deps = app.state.deps
-    state = _initial_state(req)   # 버전 확인과 이력 로딩도 SSE 헤더 전송 전에 수행한다.
-    message, thread_id = req.message, req.thread_id
+    service = _service(req)
 
     async def gen():
-        history = state["history"]
-        if deps.version != "v2":
-            result = await run_v1(deps, message, thread_id, history)
-            for ev in result["events"]:
-                yield f"data: {json.dumps(ev, ensure_ascii=False)}\n\n"
-            yield f"data: {json.dumps({'type': 'FinalAnswer', 'reply': result['final']}, ensure_ascii=False)}\n\n"
-        else:
-            seen = 0
-            final = ""
-            last_prompt = None   # finalize까지 살아남은 최종 write/chat 호출의 실제 프롬프트
-            # stream_mode를 리스트로 주면 (mode, payload) 튜플이 나온다 — "updates"는
-            # 노드가 끝날 때마다의 상태 델타, "custom"은 write_node/chat_answer_node가
-            # get_stream_writer()로 실행 중에 즉시 흘려보내는 토큰(AnswerToken) 이벤트다.
-            async for mode, payload in app.state.graph.astream(
-                    state, stream_mode=["updates", "custom"]):
-                if mode == "custom":
-                    yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
-                    continue
-                for node_name, delta in payload.items():
-                    for ev in (delta.get("events") or [])[seen:]:
-                        ev = {**ev, "node": node_name}
-                        yield f"data: {json.dumps(ev, ensure_ascii=False)}\n\n"
-                    if delta.get("events"):
-                        seen = len(delta["events"])
-                    if delta.get("final"):
-                        final = delta["final"]
-                    if delta.get("last_prompt"):
-                        last_prompt = delta["last_prompt"]
-            # 화면 외의 API 사용자도 답변이 어느 선택 대상/데이터 출처에 대한 것인지
-            # 확인할 수 있도록 최종 이벤트에 동일한 메타데이터를 넣는다.
-            answer = {"type": "FinalAnswer", "reply": final, "prompt": last_prompt,
-                      "selected_system": req.selected_system,
-                      "data_source": "sample" if req.selected_system else None}
-            yield f"data: {json.dumps(answer, ensure_ascii=False)}\n\n"
-            deps.session_store.append(thread_id, "user", message)
-            deps.session_store.append(thread_id, "assistant", final)
+        async for event in service.stream():
+            yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
         yield "data: [DONE]\n\n"
 
-    return StreamingResponse(gen(), media_type="text/event-stream")
+    return StreamingResponse(gen(), media_type="text/event-stream",
+                             background=BackgroundTask(service.interrupted))
 
 
 if __name__ == "__main__":

@@ -54,6 +54,7 @@
   }
   .row.user .bubble { background: #5b5bd6; color: white; border-bottom-right-radius: 4px; }
   .row.agent .bubble { background: #2e2e42; border-bottom-left-radius: 4px; }
+  .row.draft .bubble { background: #282837; color: #b5b5c8; border: 1px dashed #626278; }
   .message-target { margin-bottom: 5px; font-size: 12px; opacity: 0.85; }
   .row.error .bubble { background: #442c38; color: #ffcece; border: 1px solid #80505d; }
   .steps {
@@ -100,21 +101,33 @@
     <div class="system-controls">
       <label for="selected-system">점검 대상 시스템</label>
       <select id="selected-system" v-model="selectedSystem"
-              :disabled="sending || catalogLoading || !!catalogError">
+              :disabled="sending || restoring || catalogLoading || !!catalogError"
+              @change="onSelectedSystemChange">
         <option disabled value="">{{ catalogLoading ? '시스템 목록을 불러오는 중…' : '시스템을 선택해주세요' }}</option>
         <option v-for="system in systems" :key="system" :value="system">{{ system }}</option>
       </select>
       <button v-if="catalogError" type="button" class="retry-button"
               :disabled="catalogLoading || sending" @click="loadSystems">목록 다시 불러오기</button>
+      <button type="button" class="retry-button" :disabled="sending || restoring"
+              @click="newInquiry()">새 문의</button>
+      <button v-if="restoreError" type="button" class="retry-button"
+              :disabled="restoring || sending" @click="restoreThread">대화 다시 불러오기</button>
+      <button v-if="pendingRequest && !sending" type="button" class="retry-button"
+              :disabled="restoring || !!restoreError || catalogLoading || !!catalogError"
+              @click="retryRequest">같은 요청 다시 시도</button>
     </div>
     <p v-if="dataSource === 'sample'" class="system-note">샘플 모니터링 데이터로 기초 점검합니다. 실제 운영 지표가 아닙니다.</p>
     <p v-if="catalogError" class="system-note catalog-error" role="alert">{{ catalogError }}</p>
     <p v-else class="system-note">시스템을 직접 선택한 뒤, 발생한 증상을 자유롭게 입력해주세요.</p>
+    <p v-if="inquiryId" class="system-note">접수 ID: {{ inquiryId }}</p>
+    <p v-if="restoring" class="system-note">저장된 대화를 불러오는 중…</p>
+    <p v-if="restoreError" class="system-note catalog-error" role="alert">{{ restoreError }}</p>
+    <p v-if="sessionNotice" class="system-note" role="status">{{ sessionNotice }}</p>
   </section>
   <div id="log" ref="logEl">
     <template v-for="item in log" :key="item.id">
       <div v-if="item.kind === 'user'" class="row user">
-        <div class="bubble"><div class="message-target">점검 대상: {{ item.target }}</div>{{ item.text }}</div>
+        <div class="bubble"><div class="message-target">점검 대상: {{ item.target || '선택 정보 없음' }}</div>{{ item.text }}</div>
       </div>
 
       <div v-else-if="item.kind === 'steps'" class="steps">
@@ -123,6 +136,10 @@
 
       <div v-else-if="item.kind === 'agent'" class="row agent">
         <div class="bubble">{{ item.text }}</div>
+      </div>
+
+      <div v-else-if="item.kind === 'draft'" class="row draft">
+        <div class="bubble"><div class="message-target">검증 전 초안 · 최종 안내가 아닙니다</div>{{ item.text }}</div>
       </div>
 
       <div v-else-if="item.kind === 'error'" class="row error" role="alert">
@@ -139,7 +156,7 @@
     <input
       v-model="input"
       autocomplete="off"
-      :disabled="sending"
+      :disabled="sending || restoring || !!restoreError || !!pendingRequest"
       aria-label="장애 증상"
       placeholder="예: 로그인이 느려졌어요. 원인을 확인해주세요"
     />
@@ -177,17 +194,157 @@ createApp({
     const catalogLoading = ref(true);
     const catalogError = ref('');
     const dataSource = ref('');
-    const canSend = computed(() => !sending.value && !catalogLoading.value &&
+    const restoring = ref(true);
+    const restoreError = ref('');
+    const sessionNotice = ref('');
+    const inquiryId = ref('');
+    const pendingRequest = ref(null);
+    const thread = ref('');
+    const SESSION_KEY = 'ai-helpdesk.session.v1';
+    const canSend = computed(() => !sending.value && !restoring.value &&
+      !restoreError.value && !pendingRequest.value && !catalogLoading.value &&
       !catalogError.value && systems.value.includes(selectedSystem.value) && !!input.value.trim());
-    const thread = 't-web-' + Math.random().toString(36).slice(2, 8);
     let nextId = 0;
+    let activeTarget = '';
+
+    function makeId() {
+      // localhost에서 제공되는 브라우저 UUID를 사용한다. 이 ID는 인증 토큰이 아니다.
+      return crypto.randomUUID();
+    }
+
+    function saveSession() {
+      try {
+        // 서버가 대화의 원본이다. 브라우저 캐시는 조회 실패 때 기존 화면을 유지하는 용도이며,
+        // 진행 로그·프롬프트·검증 전 초안은 확정된 대화처럼 복원하지 않는다.
+        localStorage.setItem(SESSION_KEY, JSON.stringify({
+          thread_id: thread.value, selected_system: selectedSystem.value,
+          inquiry_id: inquiryId.value, pending_request: pendingRequest.value,
+          messages: log.value.filter(item => ['user', 'agent'].includes(item.kind))
+            .map(item => ({ role: item.kind === 'user' ? 'user' : 'assistant',
+              content: item.text, target: item.target || selectedSystem.value })),
+        }));
+      } catch {
+        sessionNotice.value = '브라우저 저장 공간을 사용할 수 없습니다. 새로고침하면 현재 문의를 자동으로 찾지 못할 수 있습니다.';
+      }
+    }
+
+    function toLog(messages, target) {
+      return messages.filter(message => message && ['user', 'assistant'].includes(message.role) &&
+        typeof message.content === 'string').map(message => ({
+          id: nextId++, kind: message.role === 'user' ? 'user' : 'agent',
+          text: message.content, target: message.target || target,
+        }));
+    }
+
+    function loadCachedSession() {
+      try {
+        const cached = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        if (cached && typeof cached.thread_id === 'string' && cached.thread_id.trim()) {
+          thread.value = cached.thread_id;
+          selectedSystem.value = typeof cached.selected_system === 'string' ? cached.selected_system : '';
+          activeTarget = selectedSystem.value;
+          inquiryId.value = typeof cached.inquiry_id === 'string' ? cached.inquiry_id : '';
+          log.value = toLog(Array.isArray(cached.messages) ? cached.messages : [], activeTarget);
+          const pending = cached.pending_request;
+          if (pending && ['request_id', 'message', 'target'].every(key =>
+              typeof pending[key] === 'string' && pending[key].trim())) {
+            pendingRequest.value = pending;
+          }
+          return;
+        }
+      } catch {
+        sessionNotice.value = '브라우저에 저장된 문의 정보를 읽지 못했습니다. 새 문의로 시작합니다.';
+      }
+      thread.value = 't-web-' + makeId();
+      saveSession();
+    }
+
+    async function restoreThread() {
+      if (sending.value) return;
+      restoring.value = true;
+      restoreError.value = '';
+      try {
+        const response = await fetch('/threads/' + encodeURIComponent(thread.value));
+        if (response.status === 404) {
+          // 아직 첫 요청을 보내지 않은 UUID는 서버에 없다. 이전 캐시가 있는 경우에는
+          // 다른 DB/서버에 접속했을 수 있으므로 이를 지우거나 복원이 됐다고 표현하지 않는다.
+          if (pendingRequest.value && !inquiryId.value) {
+            // 첫 전송이 서버에 도달하지 못한 경우에도 같은 요청 ID로 재전송할 수 있다.
+            sessionNotice.value = '서버에 아직 저장되지 않은 요청입니다. 입력한 내용은 보존했습니다. 같은 요청 다시 시도로 전송해주세요.';
+          } else if (log.value.length || pendingRequest.value || inquiryId.value) {
+            restoreError.value = '서버에서 이전 문의를 찾지 못했습니다. 브라우저의 이전 화면은 보존했습니다. 서버를 확인한 뒤 다시 불러오거나 새 문의를 시작해주세요.';
+          }
+          return;
+        }
+        if (!response.ok) throw new Error('대화를 불러올 수 없습니다. 서버 상태를 확인한 뒤 다시 불러와주세요.');
+        const data = await response.json();
+        if (!Array.isArray(data.messages) || data.thread_id !== thread.value) {
+          throw new Error('저장된 대화의 형식을 확인할 수 없습니다. 기존 화면을 보존했습니다.');
+        }
+        const target = typeof data.selected_system === 'string' ? data.selected_system : '';
+        const restoredLog = toLog(data.messages, target);
+        // 전송이 끊긴 원문이 서버에 아직 저장되지 않았어도 사용자가 입력한 내용은 남긴다.
+        const requestHistory = Array.isArray(data.inquiry?.requests) ? data.inquiry.requests : [];
+        const savedRequest = requestHistory.find(item => item.request_id === pendingRequest.value?.request_id);
+        // 서버가 이미 완료한 요청이면 저장된 대화를 그대로 쓴다. 최종 이벤트를 받기 전
+        // 새로고침한 경우에도 재전송/중복 답변 표시 없이 완료 상태를 복구한다.
+        if (savedRequest?.status === 'completed') pendingRequest.value = null;
+        const pending = pendingRequest.value;
+        if (pending && !savedRequest) {
+          restoredLog.push({ id: nextId++, kind: 'user', text: pending.message, target: pending.target });
+        }
+        selectedSystem.value = target;
+        activeTarget = target;
+        inquiryId.value = data.inquiry_id || '';
+        log.value = restoredLog;
+        sessionNotice.value = pending
+          ? '이전 요청의 완료 여부를 확인하려면 같은 요청 다시 시도를 눌러주세요. 같은 ID로 확인하여 중복 접수를 방지합니다.'
+          : '저장된 대화를 이어서 볼 수 있습니다. 다른 시스템을 선택하면 새 문의로 분리됩니다.';
+        saveSession();
+        scrollToBottom();
+      } catch (error) {
+        // 조회 실패는 새 대화를 만들 이유가 아니다. 캐시/선택/thread를 그대로 유지한다.
+        restoreError.value = error instanceof TypeError
+          ? '서버에 연결할 수 없어 대화를 복원하지 못했습니다. 기존 화면은 보존했습니다.'
+          : error.message;
+      } finally {
+        restoring.value = false;
+      }
+    }
+
+    function newInquiry(target = '') {
+      if (sending.value || restoring.value) return;
+      thread.value = 't-web-' + makeId();
+      selectedSystem.value = target;
+      activeTarget = target;
+      inquiryId.value = '';
+      pendingRequest.value = null;
+      log.value = [];
+      input.value = '';
+      restoreError.value = '';
+      sessionNotice.value = '새 문의를 시작했습니다. 이전 문의는 서버에 보존됩니다.';
+      saveSession();
+    }
+
+    function onSelectedSystemChange() {
+      const target = selectedSystem.value;
+      if (target === activeTarget) return;
+      // 하나의 접수에 다른 시스템의 점검 결과가 섞이지 않도록, 대화가 시작된 뒤
+      // 대상을 바꾸면 이전 기록은 남겨두고 새 UUID를 발급한다.
+      if (log.value.length || inquiryId.value || pendingRequest.value) newInquiry(target);
+      else {
+        activeTarget = target;
+        saveSession();
+      }
+    }
+
+    loadCachedSession();
 
     async function loadSystems() {
       if (sending.value) return;
       catalogLoading.value = true;
       catalogError.value = '';
       systems.value = [];
-      selectedSystem.value = '';
       dataSource.value = '';
       try {
         const response = await fetch('/systems');
@@ -209,6 +366,7 @@ createApp({
     }
 
     loadSystems();
+    restoreThread();
     fetch('/health').then(response => {
       if (!response.ok) throw new Error('상태 확인 실패');
       return response.json();
@@ -223,24 +381,37 @@ createApp({
     }
 
     function onSubmit() {
-      // 버튼 비활성화뿐 아니라 함수에서도 검사해 중복 전송과 선택 누락을 막는다.
+      // 실패한 요청은 새 ID로 재접수하지 않고 별도 재시도 버튼으로 확인한다.
       if (!canSend.value) return;
-      const text = input.value.trim();
-      const target = selectedSystem.value;
-
-      // 요청 시점의 대상을 메시지에 남겨, 다음 질문에서 선택을 바꿔도 이력이 명확하게 보인다.
-      log.value.push({ id: nextId++, kind: 'user', text, target });
+      const request = { request_id: makeId(), message: input.value.trim(), target: selectedSystem.value };
+      pendingRequest.value = request;
+      log.value.push({ id: nextId++, kind: 'user', text: request.message, target: request.target });
       input.value = '';
+      saveSession();
+      sendRequest(request);
+    }
+
+    function retryRequest() {
+      if (!pendingRequest.value || sending.value || restoring.value || restoreError.value ||
+          catalogLoading.value || catalogError.value) return;
+      sendRequest(pendingRequest.value);
+    }
+
+    function sendRequest(request) {
+      const { message: text, target, request_id: requestId } = request;
       sending.value = true;
+      sessionNotice.value = '';
+      // 같은 요청의 이전 진행 로그/초안은 지우고, 사용자 원문은 한 번만 표시한다.
+      log.value = log.value.filter(item => !['steps', 'draft', 'error'].includes(item.kind));
       scrollToBottom();
 
       const stepsItem = reactive({ id: nextId++, kind: 'steps', steps: [] });
       log.value.push(stepsItem);
       scrollToBottom();
 
-      const params = new URLSearchParams({ message: text, thread_id: thread, selected_system: target });
+      const params = new URLSearchParams({ message: text, thread_id: thread.value, selected_system: target, request_id: requestId });
       const url = `/chat/stream?${params}`;
-      const es = new EventSource(url);
+      let es;
       let streamItem = null;
       let streamAttempt = null;   // write_node 재작성(attempt 증가) 시 새 말풍선으로 끊는다
       let receivedFinal = false;
@@ -250,14 +421,26 @@ createApp({
         if (streamClosed) return;
         streamClosed = true;
         // EventSource의 자동 재연결을 끊어 같은 점검이 뜻하지 않게 반복되지 않게 한다.
-        es.close();
+        if (es) es.close();
         sending.value = false;
+        sessionNotice.value = '같은 요청 다시 시도로 완료 여부를 확인할 수 있습니다. 새 문의는 별도 접수로 시작합니다.';
+        saveSession();
         log.value.push({ id: nextId++, kind: 'error', text: message });
         scrollToBottom();
       }
 
+      try { es = new EventSource(url); } catch {
+        showStreamError('요청을 시작하지 못했습니다. 같은 요청 다시 시도를 눌러주세요.');
+        return;
+      }
+
       es.onmessage = (event) => {
+        if (streamClosed) return;
         if (event.data === '[DONE]') {
+          if (!receivedFinal) {
+            showStreamError('저장된 최종 답변을 받지 못했습니다. 같은 요청 다시 시도로 확인해주세요.');
+            return;
+          }
           streamClosed = true;
           es.close();
           sending.value = false;
@@ -273,7 +456,7 @@ createApp({
 
         if (e.type === 'AnswerToken') {
           if (!streamItem || streamAttempt !== e.attempt) {
-            streamItem = reactive({ id: nextId++, kind: 'agent', text: '' });
+            streamItem = reactive({ id: nextId++, kind: 'draft', text: '' });
             log.value.push(streamItem);
             streamAttempt = e.attempt;
           }
@@ -288,7 +471,14 @@ createApp({
             streamItem = reactive({ id: nextId++, kind: 'agent', text: '' });
             log.value.push(streamItem);
           }
-          streamItem.text = e.reply;   // 토큰 합산 결과와 서버의 최종 텍스트를 일치시킨다
+          streamItem.kind = 'agent';
+          streamItem.text = e.reply;   // 서버가 저장 완료 후 보내는 최종 텍스트를 확정한다
+          inquiryId.value = e.inquiry_id || inquiryId.value;
+          pendingRequest.value = null;
+          saveSession();
+          streamClosed = true;
+          es.close();
+          sending.value = false;
           if (e.prompt) log.value.push({ id: nextId++, kind: 'prompt', text: e.prompt });
           streamItem = null;
           streamAttempt = null;
@@ -313,7 +503,9 @@ createApp({
     }
 
     return { backendLabel, log, input, sending, logEl, systems, selectedSystem,
-      catalogLoading, catalogError, dataSource, canSend, loadSystems, onSubmit };
+      catalogLoading, catalogError, dataSource, canSend, loadSystems, onSubmit,
+      restoring, restoreError, sessionNotice, inquiryId, pendingRequest,
+      restoreThread, newInquiry, onSelectedSystemChange, retryRequest };
   },
 }).mount('#app');
 </script>

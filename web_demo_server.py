@@ -13,6 +13,7 @@ server.py는 평소처럼(fake/ollama/openai 아무 백엔드로나) 8100에 미
 """
 import json
 from pathlib import Path
+from urllib.parse import quote
 
 import anyio
 import httpx
@@ -68,6 +69,13 @@ async def proxy_systems():
     return await _proxy_get("/systems")
 
 
+@app.get("/threads/{thread_id}")
+async def proxy_thread(thread_id: str):
+    # 식별자를 URL 경로로만 전달한다. 문의 ID 자체가 인증 수단은 아니므로
+    # 실제 사내 배포에서는 백엔드에 사용자별 조회 권한 검사를 추가해야 한다.
+    return await _proxy_get(f"/threads/{quote(thread_id, safe='')}")
+
+
 @app.post("/chat")
 async def proxy_chat(req: Request):
     body = await req.body()
@@ -82,11 +90,16 @@ async def proxy_chat(req: Request):
 
 @app.get("/chat/stream")
 async def proxy_stream(message: str, thread_id: str = "web-demo",
-                       selected_system: str | None = None):
+                       selected_system: str | None = None,
+                       request_id: str | None = None):
     params = {"message": message, "thread_id": thread_id}
     # 생략과 빈 문자열은 다르다. 빈 선택도 그대로 넘겨 백엔드가 422로 검증한다.
     if selected_system is not None:
         params["selected_system"] = selected_system
+    # 끊긴 요청을 같은 ID로 다시 보내야 저장된 답변을 재사용하고 중복 접수를 피한다.
+    # 빈 값도 백엔드가 검증하도록 그대로 넘긴다.
+    if request_id is not None:
+        params["request_id"] = request_id
 
     # 응답 헤더를 먼저 받아야 백엔드의 검증 실패를 정상 SSE(200)로 감추지 않는다.
     # 로컬 모델의 생성 시간은 제한하지 않고, 서버 연결에만 10초 제한을 둔다.
@@ -137,4 +150,5 @@ async def proxy_stream(message: str, thread_id: str = "web-demo",
 
 if __name__ == "__main__":
     print("브라우저에서 http://localhost:8600 을 열어보세요 (server.py가 8100에 떠 있어야 합니다)")
-    uvicorn.run(app, host="0.0.0.0", port=8600)
+    # 접수 이력 조회는 인증 없는 로컬 시연용이므로 외부 인터페이스에 열지 않는다.
+    uvicorn.run(app, host="127.0.0.1", port=8600)

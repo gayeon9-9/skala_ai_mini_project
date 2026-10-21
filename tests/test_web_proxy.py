@@ -4,6 +4,9 @@
 사용자의 대화 DB 없이 프록시의 HTTP/SSE 처리만 확인할 수 있다.
 """
 import json
+from pathlib import Path
+import shutil
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -92,6 +95,20 @@ class WebProxyTests(unittest.TestCase):
         self.assertEqual(self.requests[0].url.path, "/systems")
         self.assert_resources_closed()
 
+    def test_thread_restore_preserves_payload_and_not_found_status(self):
+        payload = {"thread_id": "t-web-123", "selected_system": "auth-service",
+                   "inquiry_id": "inq-123", "messages": [{"role": "user", "content": "로그인 실패"}]}
+        for status, body in ((200, payload), (404, {"detail": "문의가 없습니다."})):
+            with self.subTest(status=status):
+                self.handler = lambda request: self.response(status, payload=body)
+
+                result = self.browser.get("/threads/t-web-123")
+
+                self.assertEqual(result.status_code, status)
+                self.assertEqual(result.json(), body)
+                self.assertEqual(self.requests[-1].url.path, "/threads/t-web-123")
+                self.assert_resources_closed()
+
     def test_stream_forwards_selection_message_and_thread(self):
         chunks = [
             b'data: {"type":"FinalAnswer","reply":"ok"}\n\n',
@@ -105,6 +122,7 @@ class WebProxyTests(unittest.TestCase):
                 "message": "로그인 후 화면이 넘어가지 않음",
                 "thread_id": "ticket-1",
                 "selected_system": "auth-service",
+                "request_id": "retryable-request-1",
             },
         )
 
@@ -117,6 +135,7 @@ class WebProxyTests(unittest.TestCase):
                 "message": "로그인 후 화면이 넘어가지 않음",
                 "thread_id": "ticket-1",
                 "selected_system": "auth-service",
+                "request_id": "retryable-request-1",
             },
         )
         self.assert_resources_closed()
@@ -128,7 +147,7 @@ class WebProxyTests(unittest.TestCase):
 
         result = self.browser.get(
             "/chat/stream",
-            params={"message": "", "selected_system": ""},
+            params={"message": "", "selected_system": "", "request_id": ""},
         )
 
         self.assertEqual(result.status_code, 422)
@@ -136,6 +155,7 @@ class WebProxyTests(unittest.TestCase):
         self.assertEqual(self.requests[0].url.params["message"], "")
         self.assertIn("selected_system", self.requests[0].url.params)
         self.assertEqual(self.requests[0].url.params["selected_system"], "")
+        self.assertEqual(self.requests[0].url.params["request_id"], "")
         self.assert_resources_closed()
 
     def test_stream_keeps_selection_omitted_for_legacy_requests(self):
@@ -145,6 +165,7 @@ class WebProxyTests(unittest.TestCase):
 
         self.assertEqual(result.status_code, 200)
         self.assertNotIn("selected_system", self.requests[0].url.params)
+        self.assertNotIn("request_id", self.requests[0].url.params)
         self.assertEqual(self.requests[0].url.params["thread_id"], "web-demo")
         self.assert_resources_closed()
 
@@ -172,6 +193,7 @@ class WebProxyTests(unittest.TestCase):
         self.handler = unavailable
         for method, path, kwargs in (
             ("GET", "/systems", {}),
+            ("GET", "/threads/t-web-unavailable", {}),
             ("GET", "/chat/stream", {"params": {"message": "로그인 지연"}}),
             ("POST", "/chat", {"json": {"message": "로그인 지연"}}),
         ):
@@ -221,6 +243,154 @@ class WebProxyTests(unittest.TestCase):
         self.assertEqual(json.loads(self.requests[0].content), submitted)
         self.assertEqual(self.requests[0].headers["content-type"], "application/json")
         self.assert_resources_closed()
+
+
+# DOM 렌더링 대신 실제 HTML의 setup 코드를 실행해 저장/복원/재시도 상태를 검증한다.
+# Vue 반응성·fetch·EventSource 경계만 대체하므로 CDN이나 브라우저 설치가 필요 없다.
+BROWSER_HARNESS = r"""
+const fs = require('node:fs');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const { webcrypto } = require('node:crypto');
+const script = fs.readFileSync(process.argv[1], 'utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
+const key = 'ai-helpdesk.session.v1';
+async function boot({ cache = null, status = 404, payload = null } = {}) {
+  let app;
+  const storage = new Map(cache ? [[key, JSON.stringify(cache)]] : []);
+  const streams = [];
+  const context = {
+    crypto: webcrypto, URLSearchParams, TypeError,
+    localStorage: { getItem: name => storage.get(name) || null,
+                    setItem: (name, value) => storage.set(name, value) },
+    Vue: {
+      ref: value => ({ value }), reactive: value => value,
+      computed: getter => ({ get value() { return getter(); } }),
+      nextTick: () => Promise.resolve(),
+      createApp: config => ({ mount() { app = config.setup(); } }),
+    },
+    fetch: async url => {
+      if (url === '/systems') return { ok: true, json: async () => ({
+        systems: ['auth-service', 'web-01'], data_source: 'sample' }) };
+      if (url === '/health') return { ok: true, json: async () => ({ llm_backend: 'fake' }) };
+      return { status, ok: status < 400, json: async () => payload };
+    },
+    EventSource: class {
+      constructor(url) { this.url = url; streams.push(this); }
+      close() { this.closed = true; }
+      emit(event) { this.onmessage({ data: JSON.stringify(event) }); }
+    },
+  };
+  vm.runInNewContext(script, context);
+  await new Promise(resolve => setImmediate(resolve));
+  return { app, streams, saved: () => JSON.parse(storage.get(key)) };
+}
+"""
+
+
+@unittest.skipUnless(shutil.which("node"), "화면 상태 검증은 Node.js가 있을 때 실행한다.")
+class BrowserSessionTests(unittest.TestCase):
+    def run_browser(self, scenario):
+        html = Path(__file__).resolve().parents[1] / "web_chat.html"
+        result = subprocess.run(
+            ["node", "-e", BROWSER_HARNESS + "\n(async () => {\n" + scenario +
+             "\n})().catch(error => { console.error(error); process.exitCode = 1; });", str(html)],
+            capture_output=True, text=True, timeout=10,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_failed_request_reuses_id_and_success_caches_only_final(self):
+        self.run_browser(r"""
+const { app, streams, saved } = await boot();
+app.selectedSystem.value = 'auth-service';
+app.onSelectedSystemChange();
+app.input.value = '로그인 실패';
+assert.equal(app.canSend.value, true);
+app.onSubmit();
+const first = new URLSearchParams(streams[0].url.split('?')[1]);
+assert.ok(first.get('request_id'));
+streams[0].emit({ type: 'AnswerToken', attempt: 1, delta: '검증 전 초안' });
+streams[0].onerror();
+assert.equal(app.pendingRequest.value.request_id, first.get('request_id'));
+assert.equal(saved().messages.length, 1);
+app.retryRequest();
+const retry = new URLSearchParams(streams[1].url.split('?')[1]);
+assert.equal(retry.get('request_id'), first.get('request_id'));
+assert.equal(retry.get('thread_id'), first.get('thread_id'));
+assert.equal(app.log.value.filter(item => item.kind === 'user').length, 1);
+streams[1].emit({ type: 'FinalAnswer', reply: '저장된 최종 답변', inquiry_id: 'inq-1' });
+assert.equal(app.pendingRequest.value, null);
+assert.equal(app.sending.value, false);
+assert.equal(saved().messages.length, 2);
+assert.equal(saved().messages[1].content, '저장된 최종 답변');
+assert.equal(saved().inquiry_id, 'inq-1');
+streams[1].emit({ type: 'FinalAnswer', reply: '중복 이벤트' });
+assert.equal(app.log.value.filter(item => item.kind === 'agent').length, 1);
+""")
+
+    def test_restore_completed_request_does_not_add_duplicate_reply(self):
+        self.run_browser(r"""
+const pending = { request_id: 'r-1', message: '로그인 실패', target: 'auth-service' };
+const messages = [{ role: 'user', content: '로그인 실패' },
+                  { role: 'assistant', content: '최종 답변' }];
+const { app, streams, saved } = await boot({
+  cache: { thread_id: 't-1', selected_system: 'auth-service',
+           messages: messages.slice(0, 1), pending_request: pending },
+  status: 200, payload: { thread_id: 't-1', selected_system: 'auth-service',
+    inquiry_id: 'inq-1', messages,
+    inquiry: { requests: [{ request_id: 'r-1', status: 'completed' }] } },
+});
+assert.equal(app.pendingRequest.value, null);
+assert.equal(app.log.value.length, 2);
+assert.equal(app.selectedSystem.value, 'auth-service');
+assert.equal(saved().thread_id, 't-1');
+assert.equal(streams.length, 0);
+""")
+
+    def test_restore_failure_keeps_existing_history_and_disables_send(self):
+        self.run_browser(r"""
+const cache = { thread_id: 't-preserve', selected_system: 'auth-service', inquiry_id: 'inq-1',
+                messages: [{ role: 'user', content: '보존할 질문' }] };
+for (const status of [503, 404]) {
+  const { app, saved } = await boot({ cache, status });
+  assert.ok(app.restoreError.value);
+  assert.equal(app.log.value[0].text, '보존할 질문');
+  assert.equal(saved().thread_id, 't-preserve');
+  app.input.value = '다음 질문';
+  assert.equal(app.canSend.value, false);
+}
+""")
+
+    def test_system_change_starts_new_thread_and_preserves_target(self):
+        self.run_browser(r"""
+const { app, saved } = await boot({
+  cache: { thread_id: 't-old', selected_system: 'auth-service', messages: [] },
+  status: 200, payload: { thread_id: 't-old', selected_system: 'auth-service',
+    inquiry_id: 'inq-old', messages: [{ role: 'user', content: '이전 질문' }], inquiry: {} },
+});
+app.selectedSystem.value = 'web-01';
+app.onSelectedSystemChange();
+assert.notEqual(saved().thread_id, 't-old');
+assert.equal(saved().selected_system, 'web-01');
+assert.equal(app.inquiryId.value, '');
+assert.equal(app.log.value.length, 0);
+assert.equal(app.pendingRequest.value, null);
+""")
+
+    def test_first_request_not_reached_server_remains_retryable(self):
+        self.run_browser(r"""
+const { app, streams } = await boot({ cache: {
+  thread_id: 't-not-sent', selected_system: 'auth-service', inquiry_id: '',
+  messages: [{ role: 'user', content: '전송 전 끊김' }],
+  pending_request: { request_id: 'r-unsent', message: '전송 전 끊김', target: 'auth-service' },
+} });
+assert.equal(app.restoreError.value, '');
+app.retryRequest();
+assert.equal(streams.length, 1);
+streams[0].onmessage({ data: '[DONE]' });
+assert.equal(app.sending.value, false);
+assert.equal(app.pendingRequest.value.request_id, 'r-unsent');
+assert.equal(app.log.value.filter(item => item.kind === 'agent').length, 0);
+""")
 
 
 if __name__ == "__main__":

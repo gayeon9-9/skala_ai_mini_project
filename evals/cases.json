@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "dataset_version": "2026-10-21-v1",
+  "description": "구현 전에 작성한 합성 헬프데스크 평가 초안. 실제 사용자 대화가 아니다. dev 10개만 문턱값·프롬프트 조정에 쓰고 test 10개는 최종 확인 결과를 별도로 보고한다.",
+  "status": "draft_before_steps_3_and_4",
+  "annotation_rules": {
+    "intake": "expected_fields는 해당 사례의 마지막 턴까지 병합한 상태다. value는 사용자 원문에서 찾을 수 있는 문자열이어야 한다. occurred_at 날짜·시간대는 추정하지 않는다. 명시적으로 답한 none/unknown은 unmentioned와 다르다.",
+    "retrieval": "retrieval_checks는 검색기만 평가할 때 넣을 고정 검색문과 대상·독자 범위다. relevant_document_ids는 정답 집합이며 빈 배열은 근거 부족 사례다. end-to-end 그래프가 고르는 검색문 자체와 혼동하지 않는다.",
+    "document_ids": "runbook:<stem>은 기존 data/runbooks/<stem>.md를 뜻한다. faq:<stem>은 4단계에 작성할 사용자 FAQ의 예정 ID이며 작성 후 범위와 근거를 재검토한다. 아직 존재하지 않는 FAQ로 실제 검색 성능을 측정한 것으로 표시하지 않는다.",
+    "metrics": "정답이 있는 검색 건만 Hit@3·Recall@3의 분모로 쓴다. 빈 정답은 no-match 처리율로, MCP 실패는 조회 실패 표시 여부로 따로 평가한다. 테스트셋 결과를 보고 검색 문턱값을 다시 조정했다면 더 이상 독립 최종 확인셋이라고 부르지 않는다.",
+    "invariants": ["선택한 시스템을 추출 결과로 변경하지 않는다", "샘플 모니터링을 실시간 운영 장애 원인으로 확정하지 않는다", "사용자 답변에 운영자 전용 재시작·삭제·롤백 절차를 노출하지 않는다", "사용자가 모른다고 답한 항목을 계속 반복 질문하지 않는다"]
+  },
+  "cases": [
+    {
+      "id": "dev-01", "split": "dev", "category": "natural_language_and_explicit_none",
+      "selected_system": "auth-service",
+      "turns": ["오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 크롬을 사용하고 있어요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "로그인 후 화면이 넘어가지 않아요"}, "occurred_at": {"status": "provided", "value": "오전 9시"}, "error_message": {"status": "none", "value": null}, "environment": {"status": "provided", "value": "크롬"}},
+      "retrieval_checks": [{"audience": "user", "query": "로그인 후 화면이 넘어가지 않고 크롬에서 계속 대기해요", "relevant_document_ids": ["faq:login"]}, {"audience": "operator", "query": "p95 latency 2.4s connection pool 92% used 응답 지연", "relevant_document_ids": ["runbook:high-latency"]}]
+    },
+    {
+      "id": "dev-02", "split": "dev", "category": "payment_slow",
+      "selected_system": "payments-service",
+      "turns": ["결제 버튼을 눌렀는데 계속 처리 중이에요. 오후 2시부터 그랬고 아이폰 사파리예요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "결제 버튼을 눌렀는데 계속 처리 중이에요"}, "occurred_at": {"status": "provided", "value": "오후 2시"}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "provided", "value": "아이폰 사파리"}},
+      "retrieval_checks": [{"audience": "user", "query": "결제 버튼 처리 중 대기, 결제를 다시 눌러도 되나요", "relevant_document_ids": ["faq:payment"]}, {"audience": "operator", "query": "CPU 91% payments-service 인스턴스 응답 지연", "relevant_document_ids": ["runbook:cpu-spike"]}]
+    },
+    {
+      "id": "dev-03", "split": "dev", "category": "error_code",
+      "selected_system": "gateway-service",
+      "turns": ["업무 페이지가 열리지 않고 504 오류가 나요. 발생 시각은 모르겠어요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "업무 페이지가 열리지 않고"}, "occurred_at": {"status": "unknown", "value": null}, "error_message": {"status": "provided", "value": "504"}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "user", "query": "업무 페이지 접속 시 504 타임아웃 오류", "relevant_document_ids": ["faq:connectivity"]}, {"audience": "operator", "query": "upstream timeout network packet loss 네트워크 요청 시간 초과", "relevant_document_ids": ["runbook:network-timeout"]}]
+    },
+    {
+      "id": "dev-04", "split": "dev", "category": "memory_trend",
+      "selected_system": "cache-service",
+      "turns": ["캐시 응답이 점점 느려요. 오늘 오전부터 발생했어요. 사용 환경은 모르겠어요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "캐시 응답이 점점 느려요"}, "occurred_at": {"status": "provided", "value": "오늘 오전"}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "unknown", "value": null}},
+      "retrieval_checks": [{"audience": "operator", "query": "memory usage climbing steadily over 6h heap near limit 메모리 누수", "relevant_document_ids": ["runbook:memory-leak"]}]
+    },
+    {
+      "id": "dev-05", "split": "dev", "category": "disk_storage",
+      "selected_system": "log-service",
+      "turns": ["로그가 더 이상 저장되지 않아요. 오류 메시지는 No space left on device예요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "로그가 더 이상 저장되지 않아요"}, "occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "provided", "value": "No space left on device"}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "operator", "query": "disk usage 95% on /var/log, No space left on device", "relevant_document_ids": ["runbook:disk-full"]}]
+    },
+    {
+      "id": "dev-06", "split": "dev", "category": "healthy_not_database_failure",
+      "selected_system": "web-01",
+      "turns": ["크롬에서 업무 화면이 하얗게 나와요. 어제부터 그랬어요. 오류 메시지는 없어요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "업무 화면이 하얗게 나와요"}, "occurred_at": {"status": "provided", "value": "어제"}, "error_message": {"status": "none", "value": null}, "environment": {"status": "provided", "value": "크롬"}},
+      "expected_monitoring": {"status": "healthy", "must_not_infer": "DB 장애"},
+      "retrieval_checks": [{"audience": "user", "query": "크롬 업무 화면이 하얗게 나오는 브라우저 표시 문제", "relevant_document_ids": ["faq:browser"]}]
+    },
+    {
+      "id": "dev-07", "split": "dev", "category": "out_of_scope",
+      "selected_system": "auth-service",
+      "turns": ["다음 달 사내 식당 메뉴표를 알려주세요."],
+      "expected_fields": {"occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "user", "query": "다음 달 사내 식당 메뉴표", "relevant_document_ids": []}, {"audience": "operator", "query": "다음 달 사내 식당 메뉴표", "relevant_document_ids": []}],
+      "expected_behavior": "관련 문의 자료가 없음을 알리고 식당 메뉴를 만들어 내지 않는다."
+    },
+    {
+      "id": "dev-08", "split": "dev", "category": "followup_merge",
+      "selected_system": "auth-service",
+      "turns": ["로그인 버튼을 눌러도 그대로예요.", "발생 시각은 오전 9시이고, 오류 메시지는 없어요. 윈도우 크롬을 사용해요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "로그인 버튼을 눌러도 그대로예요"}, "occurred_at": {"status": "provided", "value": "오전 9시"}, "error_message": {"status": "none", "value": null}, "environment": {"status": "provided", "value": "윈도우 크롬"}},
+      "retrieval_checks": [{"audience": "user", "query": "로그인 버튼을 눌러도 화면 변화 없음", "relevant_document_ids": ["faq:login"]}],
+      "expected_behavior": "후속 답변이 기존 증상을 덮어쓰지 않고 접수 정보에 병합된다."
+    },
+    {
+      "id": "dev-09", "split": "dev", "category": "multiple_relevant_documents",
+      "selected_system": "auth-service",
+      "turns": ["로그인이 느리고 연결 시간 초과도 보여요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "로그인이 느리고"}, "occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "provided", "value": "연결 시간 초과"}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "operator", "query": "응답 지연과 네트워크 호출 타임아웃이 함께 발생하여 각각 점검 필요", "relevant_document_ids": ["runbook:high-latency", "runbook:network-timeout"]}],
+      "expected_behavior": "여러 가능성을 구분하고 하나의 원인으로 확정하지 않는다."
+    },
+    {
+      "id": "dev-10", "split": "dev", "category": "monitoring_failure",
+      "selected_system": "payments-service",
+      "turns": ["결제가 진행되지 않아요."],
+      "fixture": {"monitoring": "timeout_after_retries"},
+      "expected_fields": {"symptom": {"status": "provided", "value": "결제가 진행되지 않아요"}, "occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "user", "query": "결제가 진행되지 않을 때 사용자가 확인할 사항", "relevant_document_ids": ["faq:payment"]}],
+      "expected_behavior": "점검 실패와 실제 시스템 장애를 구분한다. 접수 내용은 보존하고 CPU 수치를 만들어 내지 않는다."
+    },
+    {
+      "id": "test-01", "split": "test", "category": "paraphrase_login",
+      "selected_system": "auth-service",
+      "turns": ["계정 인증 뒤 다음 페이지로 이동을 못 해요. 오늘 10시 20분부터고 맥북 사파리예요. 에러 문구는 없어요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "계정 인증 뒤 다음 페이지로 이동을 못 해요"}, "occurred_at": {"status": "provided", "value": "오늘 10시 20분"}, "error_message": {"status": "none", "value": null}, "environment": {"status": "provided", "value": "맥북 사파리"}},
+      "retrieval_checks": [{"audience": "user", "query": "계정 인증 뒤 다음 페이지로 이동을 못 하고 기다리기만 해요", "relevant_document_ids": ["faq:login"]}]
+    },
+    {
+      "id": "test-02", "split": "test", "category": "paraphrase_payment",
+      "selected_system": "payments-service",
+      "turns": ["카드 승인 요청을 했는데 완료 화면이 안 떠요. 언제부터인지는 몰라요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "카드 승인 요청을 했는데 완료 화면이 안 떠요"}, "occurred_at": {"status": "unknown", "value": null}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "user", "query": "카드 승인 완료가 안 보여 다시 승인 요청하면 중복 청구될까 걱정돼요", "relevant_document_ids": ["faq:payment"]}]
+    },
+    {
+      "id": "test-03", "split": "test", "category": "paraphrase_connectivity",
+      "selected_system": "gateway-service",
+      "turns": ["다른 서비스로 넘어갈 때 응답을 기다리다가 끊겨요. 504 Gateway Timeout이라고 떠요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "다른 서비스로 넘어갈 때 응답을 기다리다가 끊겨요"}, "occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "provided", "value": "504 Gateway Timeout"}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "user", "query": "다른 서비스로 넘어갈 때 응답을 기다리다 끊김, Gateway Timeout", "relevant_document_ids": ["faq:connectivity"]}, {"audience": "operator", "query": "서비스 사이 패킷 손실과 upstream 호출 대기 제한 초과", "relevant_document_ids": ["runbook:network-timeout"]}]
+    },
+    {
+      "id": "test-04", "split": "test", "category": "paraphrase_memory",
+      "selected_system": "cache-service",
+      "turns": ["시간이 지날수록 캐시 응답이 늦어져요. 어젯밤부터예요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "시간이 지날수록 캐시 응답이 늦어져요"}, "occurred_at": {"status": "provided", "value": "어젯밤"}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "operator", "query": "프로세스가 쓰는 RAM이 반환되지 않고 힙이 계속 커져 OOM 위험", "relevant_document_ids": ["runbook:memory-leak"]}]
+    },
+    {
+      "id": "test-05", "split": "test", "category": "paraphrase_disk",
+      "selected_system": "log-service",
+      "turns": ["기록 파일을 쓸 여유 공간이 없다는 경고가 나와요. 오전 11시부터예요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "기록 파일을 쓸 여유 공간이 없다는 경고가 나와요"}, "occurred_at": {"status": "provided", "value": "오전 11시"}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "operator", "query": "로그 볼륨 여유 공간 부족, 기록 파일 증가, 보존 정책 점검", "relevant_document_ids": ["runbook:disk-full"]}]
+    },
+    {
+      "id": "test-06", "split": "test", "category": "healthy_browser_followup",
+      "selected_system": "web-01",
+      "turns": ["홈페이지가 빈 화면으로 보여요.", "엣지에서 보고 있고 오류 메시지는 없어요. 시작 시각은 모르겠어요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "홈페이지가 빈 화면으로 보여요"}, "occurred_at": {"status": "unknown", "value": null}, "error_message": {"status": "none", "value": null}, "environment": {"status": "provided", "value": "엣지"}},
+      "expected_monitoring": {"status": "healthy", "must_not_infer": "DB 장애"},
+      "retrieval_checks": [{"audience": "user", "query": "홈페이지가 엣지 브라우저에서 빈 화면으로 표시", "relevant_document_ids": ["faq:browser"]}]
+    },
+    {
+      "id": "test-07", "split": "test", "category": "out_of_scope_new_topic",
+      "selected_system": "web-01",
+      "turns": ["이번 달 출장 숙박비 정산 한도가 얼마인가요?"],
+      "expected_fields": {"occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "unmentioned", "value": null}},
+      "retrieval_checks": [{"audience": "user", "query": "출장 숙박비 정산 한도와 영수증 제출 기준", "relevant_document_ids": []}, {"audience": "operator", "query": "출장 숙박비 정산 한도와 영수증 제출 기준", "relevant_document_ids": []}],
+      "expected_behavior": "자료 범위 밖임을 안내하고 금액이나 규정을 만들어 내지 않는다."
+    },
+    {
+      "id": "test-08", "split": "test", "category": "explicit_unknown_not_missing",
+      "selected_system": "auth-service",
+      "turns": ["접속 후 계속 로딩만 돌아요.", "발생 시각과 사용 환경은 모르겠어요. 오류 메시지는 없어요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "접속 후 계속 로딩만 돌아요"}, "occurred_at": {"status": "unknown", "value": null}, "error_message": {"status": "none", "value": null}, "environment": {"status": "unknown", "value": null}},
+      "retrieval_checks": [{"audience": "user", "query": "로그인 이후 로딩 표시만 계속 돌아요", "relevant_document_ids": ["faq:login"]}],
+      "expected_behavior": "모름/없음 답변을 접수하고 같은 정보를 강제로 다시 묻지 않는다."
+    },
+    {
+      "id": "test-09", "split": "test", "category": "selection_is_authoritative",
+      "selected_system": "auth-service",
+      "turns": ["로그인이 느려요. payments-service도 느리다는데 같이 확인해 주세요."],
+      "expected_fields": {"symptom": {"status": "provided", "value": "로그인이 느려요"}, "occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "unmentioned", "value": null}, "environment": {"status": "unmentioned", "value": null}},
+      "expected_monitoring": {"targets": ["auth-service"]},
+      "retrieval_checks": [{"audience": "operator", "query": "auth-service 로그인 응답이 늦고 connection pool 사용률이 높음", "relevant_document_ids": ["runbook:high-latency"]}],
+      "expected_behavior": "선택값 auth-service를 유지하고 결제 시스템을 몰래 추가 조회하지 않는다."
+    },
+    {
+      "id": "test-10", "split": "test", "category": "monitoring_failure_followup",
+      "selected_system": "gateway-service",
+      "turns": ["사내 페이지에 접속할 수 없어요.", "오류 메시지는 504이고 회사 와이파이에서 사용해요."],
+      "fixture": {"monitoring": "timeout_after_retries"},
+      "expected_fields": {"symptom": {"status": "provided", "value": "사내 페이지에 접속할 수 없어요"}, "occurred_at": {"status": "unmentioned", "value": null}, "error_message": {"status": "provided", "value": "504"}, "environment": {"status": "provided", "value": "회사 와이파이"}},
+      "retrieval_checks": [{"audience": "user", "query": "회사 와이파이에서 사내 페이지에 접속하면 504 오류", "relevant_document_ids": ["faq:connectivity"]}],
+      "expected_behavior": "조회 실패가 발생해도 후속 정보가 같은 접수에 남고 실제 장애 확정과 구분된다."
+    }
+  ]
+}
