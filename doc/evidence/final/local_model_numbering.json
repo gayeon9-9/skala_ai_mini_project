@@ -1,0 +1,157 @@
+{
+  "created_at": "2026-10-21T02:49:58.639262+00:00",
+  "synthetic": true,
+  "scope": "실제 Ollama 기본 생성 모델 1건 + 실제 MCP 샘플 조회 + 실제 임베딩의 호환성 확인. 일반 답변 정확도·운영 장애 진단 성능 평가가 아닙니다.",
+  "query": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+  "selected_system": "auth-service",
+  "status": "completed_with_fallback",
+  "models": {
+    "fast": "qwen3:0.6b",
+    "quality": "qwen3:8b",
+    "embedding": "qwen3-embedding:0.6b"
+  },
+  "langsmith_enabled": false,
+  "timed_out": false,
+  "timeout_seconds": 180,
+  "errors": [
+    "답변은 30자 이상이며 1) 번호를 포함해야 합니다."
+  ],
+  "cleanup_errors": [],
+  "runtime_context": {
+    "code_revision": "70af1a60c215e20b062725f06f846970773e8aa0",
+    "code_dirty": true,
+    "catalog_version": "2026-10-21-v1",
+    "fast_model": "ollama:qwen3:0.6b",
+    "quality_model": "ollama:qwen3:8b",
+    "embedding_model": "qwen3-embedding:0.6b"
+  },
+  "retrieval_health": {
+    "status": "ok",
+    "embedding": {
+      "model": "qwen3-embedding:0.6b",
+      "digest": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d",
+      "dimensions": 1024
+    },
+    "catalog_version": "2026-10-21-v1",
+    "document_count": 10
+  },
+  "graph_wall_seconds": 100.029578,
+  "result": {
+    "final": "1) 샘플 점검: auth-service: 상태=degraded, CPU 78.9%, 메모리 61.4%, 알림 2건\n2) 문서 확인: 로그인 후 화면이 넘어가지 않을 때 [faq:login]; 페이지 접속 실패와 504 시간 초과 확인 [faq:connectivity]; 브라우저에서 업무 화면이 하얗거나 비어 보일 때 [faq:browser]. 답변 검증을 마치지 못해 구체적인 조치 안내는 보류합니다.\n3) 추가 확인: 실습용 샘플 결과만으로 실제 원인을 확정할 수 없습니다. 담당자가 실제 오류 로그와 사용자 환경을 확인해야 합니다.",
+    "intake": {
+      "fields": {
+        "symptom": {
+          "status": "provided",
+          "value": "오전 9시부터 로그인 후 화면이 넘어가지 않아요",
+          "evidence": "오전 9시부터 로그인 후 화면이 넘어가지 않아요"
+        },
+        "occurred_at": {
+          "status": "provided",
+          "value": "오전 9시",
+          "evidence": "오전 9시"
+        },
+        "error_message": {
+          "status": "none",
+          "value": null,
+          "evidence": "오류 메시지는 없어"
+        },
+        "environment": {
+          "status": "provided",
+          "value": "윈도우 크롬",
+          "evidence": "윈도우 크롬"
+        }
+      },
+      "questions": [],
+      "missing_fields": [],
+      "asked_fields": [],
+      "last_question_field": null,
+      "source": "rules_fallback",
+      "warnings": [
+        "symptom: 형식이 잘못되어 추출 값을 제외했습니다.",
+        "occurred_at: 형식이 잘못되어 추출 값을 제외했습니다.",
+        "error_message: 형식이 잘못되어 추출 값을 제외했습니다.",
+        "environment: 형식이 잘못되어 추출 값을 제외했습니다."
+      ],
+      "usage": {
+        "model": "ollama:qwen3:0.6b",
+        "tokens": 431,
+        "usd": 6.5e-05
+      }
+    },
+    "unvalidated_draft": "1. 선택한 대상: auth-service  \n   [faq:login] 로그인 후 화면 전환 실패 시, 사용 환경(윈도우 크롬)과 발생 시각(오전 9시)을 기록해 주세요.  \n   [faq:browser] 브라우저 재시도 시, 시크릿 창에서 동일한 현상이 발생하는지 확인해 주세요.  \n   [faq:connectivity] 네트워크 환경 확인 후, 504 시간 초과 메시지 여부를 추가로 안내해 주세요.  \n   관측된 CPU/메모리 사용률은 샘플 데이터로, 실제 장애 원인을 판단할 수 없습니다.",
+    "validation": {
+      "status": "fallback",
+      "errors": [
+        "답변은 30자 이상이며 1) 번호를 포함해야 합니다."
+      ],
+      "citations": [
+        "faq:login",
+        "faq:browser",
+        "faq:connectivity"
+      ]
+    },
+    "validation_attempts": 3,
+    "retrieval": {
+      "status": "ok",
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.78457,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.580416,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.558524,
+          "audience": "user"
+        }
+      ]
+    },
+    "operator_retrieval": {
+      "status": "ok",
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.64445,
+          "audience": "operator"
+        }
+      ]
+    },
+    "telemetry": {
+      "code_revision": "70af1a60c215e20b062725f06f846970773e8aa0",
+      "code_dirty": true,
+      "catalog_version": "2026-10-21-v1",
+      "fast_model": "ollama:qwen3:0.6b",
+      "quality_model": "ollama:qwen3:8b",
+      "embedding_model": "qwen3-embedding:0.6b",
+      "inquiry_id": "1ab10b97-d70c-40ca-aa2b-4f5d2d216ca7",
+      "request_id": "615b612c-1acf-4e6b-9caa-ec7ff39d444d",
+      "thread_id": "synthetic-local-7643cabc-d8c6-41e8-9feb-11c530765b09",
+      "selected_system": "auth-service",
+      "data_source": "sample",
+      "validation_status": "fallback",
+      "retrieved_document_ids": [
+        "faq:login",
+        "faq:connectivity",
+        "faq:browser"
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "processing_seconds": 100.023658,
+      "processing_scope": "graph_until_persistence",
+      "tracing_enabled": false
+    },
+    "inquiry_id": "1ab10b97-d70c-40ca-aa2b-4f5d2d216ca7",
+    "request_id": "615b612c-1acf-4e6b-9caa-ec7ff39d444d"
+  },
+  "processing_seconds": 100.666389
+}

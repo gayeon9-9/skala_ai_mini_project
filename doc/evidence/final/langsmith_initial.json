@@ -1,0 +1,73 @@
+{
+  "created_at": "2026-10-21T02:32:56.916055+00:00",
+  "synthetic": true,
+  "project": "skala-helpdesk-synthetic-eval",
+  "status": "collected_with_failed_rules",
+  "key_configured": true,
+  "scope": "fake 생성 모델 + 실제 MCP 샘플 조회 + 실제 로컬 임베딩의 추적 수집 확인. 실모델 답변 정확도나 실제 장애 진단 평가가 아닙니다.",
+  "models": {
+    "fast": "trace-fast-fake",
+    "quality": "trace-quality-fake",
+    "embedding": "qwen3-embedding:0.6b"
+  },
+  "run_id": "01a15c4d-fe01-7b5b-9587-4ec80875d409",
+  "inquiry_id": "743b75a9-eba1-4460-b05b-e6c39ada8976",
+  "request_id": "1a89604f-79d5-4ab3-bfc5-cc0477657d3c",
+  "collection_read_attempts": 2,
+  "collection_error_type": "LangSmithNotFoundError",
+  "checks": {
+    "root_run_id_matches": true,
+    "root_name_matches": true,
+    "root_completed": true,
+    "root_has_no_error": true,
+    "has_child_runs": true,
+    "required_metadata_present": true,
+    "inquiry_id_matches": true,
+    "request_id_matches": true,
+    "thread_id_matches": true,
+    "selected_system_matches": true,
+    "validation_status_matches": true,
+    "retrieved_document_ids_recorded": true,
+    "processing_seconds_recorded": true
+  },
+  "missing_metadata_fields": [],
+  "verified": true,
+  "child_count": 38,
+  "metadata": {
+    "code_revision": "7bb6d35200444f9e7dcfbd030fd93d8003356898",
+    "code_dirty": true,
+    "catalog_version": "2026-10-21-v1",
+    "fast_model": "trace-fast-fake",
+    "quality_model": "trace-quality-fake",
+    "embedding_model": "qwen3-embedding:0.6b",
+    "inquiry_id": "743b75a9-eba1-4460-b05b-e6c39ada8976",
+    "request_id": "1a89604f-79d5-4ab3-bfc5-cc0477657d3c",
+    "thread_id": "synthetic-trace-6e8f4025-cdb1-4261-8dce-0b9c3ec6e66a",
+    "selected_system": "auth-service",
+    "validation_status": "fallback",
+    "retrieved_document_ids": [
+      "faq:login",
+      "faq:connectivity",
+      "faq:browser"
+    ],
+    "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+    "processing_seconds": 0.623964
+  },
+  "run_url": "https://smith.langchain.com/o/dc9f0af6-8ebd-4181-a32d-c694e5a2dd19/projects/p/136fa6f7-3a85-4799-bd0d-efc83d8df563/r/01a15c4d-fe01-7b5b-9587-4ec80875d409?poll=true",
+  "rules": {
+    "synthetic_rules_validation_passed": false,
+    "synthetic_faq_login_hit": true
+  },
+  "feedback": [
+    {
+      "key": "synthetic_rules_validation_passed",
+      "score": 0,
+      "feedback_id": "01a15c4e-176a-7120-8302-b19672cb8fd6"
+    },
+    {
+      "key": "synthetic_faq_login_hit",
+      "score": 1,
+      "feedback_id": "01a15c4e-19dc-7383-9b75-5f71adb6e763"
+    }
+  ]
+}

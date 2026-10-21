@@ -1,0 +1,65 @@
+{
+  "mode": "Raw browser JPEG. No DOM, answer, image content edits.",
+  "browser": "Chrome",
+  "user_question": "로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요.",
+  "followup": "오전 9시부터요. Chrome을 사용하고 있어요.",
+  "screenshot_inquiry_id": "f4fd45b9-82b1-4b46-ba71-4b725e52c218",
+  "generator": "fake in both versions; actual MCP; after uses real local embeddings",
+  "screenshots": [
+    {
+      "file": "screenshots/01_before_natural.jpg",
+      "sha256": "de653bcbd85a55f3389cd5da44b30904b89dbe0dc0d81fc1e6cba233396d2e97",
+      "pixels": [
+        840,
+        848
+      ],
+      "saved_at": "2026-10-21T13:28:42.478460+09:00",
+      "commit": "ee32f7e298517e33aed8d0831a7643eceb756650",
+      "capture": "viewport"
+    },
+    {
+      "file": "screenshots/02_after_natural.jpg",
+      "sha256": "1d6a224e05223cde54eb5bf12a682ea8a46d5993ee93593bc572c111acb002e6",
+      "pixels": [
+        840,
+        786
+      ],
+      "saved_at": "2026-10-21T13:27:10.012734+09:00",
+      "commit": "19bacc00d497a943ff328d638105678f646bfb8e",
+      "capture": "viewport"
+    },
+    {
+      "file": "screenshots/03_after_restored_followup.jpg",
+      "sha256": "7e1694a2c75741e6028119d4c28e49681bd22cbdb2ce4193ece2ff4edcf17354",
+      "pixels": [
+        840,
+        786
+      ],
+      "saved_at": "2026-10-21T13:27:24.669112+09:00",
+      "commit": "19bacc00d497a943ff328d638105678f646bfb8e",
+      "capture": "viewport"
+    },
+    {
+      "file": "screenshots/04_admin_detail.jpg",
+      "sha256": "cdbd83d3b1cbb91587c4f7be750024935cb8024184725fcda9e437edff3d6a9b",
+      "pixels": [
+        823,
+        770
+      ],
+      "saved_at": "2026-10-21T13:27:39.008221+09:00",
+      "commit": "19bacc00d497a943ff328d638105678f646bfb8e",
+      "capture": "viewport"
+    },
+    {
+      "file": "screenshots/05_admin_fullpage.jpg",
+      "sha256": "5e5d371bf8a4418819d2fb9bd260f4726d6554bd163af5a8cffca5f8949ea1ed",
+      "pixels": [
+        914,
+        2991
+      ],
+      "saved_at": "2026-10-21T13:27:39.106623+09:00",
+      "commit": "19bacc00d497a943ff328d638105678f646bfb8e",
+      "capture": "full_page"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "created_at": "2026-10-21T02:37:39.722984+00:00",
+  "synthetic": true,
+  "project": "skala-helpdesk-synthetic-eval",
+  "status": "verified",
+  "key_configured": true,
+  "scope": "fake 생성 모델 + 실제 MCP 샘플 조회 + 실제 로컬 임베딩의 추적 수집 확인. 실모델 답변 정확도나 실제 장애 진단 평가가 아닙니다.",
+  "models": {
+    "fast": "trace-fast-fake",
+    "quality": "trace-quality-fake",
+    "embedding": "qwen3-embedding:0.6b"
+  },
+  "run_id": "01a15c52-4ec6-7dcb-92d0-a12e1582f12c",
+  "inquiry_id": "4fbc3913-ea84-4d59-833f-69fbb66a0974",
+  "request_id": "4bd0779c-ae2c-4428-a724-57fb010d5423",
+  "validation": {
+    "status": "passed",
+    "errors": [],
+    "citations": [
+      "faq:login",
+      "faq:connectivity",
+      "faq:browser"
+    ]
+  },
+  "collection_read_attempts": 3,
+  "collection_error_type": "LangSmithNotFoundError",
+  "checks": {
+    "root_run_id_matches": true,
+    "root_name_matches": true,
+    "root_completed": true,
+    "root_has_no_error": true,
+    "has_child_runs": true,
+    "required_metadata_present": true,
+    "inquiry_id_matches": true,
+    "request_id_matches": true,
+    "thread_id_matches": true,
+    "selected_system_matches": true,
+    "validation_status_matches": true,
+    "retrieved_document_ids_recorded": true,
+    "processing_seconds_recorded": true
+  },
+  "missing_metadata_fields": [],
+  "verified": true,
+  "child_count": 35,
+  "metadata": {
+    "code_revision": "012b6784e3fcd06b8041ce308097167c2e7549a8",
+    "code_dirty": true,
+    "catalog_version": "2026-10-21-v1",
+    "fast_model": "trace-fast-fake",
+    "quality_model": "trace-quality-fake",
+    "embedding_model": "qwen3-embedding:0.6b",
+    "inquiry_id": "4fbc3913-ea84-4d59-833f-69fbb66a0974",
+    "request_id": "4bd0779c-ae2c-4428-a724-57fb010d5423",
+    "thread_id": "synthetic-trace-7f5c9923-8d1c-47c6-b2c1-faef8468f106",
+    "selected_system": "auth-service",
+    "validation_status": "passed",
+    "retrieved_document_ids": [
+      "faq:login",
+      "faq:connectivity",
+      "faq:browser"
+    ],
+    "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+    "processing_seconds": 1.169692
+  },
+  "run_url": "https://smith.langchain.com/o/dc9f0af6-8ebd-4181-a32d-c694e5a2dd19/projects/p/136fa6f7-3a85-4799-bd0d-efc83d8df563/r/01a15c52-4ec6-7dcb-92d0-a12e1582f12c?poll=true",
+  "rules": {
+    "synthetic_rules_validation_passed": true,
+    "synthetic_faq_login_hit": true
+  },
+  "feedback": [
+    {
+      "key": "synthetic_rules_validation_passed",
+      "score": 1,
+      "feedback_id": "01a15c52-6f48-75ca-aca3-995f7128c231"
+    },
+    {
+      "key": "synthetic_faq_login_hit",
+      "score": 1,
+      "feedback_id": "01a15c52-70aa-7514-babb-012179f91a38"
+    }
+  ]
+}

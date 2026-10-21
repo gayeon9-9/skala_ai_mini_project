@@ -1,0 +1,340 @@
+{
+  "created_at": "2026-10-21T02:15:06.523620+00:00",
+  "dataset_version": "2026-10-21-v1",
+  "split": "dev",
+  "scope": "실제 임베딩 검색 개발셋 평가. LLM 답변/원인 진단/전체 시스템 성능 평가는 아님. test split 미실행.",
+  "model": "qwen3-embedding:0.6b",
+  "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+  "min_score": 0.5,
+  "k": 3,
+  "summary": {
+    "search_checks": 14,
+    "positive_checks": 12,
+    "hit_at_3": 1.0,
+    "recall_at_3": 1.0,
+    "no_match_checks": 2,
+    "no_match_correct": 2,
+    "errors": 0
+  },
+  "results": [
+    {
+      "case_id": "dev-01",
+      "system": "auth-service",
+      "audience": "user",
+      "query": "로그인 후 화면이 넘어가지 않고 크롬에서 계속 대기해요",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.709877
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.620062
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.523798
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.053803
+    },
+    {
+      "case_id": "dev-01",
+      "system": "auth-service",
+      "audience": "operator",
+      "query": "p95 latency 2.4s connection pool 92% used 응답 지연",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.825415
+        },
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.563575
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.032301
+    },
+    {
+      "case_id": "dev-02",
+      "system": "payments-service",
+      "audience": "user",
+      "query": "결제 버튼 처리 중 대기, 결제를 다시 눌러도 되나요",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.736895
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.033574
+    },
+    {
+      "case_id": "dev-02",
+      "system": "payments-service",
+      "audience": "operator",
+      "query": "CPU 91% payments-service 인스턴스 응답 지연",
+      "expected_document_ids": [
+        "runbook:cpu-spike"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.733618
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.616501
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.032592
+    },
+    {
+      "case_id": "dev-03",
+      "system": "gateway-service",
+      "audience": "user",
+      "query": "업무 페이지 접속 시 504 타임아웃 오류",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.780795
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.03156
+    },
+    {
+      "case_id": "dev-03",
+      "system": "gateway-service",
+      "audience": "operator",
+      "query": "upstream timeout network packet loss 네트워크 요청 시간 초과",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.675067
+        },
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.589535
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.031619
+    },
+    {
+      "case_id": "dev-04",
+      "system": "cache-service",
+      "audience": "operator",
+      "query": "memory usage climbing steadily over 6h heap near limit 메모리 누수",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.778523
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.502538
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.031498
+    },
+    {
+      "case_id": "dev-05",
+      "system": "log-service",
+      "audience": "operator",
+      "query": "disk usage 95% on /var/log, No space left on device",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.707242
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.079129
+    },
+    {
+      "case_id": "dev-06",
+      "system": "web-01",
+      "audience": "user",
+      "query": "크롬 업무 화면이 하얗게 나오는 브라우저 표시 문제",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.807911
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.040976
+    },
+    {
+      "case_id": "dev-07",
+      "system": "auth-service",
+      "audience": "user",
+      "query": "다음 달 사내 식당 메뉴표",
+      "expected_document_ids": [],
+      "status": "no_match",
+      "documents": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "elapsed_seconds": 0.030021
+    },
+    {
+      "case_id": "dev-07",
+      "system": "auth-service",
+      "audience": "operator",
+      "query": "다음 달 사내 식당 메뉴표",
+      "expected_document_ids": [],
+      "status": "no_match",
+      "documents": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "elapsed_seconds": 0.15079
+    },
+    {
+      "case_id": "dev-08",
+      "system": "auth-service",
+      "audience": "user",
+      "query": "로그인 버튼을 눌러도 화면 변화 없음",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.714499
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.570392
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.032136
+    },
+    {
+      "case_id": "dev-09",
+      "system": "auth-service",
+      "audience": "operator",
+      "query": "응답 지연과 네트워크 호출 타임아웃이 함께 발생하여 각각 점검 필요",
+      "expected_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.742448
+        },
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.671699
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.032101
+    },
+    {
+      "case_id": "dev-10",
+      "system": "payments-service",
+      "audience": "user",
+      "query": "결제가 진행되지 않을 때 사용자가 확인할 사항",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.71258
+        }
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "elapsed_seconds": 0.030247
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "created_at": "2026-10-21T04:22:14.327918+00:00",
+  "synthetic": true,
+  "scope": "실제 Ollama 기본 생성 모델 1건 + 실제 MCP 샘플 조회 + 실제 임베딩의 호환성 확인. 일반 답변 정확도·운영 장애 진단 성능 평가가 아닙니다.",
+  "query": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+  "selected_system": "auth-service",
+  "status": "completed",
+  "models": {
+    "fast": "qwen3:0.6b",
+    "quality": "qwen3:8b",
+    "embedding": "qwen3-embedding:0.6b"
+  },
+  "langsmith_enabled": false,
+  "timed_out": false,
+  "timeout_seconds": 180,
+  "errors": [],
+  "cleanup_errors": [],
+  "runtime_context": {
+    "code_revision": "19bacc00d497a943ff328d638105678f646bfb8e",
+    "code_dirty": true,
+    "catalog_version": "2026-10-21-v1",
+    "fast_model": "ollama:qwen3:0.6b",
+    "quality_model": "ollama:qwen3:8b",
+    "embedding_model": "qwen3-embedding:0.6b"
+  },
+  "retrieval_health": {
+    "status": "ok",
+    "embedding": {
+      "model": "qwen3-embedding:0.6b",
+      "digest": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d",
+      "dimensions": 1024
+    },
+    "catalog_version": "2026-10-21-v1",
+    "document_count": 10
+  },
+  "graph_wall_seconds": 48.704397,
+  "result": {
+    "final": "1. **샘플 점검**  \n   - 선택한 대상인 `auth-service`는 모니터링 상태가 `degraded`로, CPU 사용률 80.3%, 메모리 사용률 62.2%, p95 지연 시간 2.4s(임계값 1.0s), 연결 풀 사용률 92% 등의 수치를 보입니다. 이는 샘플 데이터로 실제 장애 원인을 확정할 수 없습니다. [sample_monitoring]  \n\n2. **문서 안내**  \n   - 사용자 증상(로그인 후 화면 전환 실패, 오류 메시지 없음)은 [faq:login] 문서에 해당합니다.  \n     - **확인 사항**: 발생 시각(오전 9시), 사용 환경(윈도우 크롬), 오류 메시지(없음)를 기록했습니다.  \n     - **추천 조치**:  \n       1. 로그인 페이지를 새로고침하고 재시도합니다.  \n       2. 다른 브라우저 또는 시크릿 창에서 동일한 현상인지 확인합니다.  \n       3. 계속 발생하면 로그인 후 멈춘 화면과 재현 순서를 담당자에게 전달합니다. [faq:login]  \n\n3. **추가 확인**  \n   - 모니터링 데이터는 샘플로, 실제 서버 상태와 무관합니다.  \n   - 브라우저 또는 네트워크 문제인지 확인하려면 [faq:browser] 또는 [faq:connectivity]의 절차를 참고해야 합니다.  \n   - 현재 제공된 정보로 원인을 확정할 수 없으므로, 추가 확인이 필요합니다.",
+    "intake": {
+      "fields": {
+        "symptom": {
+          "status": "provided",
+          "value": "오전 9시부터 로그인 후 화면이 넘어가지 않아요",
+          "evidence": "오전 9시부터 로그인 후 화면이 넘어가지 않아요"
+        },
+        "occurred_at": {
+          "status": "provided",
+          "value": "오전 9시",
+          "evidence": "오전 9시"
+        },
+        "error_message": {
+          "status": "none",
+          "value": null,
+          "evidence": "오류 메시지는 없어"
+        },
+        "environment": {
+          "status": "provided",
+          "value": "윈도우 크롬",
+          "evidence": "윈도우 크롬"
+        }
+      },
+      "questions": [],
+      "missing_fields": [],
+      "asked_fields": [],
+      "last_question_field": null,
+      "source": "rules_fallback",
+      "warnings": [
+        "symptom: 형식이 잘못되어 추출 값을 제외했습니다.",
+        "occurred_at: 형식이 잘못되어 추출 값을 제외했습니다.",
+        "error_message: 형식이 잘못되어 추출 값을 제외했습니다.",
+        "environment: 형식이 잘못되어 추출 값을 제외했습니다."
+      ],
+      "usage": {
+        "model": "ollama:qwen3:0.6b",
+        "tokens": 431,
+        "usd": 6.5e-05
+      }
+    },
+    "unvalidated_draft": "1. **샘플 점검**  \n   - 선택한 대상인 `auth-service`는 모니터링 상태가 `degraded`로, CPU 사용률 80.3%, 메모리 사용률 62.2%, p95 지연 시간 2.4s(임계값 1.0s), 연결 풀 사용률 92% 등의 수치를 보입니다. 이는 샘플 데이터로 실제 장애 원인을 확정할 수 없습니다. [sample_monitoring]  \n\n2. **문서 안내**  \n   - 사용자 증상(로그인 후 화면 전환 실패, 오류 메시지 없음)은 [faq:login] 문서에 해당합니다.  \n     - **확인 사항**: 발생 시각(오전 9시), 사용 환경(윈도우 크롬), 오류 메시지(없음)를 기록했습니다.  \n     - **추천 조치**:  \n       1. 로그인 페이지를 새로고침하고 재시도합니다.  \n       2. 다른 브라우저 또는 시크릿 창에서 동일한 현상인지 확인합니다.  \n       3. 계속 발생하면 로그인 후 멈춘 화면과 재현 순서를 담당자에게 전달합니다. [faq:login]  \n\n3. **추가 확인**  \n   - 모니터링 데이터는 샘플로, 실제 서버 상태와 무관합니다.  \n   - 브라우저 또는 네트워크 문제인지 확인하려면 [faq:browser] 또는 [faq:connectivity]의 절차를 참고해야 합니다.  \n   - 현재 제공된 정보로 원인을 확정할 수 없으므로, 추가 확인이 필요합니다.",
+    "validation": {
+      "status": "passed",
+      "errors": [],
+      "citations": [
+        "faq:login",
+        "faq:browser",
+        "faq:connectivity"
+      ]
+    },
+    "validation_attempts": 1,
+    "retrieval": {
+      "status": "ok",
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.78457,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.580416,
+          "audience": "user"
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.558524,
+          "audience": "user"
+        }
+      ]
+    },
+    "operator_retrieval": {
+      "status": "ok",
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.64445,
+          "audience": "operator"
+        }
+      ]
+    },
+    "telemetry": {
+      "code_revision": "19bacc00d497a943ff328d638105678f646bfb8e",
+      "code_dirty": true,
+      "catalog_version": "2026-10-21-v1",
+      "fast_model": "ollama:qwen3:0.6b",
+      "quality_model": "ollama:qwen3:8b",
+      "embedding_model": "qwen3-embedding:0.6b",
+      "inquiry_id": "2b608d02-8930-4ff1-b0f1-fca237bf02a4",
+      "request_id": "952dd966-92fb-4c43-826d-73464d8ccc49",
+      "thread_id": "synthetic-local-ee53a8ad-edd4-4601-8c29-9314077541a7",
+      "selected_system": "auth-service",
+      "data_source": "sample",
+      "validation_status": "passed",
+      "retrieved_document_ids": [
+        "faq:login",
+        "faq:connectivity",
+        "faq:browser"
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "processing_seconds": 48.696025,
+      "processing_scope": "graph_until_persistence",
+      "tracing_enabled": false
+    },
+    "inquiry_id": "2b608d02-8930-4ff1-b0f1-fca237bf02a4",
+    "request_id": "952dd966-92fb-4c43-826d-73464d8ccc49"
+  },
+  "processing_seconds": 49.573009
+}
