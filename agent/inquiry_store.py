@@ -141,6 +141,13 @@ class SqliteInquiryStore:
                 (serialized, run_id, cursor.lastrowid, now, request_id))
             conn.execute("UPDATE inquiries SET status='completed',updated_at=? WHERE inquiry_id=?",
                          (now, request["inquiry_id"]))
+            # 질문을 실제로 사용자에게 보낸 결과와 접수 필드를 함께 확정한다.
+            # AI 생성 실패 시 '이미 질문했다'는 상태만 먼저 남지 않게 한다.
+            if result.get("intake") is not None:
+                details = json.loads(inquiry["details_json"])
+                details["intake"] = result["intake"]
+                conn.execute("UPDATE inquiries SET details_json=? WHERE inquiry_id=?",
+                             (_json(details), request["inquiry_id"]))
 
     def fail(self, request_id: str, error: str, *, interrupted: bool = False) -> None:
         """실패해도 접수 원문은 남긴다. 이미 확정한 답변은 연결 종료로 취소하지 않는다."""

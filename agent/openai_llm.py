@@ -108,6 +108,13 @@ class OpenAILLM:
 class OpenAIFastLLM(OpenAILLM):
     """분류·계획·단순 대화 전담 (저비용 모델, 기본 gpt-4o-mini)."""
 
+    @traceable(run_type="llm", name="intake.extract")
+    def extract_intake(self, query, previous):
+        # 추출값은 intake 모듈에서 스키마와 원문 근거를 다시 검사한다.
+        from .intake_llm import INTAKE_SYSTEM, INTAKE_SCHEMA, intake_prompt
+        content, usage = self._chat(INTAKE_SYSTEM, intake_prompt(query, previous), json_mode=True)
+        return json.loads(content), usage
+
     @traceable(run_type="llm", name="openai_fast.route")
     def route(self, query: str) -> tuple[dict, dict]:
         system = ("당신은 ICT 운영 지원 라우터다. 사용자 요청을 분류하라. "

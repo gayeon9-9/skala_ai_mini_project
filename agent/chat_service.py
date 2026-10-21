@@ -29,6 +29,7 @@ class ChatService:
             "query": request.message, "thread_id": request.thread_id,
             "selected_system": request.selected_system,
             "history": self.started["history"], "events": [], "cost_usd": 0.0,
+            "intake_previous": self.store.get_thread(request.thread_id)["details"].get("intake", {}),
         }
         self.finished = self.started["replayed"]
 
@@ -98,6 +99,7 @@ class ChatService:
                    "selected_system": self.request.selected_system,
                    "data_source": "sample" if self.request.selected_system else None,
                    "inquiry_id": result["inquiry_id"], "request_id": self.request.request_id,
+                   "intake": result.get("intake"),
                    "langsmith_run_id": result.get("langsmith_run_id")}
         except asyncio.CancelledError:
             self.interrupted()

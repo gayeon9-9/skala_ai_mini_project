@@ -57,6 +57,20 @@
   .row.draft .bubble { background: #282837; color: #b5b5c8; border: 1px dashed #626278; }
   .message-target { margin-bottom: 5px; font-size: 12px; opacity: 0.85; }
   .row.error .bubble { background: #442c38; color: #ffcece; border: 1px solid #80505d; }
+  .intake-card {
+    flex-shrink: 0; padding: 12px 14px; border: 1px solid #505074;
+    border-radius: 12px; background: #262638; font-size: 13px;
+  }
+  .intake-card summary { cursor: pointer; font-weight: 600; }
+  .intake-card .system-note { margin-top: 8px; }
+  .intake-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 12px 0; }
+  .intake-field { min-width: 0; }
+  .intake-field dt { color: #b5b5d3; font-size: 12px; }
+  .intake-field dd { margin: 5px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .field-status { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 5px; background: #3a3a52; }
+  .field-status.provided { color: #a9e4b9; }
+  .field-status.unmentioned { color: #f1d294; }
+  @media (max-width: 560px) { .intake-fields { grid-template-columns: 1fr; } }
   .steps {
     max-width: 70%; font-size: 12px; color: #9a9ac0; padding: 6px 14px;
     display: flex; flex-direction: column; gap: 3px;
@@ -151,6 +165,22 @@
         <pre>{{ item.text }}</pre>
       </details>
     </template>
+    <details v-if="intake" class="intake-card" open>
+      <summary>정리된 문의 정보 · {{ selectedSystem }}</summary>
+      <p v-if="intake.source === 'rules_fallback'" class="system-note" role="status">자동 정리 중 확인이 어려운 내용이 있어, 원문에서 명확히 확인된 표현만 반영했습니다.</p>
+      <p v-else-if="intake.source === 'rules'" class="system-note">시연 모드: 정해진 표현을 바탕으로 문의 정보를 정리했습니다.</p>
+      <p class="system-note">{{ sending || restoring || pendingRequest || restoreError
+        ? '이전 응답까지 저장된 정보입니다. 현재 요청의 처리 결과는 아직 반영되지 않았습니다.'
+        : '입력한 내용을 바탕으로 정리했습니다. 다른 내용이 있으면 대화로 알려주세요.' }}</p>
+      <dl class="intake-fields">
+        <div v-for="field in intakeRows" :key="field.key" class="intake-field">
+          <dt>{{ field.label }}<span class="field-status" :class="field.status">{{ field.statusLabel }}</span></dt>
+          <dd :title="field.evidence ? '입력 근거: ' + field.evidence : ''">{{ field.text }}</dd>
+        </div>
+      </dl>
+      <p v-if="missingIntakeLabels.length" class="system-note">추가로 알려주실 정보: {{ missingIntakeLabels.join(', ') }}. 아래 대화창에 자연스럽게 답해주세요.</p>
+      <p v-else class="system-note">미언급한 항목은 없습니다. ‘없음’·‘모름’도 입력한 답변으로 보존합니다.</p>
+    </details>
   </div>
   <form @submit.prevent="onSubmit">
     <input
@@ -198,6 +228,7 @@ createApp({
     const restoreError = ref('');
     const sessionNotice = ref('');
     const inquiryId = ref('');
+    const intake = ref(null);
     const pendingRequest = ref(null);
     const thread = ref('');
     const SESSION_KEY = 'ai-helpdesk.session.v1';
@@ -206,6 +237,35 @@ createApp({
       !catalogError.value && systems.value.includes(selectedSystem.value) && !!input.value.trim());
     let nextId = 0;
     let activeTarget = '';
+
+    const intakeFieldLabels = {
+      symptom: '증상', occurred_at: '발생 시각', error_message: '오류 메시지', environment: '사용 환경',
+    };
+    const intakeStatusLabels = { unmentioned: '미언급', none: '없음', unknown: '모름', provided: '값 있음' };
+    const intakeRows = computed(() => Object.entries(intakeFieldLabels).map(([key, label]) => {
+      const field = intake.value?.fields[key] || { status: 'unmentioned', value: null };
+      return { key, label, status: field.status, statusLabel: intakeStatusLabels[field.status],
+        evidence: field.evidence,
+        text: field.status === 'provided' ? field.value
+          : ({ unmentioned: '아직 말씀하지 않은 정보예요.', none: '없다고 답한 내용입니다.',
+               unknown: '모른다고 답한 내용입니다.' })[field.status] };
+    }));
+    const missingIntakeLabels = computed(() => intakeRows.value
+      .filter(field => field.status === 'unmentioned').map(field => field.label));
+
+    function normalizeIntake(value) {
+      if (!value || typeof value !== 'object' || !value.fields || typeof value.fields !== 'object') return null;
+      // 접수 결과는 문장이 아니라 필드/상태로 받는다. 누락과 명시적인 없음/모름을
+      // 합치지 않고, 사용자 문장은 Vue 보간으로 표시해 HTML로 실행하지 않는다.
+      const fields = {};
+      for (const key of Object.keys(intakeFieldLabels)) {
+        const field = value.fields[key] || {};
+        const status = Object.hasOwn(intakeStatusLabels, field.status) ? field.status : 'unmentioned';
+        fields[key] = { status, value: typeof field.value === 'string' ? field.value : '',
+          evidence: typeof field.evidence === 'string' ? field.evidence : '' };
+      }
+      return { ...value, fields };
+    }
 
     function makeId() {
       // localhost에서 제공되는 브라우저 UUID를 사용한다. 이 ID는 인증 토큰이 아니다.
@@ -219,6 +279,7 @@ createApp({
         localStorage.setItem(SESSION_KEY, JSON.stringify({
           thread_id: thread.value, selected_system: selectedSystem.value,
           inquiry_id: inquiryId.value, pending_request: pendingRequest.value,
+          intake: intake.value,
           messages: log.value.filter(item => ['user', 'agent'].includes(item.kind))
             .map(item => ({ role: item.kind === 'user' ? 'user' : 'assistant',
               content: item.text, target: item.target || selectedSystem.value })),
@@ -244,6 +305,7 @@ createApp({
           selectedSystem.value = typeof cached.selected_system === 'string' ? cached.selected_system : '';
           activeTarget = selectedSystem.value;
           inquiryId.value = typeof cached.inquiry_id === 'string' ? cached.inquiry_id : '';
+          intake.value = normalizeIntake(cached.intake);
           log.value = toLog(Array.isArray(cached.messages) ? cached.messages : [], activeTarget);
           const pending = cached.pending_request;
           if (pending && ['request_id', 'message', 'target'].every(key =>
@@ -296,6 +358,7 @@ createApp({
         selectedSystem.value = target;
         activeTarget = target;
         inquiryId.value = data.inquiry_id || '';
+        intake.value = normalizeIntake(data.inquiry?.details?.intake);
         log.value = restoredLog;
         sessionNotice.value = pending
           ? '이전 요청의 완료 여부를 확인하려면 같은 요청 다시 시도를 눌러주세요. 같은 ID로 확인하여 중복 접수를 방지합니다.'
@@ -318,6 +381,7 @@ createApp({
       selectedSystem.value = target;
       activeTarget = target;
       inquiryId.value = '';
+      intake.value = null;
       pendingRequest.value = null;
       log.value = [];
       input.value = '';
@@ -474,6 +538,7 @@ createApp({
           streamItem.kind = 'agent';
           streamItem.text = e.reply;   // 서버가 저장 완료 후 보내는 최종 텍스트를 확정한다
           inquiryId.value = e.inquiry_id || inquiryId.value;
+          if ('intake' in e) intake.value = normalizeIntake(e.intake);
           pendingRequest.value = null;
           saveSession();
           streamClosed = true;
@@ -505,6 +570,7 @@ createApp({
     return { backendLabel, log, input, sending, logEl, systems, selectedSystem,
       catalogLoading, catalogError, dataSource, canSend, loadSystems, onSubmit,
       restoring, restoreError, sessionNotice, inquiryId, pendingRequest,
+      intake, intakeRows, missingIntakeLabels,
       restoreThread, newInquiry, onSelectedSystemChange, retryRequest };
   },
 }).mount('#app');

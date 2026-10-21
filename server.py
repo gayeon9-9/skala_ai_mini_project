@@ -197,6 +197,7 @@ def _metadata(result: dict, run_id: str | None) -> dict:
         "langsmith_run_id": run_id,
         "inquiry_id": result.get("inquiry_id"),
         "request_id": result.get("request_id"),
+        "intake": result.get("intake"),
         "selected_system": result.get("selected_system"),
         "data_source": "sample" if result.get("selected_system") else None,
     }

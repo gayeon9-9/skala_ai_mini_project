@@ -23,6 +23,11 @@ class FakeLLM:
 class FastLLM(FakeLLM):
     """분류·계획 등 짧고 정형적인 단계 전담 (저비용)."""
 
+    def extract_intake(self, query, previous):
+        # fake 모드의 규칙 추출은 분기 테스트용이며 실제 LLM 성능으로 평가하지 않는다.
+        from .intake import extract_rules
+        return {"fields": extract_rules(query, previous), "source": "rules"}, {"usd": 0.0, "tokens": 0}
+
     @traceable(run_type="llm", name="fast_llm.route")
     def route(self, query: str) -> tuple[dict, dict]:
         """Wave 5 — 쿼리 라우팅. 장애 관련이면 incident 파이프라인, 아니면 chat 직행."""

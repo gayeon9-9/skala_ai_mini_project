@@ -99,3 +99,21 @@ class ChatPersistenceTests(unittest.TestCase):
     def test_unknown_thread_does_not_create_an_inquiry(self):
         self.assertEqual(self.client.get("/threads/unknown").status_code, 404)
         self.assertEqual(self.store.load("unknown"), [])
+
+    def test_natural_intake_merges_followup_and_restores_fields(self):
+        first = self.client.post("/chat", json={**self.payload,
+            "message": "로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요."})
+        self.assertEqual(first.status_code, 200, first.text)
+        intake = first.json()["metadata"]["intake"]
+        self.assertEqual(intake["fields"]["error_message"]["status"], "none")
+        self.assertEqual(intake["last_question_field"], "occurred_at")
+        second = self.client.get("/chat/stream", params={**self.payload,
+            "message": "오전 9시요", "request_id": "request-2"})
+        answer = next(e for e in sse_events(second) if e["type"] == "FinalAnswer")
+        fields = answer["intake"]["fields"]
+        self.assertIn("로그인", fields["symptom"]["value"])
+        self.assertEqual(fields["error_message"]["status"], "none")
+        self.assertIn("오전 9시", fields["occurred_at"]["value"])
+        restored = self.client.get("/threads/persist").json()
+        self.assertEqual(restored["inquiry"]["details"]["intake"]["fields"], fields)
+        self.assertEqual(len(restored["messages"]), 4)

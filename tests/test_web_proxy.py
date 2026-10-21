@@ -298,6 +298,48 @@ class BrowserSessionTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_intake_card_keeps_none_unknown_unmentioned_distinct(self):
+        self.run_browser(r"""
+const { app, streams, saved } = await boot();
+app.selectedSystem.value = 'auth-service';
+app.onSelectedSystemChange();
+app.input.value = '로그인이 안 되고 오류 메시지는 없어요.';
+app.onSubmit();
+streams[0].emit({ type: 'FinalAnswer', reply: '언제부터 발생했나요?', intake: { fields: {
+  symptom: { status: 'provided', value: '<script>입력은 HTML이 아님</script>', evidence: '로그인이 안 되고' },
+  occurred_at: { status: 'unmentioned', value: null },
+  error_message: { status: 'none', value: null, evidence: '오류 메시지는 없어요' },
+  environment: { status: 'unknown', value: null, evidence: '모르겠어요' },
+} } });
+assert.deepEqual(Array.from(app.intakeRows.value, field => field.statusLabel), ['값 있음', '미언급', '없음', '모름']);
+assert.deepEqual(Array.from(app.missingIntakeLabels.value), ['발생 시각']);
+assert.equal(app.intakeRows.value[0].text, '<script>입력은 HTML이 아님</script>');
+assert.equal(saved().intake.fields.error_message.status, 'none');
+app.newInquiry();
+assert.equal(app.intake.value, null);
+assert.equal(saved().intake, null);
+""")
+
+    def test_intake_card_restores_server_values_and_keeps_cache_on_error(self):
+        self.run_browser(r"""
+const intake = { fields: {
+  symptom: { status: 'provided', value: '화면 멈춤' },
+  occurred_at: { status: 'provided', value: '오전 9시', evidence: '오전 9시부터' },
+  error_message: { status: 'none' }, environment: { status: 'unmentioned' },
+} };
+const cache = { thread_id: 't-intake', selected_system: 'auth-service', messages: [], intake };
+const restored = await boot({ cache, status: 200, payload: {
+  thread_id: 't-intake', selected_system: 'auth-service', inquiry_id: 'inq-1',
+  messages: [], inquiry: { details: { intake }, requests: [] },
+} });
+assert.equal(restored.app.intake.value.fields.occurred_at.value, '오전 9시');
+assert.equal(restored.saved().intake.fields.environment.status, 'unmentioned');
+const failed = await boot({ cache, status: 503 });
+assert.ok(failed.app.restoreError.value);
+assert.equal(failed.app.intake.value.fields.occurred_at.value, '오전 9시');
+assert.equal(failed.saved().intake.fields.symptom.value, '화면 멈춤');
+""")
+
     def test_failed_request_reuses_id_and_success_caches_only_final(self):
         self.run_browser(r"""
 const { app, streams, saved } = await boot();

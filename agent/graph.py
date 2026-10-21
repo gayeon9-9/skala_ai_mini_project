@@ -52,6 +52,8 @@ class AgentState(TypedDict, total=False):
     query: str
     thread_id: str
     history: list[dict]
+    intake_previous: dict
+    intake: dict
     # 화면에서 직원이 직접 고른 시스템. None이면 기존 자유 대화/진단 경로를 쓴다.
     selected_system: str | None
     route: str
@@ -109,6 +111,17 @@ async def chat_answer_node(state: AgentState, deps: SupervisorDeps) -> dict:
     return {"final": reply, "last_prompt": usage.get("prompt"),
             "cost_usd": _cost(state, usage),
             "events": state["events"] + [{"type": "Finalize", "pipeline": "chat-direct"}]}
+
+
+@traceable(name="intake_node")
+async def intake_node(state: AgentState, deps: SupervisorDeps) -> dict:
+    if state.get("selected_system") is None:
+        return {}  # 선택 없는 기존 교육용 진단 API는 기존 흐름을 유지한다.
+    from .intake import analyze_intake
+    intake = await analyze_intake(state["query"], state.get("intake_previous", {}), deps.fast_llm)
+    return {"intake": intake, "cost_usd": _cost(state, {"usd": 0, **intake.get("usage", {})}),
+            "events": state["events"] + [{"type": "IntakeUpdated", "source": intake["source"],
+                "missing_fields": intake["missing_fields"]}]}
 
 
 @traceable(name="plan_node")
@@ -328,6 +341,14 @@ async def write_node(state: AgentState, deps: SupervisorDeps) -> dict:
             f"선택한 대상: {selected} (실습용 샘플 데이터)\n"
             f"사용자 증상: {state['query']}"
         )
+        # 후속 발화가 '오전 9시요'여도 최초 증상을 잃지 않도록 누적 접수 내용을 전달한다.
+        fields = state.get("intake", {}).get("fields", {})
+        labels = {"symptom": "접수 증상", "occurred_at": "발생 시각",
+                  "error_message": "오류 메시지", "environment": "사용 환경"}
+        for key, field in fields.items():
+            if field.get("status") != "unmentioned":
+                value = field.get("value") or {"none": "없음", "unknown": "모름"}.get(field.get("status"), "미확인")
+                write_query += f"\n{labels.get(key, key)}: {value}"
     draft, usage = await deps.quality_llm.write(
         write_query, state.get("collected", []),
         attempt, state.get("validation_feedback"),
@@ -358,7 +379,11 @@ async def validate_node(state: AgentState, deps: SupervisorDeps) -> dict:
 
 @traceable(name="finalize_node")
 async def finalize_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    return {"final": state["draft"],
+    final = state["draft"]
+    questions = state.get("intake", {}).get("questions", [])
+    if questions:
+        final += "\n\n추가 확인: " + " ".join(questions)
+    return {"final": final,
             "events": state["events"] + [{"type": "Finalize", "pipeline": "incident-v2"}]}
 
 
@@ -380,6 +405,7 @@ def build_graph(deps: SupervisorDeps):
     node = lambda fn: partial(fn, deps=deps)   # Wave 13 — 명시적 의존성 주입
     g.add_node("route", node(route_node))
     g.add_node("chat_answer", node(chat_answer_node))
+    g.add_node("intake", node(intake_node))
     g.add_node("plan", node(plan_node))
     g.add_node("gate", node(gate_node))
     g.add_node("research", node(research_node))
@@ -391,8 +417,9 @@ def build_graph(deps: SupervisorDeps):
 
     g.set_entry_point("route")
     g.add_conditional_edges("route", _after_route,
-                            {"chat_answer": "chat_answer", "plan": "plan"})
+                            {"chat_answer": "chat_answer", "plan": "intake"})
     g.add_edge("chat_answer", END)
+    g.add_edge("intake", "plan")
     g.add_edge("plan", "gate")
     g.add_edge("gate", "research")
     g.add_edge("research", "replan_check")
