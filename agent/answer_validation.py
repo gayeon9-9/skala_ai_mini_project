@@ -134,8 +134,19 @@ def validate_answer(draft: str, selected_system: str | None,
             errors.append("샘플 점검만으로 장애 원인을 확정하는 표현을 사용할 수 없습니다.")
         elif re.search(r"(?:DB|데이터베이스|서버|네트워크)\s*(?:장애|고장)(?:가|이)?(?:입니다|이다|났습니다)", sentence, re.I):
             errors.append("확인되지 않은 실제 장애를 단정했습니다.")
-    if re.search(r"(?:재시작|복구|재배포|롤백|설정\s*변경|해결)(?:을|를)?\s*(?:완료\s*)?(?:했|하였|되었|됐)", draft):
-        errors.append("실행하지 않은 조치·복구를 완료했다고 표현했습니다.")
+    action_pattern = r"(?:재시작|복구|재배포|롤백|설정\s*변경|해결)(?:을|를)?\s*(?:완료\s*)?(?:했|하였|되었|됐)"
+    for sentence in re.split(r"[.!?\n;]+", draft):
+        for action in re.finditer(action_pattern, sentence):
+            # FAQ의 '해결되었다는 뜻은 아닙니다'는 완료 주장이 아니라 경고다.
+            # 문장 전체에 '아니다'가 있다는 이유로 통과시키지 않고, 해당 동사의
+            # 바로 뒤에 붙은 부정/미확인 표현만 확인한다. 독립된 복구 주장은 남는다.
+            suffix = sentence[action.end():]
+            negated = re.match(
+                r"^(?:다는|다고|음을|음)\s*(?:(?:뜻|의미|것|사실|상태|결과)(?:은|는|이|가|을|를)?\s*)?"
+                r"(?:아니|아닙|단정할\s*수\s*없|확정할\s*수\s*없|볼\s*수\s*없|보장하지\s*않)"
+                r"|^는지(?:는)?\s*(?:아직\s*)?(?:확인|모르)", suffix)
+            if not negated:
+                errors.append("실행하지 않은 조치·복구를 완료했다고 표현했습니다.")
 
     forbidden = (r"\b(?:sudo|kubectl|systemctl|chmod|chown)\b"
                  r"|\brm\s+-[A-Za-z]*r[A-Za-z]*f|\bkill\s+-9"

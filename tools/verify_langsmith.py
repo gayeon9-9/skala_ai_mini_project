@@ -154,7 +154,8 @@ async def verify(args) -> dict:
                 result = await asyncio.wait_for(service.invoke(), timeout=55)
             run_id = result.get("langsmith_run_id")
             report.update({"run_id": run_id, "inquiry_id": result.get("inquiry_id"),
-                           "request_id": request.request_id})
+                           "request_id": request.request_id,
+                           "validation": result.get("validation")})
             if not run_id:
                 report["error_type"] = "MissingRunId"
                 return report
@@ -190,7 +191,8 @@ async def verify(args) -> dict:
             feedback = []
             for key, passed in scores.items():
                 item = await asyncio.wait_for(asyncio.to_thread(
-                    client.create_feedback, run_id=run_id, key=key, score=int(passed),
+                    client.create_feedback, run_id=run_id, session_id=remote.session_id,
+                    key=key, score=int(passed),
                     comment="합성 문의 한 건의 규칙 검사/FAQ 검색 확인. fake 생성 모델이며 실LLM 정확도 점수가 아닙니다.",
                     stop_after_attempt=1), timeout=20)
                 feedback.append({"key": key, "score": int(passed), "feedback_id": str(item.id)})

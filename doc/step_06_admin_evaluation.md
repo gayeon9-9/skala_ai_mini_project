@@ -19,6 +19,7 @@
 - `agent/observability.py`, `chat_service.py`, `deps.py`: 요청별 실행 추적·버전·소요 시간 연결.
 - `evals/evaluate.py`: 실제 로컬 임베딩 검색과 기존 Runbook 규칙 어댑터 비교.
 - `tools/verify_langsmith.py`: 합성 문의 한 건을 실제 수집하고 저장된 run·하위 실행·평가 피드백 확인.
+- `tools/verify_local_model.py`: 기본 로컬 생성 모델의 실제 실행을 임시 DB로 확인하고 실패도 기록.
 - `tools/check_final_flow.py`, `compare_versions.py`: 별도 커밋·포트·DB에서 원본/완료본 HTTP 확인.
 
 관리자 `completed`는 **답변 저장 완료**이며 장애 복구 완료를 뜻하지 않는다.
@@ -31,6 +32,7 @@
 .venv/bin/python evals/evaluate.py --split dev --output /tmp/rag-dev.json --repetitions 1
 .venv/bin/python evals/evaluate.py --split test --output /tmp/rag-test.json --repetitions 1
 .venv/bin/python tools/verify_langsmith.py --output /tmp/langsmith-check.json
+.venv/bin/python tools/verify_local_model.py --output /tmp/local-model-check.json
 ```
 
 검색 평가는 Ollama와 `qwen3-embedding:0.6b`가 필요하다. LangSmith 검사는 유효한
@@ -52,6 +54,13 @@ FAQ는 새로 추가한 기능이어서 원본과의 정확도 증가율을 계�
 
 기능 코드 기준 전체 **133개 테스트·73개 하위 사례 통과**. 관리자 API·프록시·화면 상태,
 페이지 분할, 이전 근거 표시, 추적 SDK 실패 격리, 평가 집계의 분모를 포함해 확인했다.
+
+최초 외부 수집 확인에서는 실행·하위 노드 38개·메타데이터 수집에 성공했으나,
+FAQ의 정상 문장인 “화면 문제가 해결되었다는 뜻은 아닙니다”가 복구 완료 주장으로
+오차단됐다. 최초 결과를 `langsmith_initial.json`에 보존하고, 직접 연결된 부정 표현만
+구분하도록 보완했다. 실제 FAQ 4개 각각 및 3개 동시 검색 문맥으로 회귀 테스트를 추가했다.
+검색 코드·문턱값·최종 확인용 정답은 바꾸지 않았다.
+보완 후 전체 **135개 테스트·81개 하위 사례 통과**.
 
 기능 코드의 단위·통합 검사와 실제 외부 수집/브라우저 비교 증거를 나누어 기록한다.
 실행 결과·원시 응답·실제 캡처는 [최종 비교 자료](evidence/final/README.md)에 보존한다.

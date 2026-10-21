@@ -1,6 +1,8 @@
 """고정된 정상/오류 답변으로 차단과 오차단을 함께 검사한다. 의미 품질 평가는 별도다."""
 
 import unittest
+import json
+from pathlib import Path
 from unittest.mock import patch
 
 from agent.answer_generation import deterministic_rag_answer, evidence_fallback
@@ -105,6 +107,39 @@ class AnswerValidationTests(unittest.TestCase):
                 result = self.check(self.good + "\n" + sentence)
                 self.assertTrue(result["ok"], result)
         self.assert_rejected(self.good + "\n원인은 DB 장애입니다. 원인이 확정되지 않았습니다.", "원인을 확정")
+
+    def test_negated_completion_is_allowed_without_hiding_real_action_claim(self):
+        for sentence in ("화면 문제가 해결되었다는 뜻은 아닙니다.",
+                         "복구했다고 단정할 수 없습니다.",
+                         "문제가 해결되었는지 확인이 필요합니다."):
+            with self.subTest(sentence=sentence):
+                result = self.check(self.good + "\n" + sentence)
+                self.assertTrue(result["ok"], result)
+        self.assert_rejected(self.good + "\n복구했습니다. 다만 원인은 확정할 수 없습니다.", "조치·복구")
+        self.assert_rejected(self.good + "\n해결되었다는 뜻은 아닙니다만 복구했습니다.", "조치·복구")
+
+    def test_actual_catalog_faq_answers_and_three_document_context_pass(self):
+        # 실제 사용자 FAQ가 바뀔 때도 정상 안내를 검증기가 오차단하지 않는지 확인한다.
+        # 검색 평가용 held-out 질문은 사용하지 않으며 문서 생성→검증 연결만 검사한다.
+        root = Path(__file__).resolve().parents[1]
+        catalog = json.loads((root / "data/knowledge_catalog.json").read_text())
+        docs = [{**doc, "text": (root / doc["path"]).read_text()} for doc in catalog["documents"]
+                if doc["audience"] == "user"]
+        contexts = [(next((system for system in doc["systems"] if system != "*"), "auth-service"), [doc])
+                    for doc in docs]
+        auth_docs = [doc for doc in docs if "auth-service" in doc["systems"] or "*" in doc["systems"]]
+        self.assertEqual(len(auth_docs), 3)
+        contexts.append(("auth-service", auth_docs))
+        for selected, documents in contexts:
+            with self.subTest(selected=selected, documents=[doc["document_id"] for doc in documents]):
+                collected = [{"source": "monitoring", "data": {
+                    "system_name": selected, "status": "degraded", "cpu_percent": 42.5,
+                    "memory_percent": 31, "alerts": ["지연"]}}]
+                collected.extend({"source": "knowledge", "data": doc} for doc in documents)
+                collected.append({"source": "retrieval_status", "data": {"status": "ok"}})
+                draft = deterministic_rag_answer("선택한 대상: " + selected, collected)
+                result = validate_answer(draft, selected, collected, {"status": "ok", "documents": documents})
+                self.assertTrue(result["ok"], result)
 
     def test_operator_commands_and_server_action_advice_are_rejected(self):
         for command in ("sudo systemctl restart database", "kubectl rollout restart deployment/api",
