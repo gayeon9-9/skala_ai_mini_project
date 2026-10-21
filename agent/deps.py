@@ -16,3 +16,4 @@ class SupervisorDeps:
     session_store: Any   # Wave 12 — SQLite 세션 저장소
     version: str         # Wave 14 — SUPERVISOR_VERSION (v1/v2)
     inquiry_store: Any = None  # 기존 테스트·v1 생성 코드를 유지하면서 접수 저장소를 주입한다.
+    retriever: Any = None      # 실제 검색기 대신 고정 문서 검색기를 주입해 오프라인 테스트한다.

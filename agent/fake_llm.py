@@ -109,6 +109,13 @@ class QualityLLM(FakeLLM):
                 on_token(draft)
             return draft, self._usage(query, draft)
 
+        from .answer_generation import deterministic_rag_answer, is_rag_answer
+        if is_rag_answer(collected):
+            draft = deterministic_rag_answer(query, collected)
+            if on_token is not None:
+                on_token(draft)
+            return draft, self._usage(query + str(feedback), draft)
+
         mon = [c for c in collected if c["source"] == "monitoring"]
         run = [c for c in collected if c["source"] == "runbook"]
         summary = " · ".join(

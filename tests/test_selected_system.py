@@ -194,7 +194,8 @@ class SelectedSystemTests(unittest.TestCase):
                     {"role": "user", "content": message},
                     {"role": "assistant", "content": body["reply"]},
                 ])
-        self.assertEqual(self.mcp.resource_uris, ["runbook://incident-response/disk-full"])
+        # 4단계부터 선택 접수는 RAG에서 문서를 검색한다. MCP는 대상 점검만 담당한다.
+        self.assertEqual(self.mcp.resource_uris, [])
 
     def test_sse_uses_selection_for_natural_or_conflicting_symptoms(self):
         for index, message in enumerate([

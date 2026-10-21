@@ -104,6 +104,11 @@ async def lifespan(app: FastAPI):
     mcp = MCPClient()
     await mcp.start()   # Wave 2 — MCP subprocess는 서버 수명 동안 딱 1개
     backend, fast_llm, quality_llm = _build_llms()
+    from agent.retrieval import KnowledgeRetriever, OllamaEmbedder
+    retriever = KnowledgeRetriever(embedder=OllamaEmbedder(
+        model=os.environ.get("RAG_EMBEDDING_MODEL", "qwen3-embedding:0.6b"),
+        base_url=os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")),
+        min_score=float(os.environ.get("RAG_MIN_SCORE", "0.50")))
     app.state.llm_backend = backend
     deps = SupervisorDeps(
         fast_llm=fast_llm,
@@ -111,6 +116,7 @@ async def lifespan(app: FastAPI):
         mcp=mcp,
         session_store=SqliteSessionStore(),
         version=os.environ.get("SUPERVISOR_VERSION", "v2"),
+        retriever=retriever,
     )
     inquiry_store(deps).recover_interrupted()  # 이전 프로세스에서 중단된 접수를 재시도 가능하게 한다.
     app.state.deps = deps
@@ -121,6 +127,7 @@ async def lifespan(app: FastAPI):
     finally:
         # 애플리케이션 종료가 예외로 시작되어도 직접 연 연결을 정리한다.
         await mcp.stop()
+        await retriever.aclose()
         deps.session_store.close()
         try:
             from langchain_core.tracers.langchain import wait_for_all_tracers
@@ -198,6 +205,8 @@ def _metadata(result: dict, run_id: str | None) -> dict:
         "inquiry_id": result.get("inquiry_id"),
         "request_id": result.get("request_id"),
         "intake": result.get("intake"),
+        "retrieval": result.get("retrieval"),
+        "validation": result.get("validation"),
         "selected_system": result.get("selected_system"),
         "data_source": "sample" if result.get("selected_system") else None,
     }

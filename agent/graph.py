@@ -54,6 +54,9 @@ class AgentState(TypedDict, total=False):
     history: list[dict]
     intake_previous: dict
     intake: dict
+    retrieval: dict
+    operator_retrieval: dict
+    validation: dict
     # 화면에서 직원이 직접 고른 시스템. None이면 기존 자유 대화/진단 경로를 쓴다.
     selected_system: str | None
     route: str
@@ -267,31 +270,20 @@ def _classify_incident_type(collected: list[dict]) -> str | None:
 @traceable(name="replan_check_node")
 async def replan_check_node(state: AgentState, deps: SupervisorDeps) -> dict:
     """Wave 7 — 1차 수집 결과 평가. runbook이 없으면 gap task만 추가해 재조사."""
+    if state.get("selected_system") is not None:
+        # 접수 경로는 관측 알림으로 파일 하나를 강제로 고르지 않고 다음 RAG 노드에서
+        # 증상·문서 용도·시스템 범위를 사용한다. 선택 없는 실습 API는 기존 경로 유지.
+        return {"events": state["events"] + [{"type": "ReplanCheck", "round": 0,
+            "is_sufficient": True, "runbook_skipped": True,
+            "reason": "관련 문서는 다음 RAG 단계에서 검색합니다."}]}
     has_runbook = any(c["source"] == "runbook" for c in state.get("collected", []))
     rounds = state.get("replan_rounds", 0)
     if has_runbook or rounds >= 1:
         verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": True}
         return {"events": state["events"] + [verdict]}
     collected = state.get("collected", [])
-    if state.get("selected_system") is not None:
-        selected = validate_selected_system(state["selected_system"])
-        # 선택한 시스템에서 실제 이상 상태로 반환된 관측값만 매뉴얼 선택의 근거로
-        # 쓴다. healthy/unknown을 장애로 단정하거나, 다른 시스템의 알림을 사용하지
-        # 않는다. 현재 샘플 조회로 사용자 문의의 원인까지 확정할 수는 없다.
-        evidence = [c for c in collected if c.get("source") == "monitoring"
-                    and c["data"].get("system_name") == selected
-                    and c["data"].get("status") in {"degraded", "down"}]
-        incident_type = _classify_incident_type(evidence)
-        if incident_type is None:
-            # _after_replan_check는 이 값을 보고 analysis로 이동한다. 매뉴얼이
-            # 없다는 이유만으로 research를 반복하지 않고, 관측 범위 안에서 안내한다.
-            verdict = {"type": "ReplanCheck", "round": rounds,
-                       "is_sufficient": True, "runbook_skipped": True,
-                       "reason": "선택한 시스템에서 매뉴얼과 일치하는 장애 근거가 없습니다."}
-            return {"events": state["events"] + [verdict]}
-    else:
-        # 시스템 선택 없이 호출하던 기존 실습 API의 기본 동작은 유지한다.
-        incident_type = _classify_incident_type(collected) or "db-down"
+    # 선택 없는 기존 실습 API의 유형 규칙은 비교·호환용으로 남긴다.
+    incident_type = _classify_incident_type(collected) or "db-down"
     gap_task = {"id": "task-gap-runbook", "agent": "research", "kind": "runbook",
                 "target": incident_type, "status": "pending"}
     verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": False,
@@ -321,15 +313,43 @@ async def analysis_node(state: AgentState, deps: SupervisorDeps) -> dict:
             "cost_usd": _cost(state, usage), "events": state["events"] + [event]}
 
 
+@traceable(name="retrieve_node", run_type="retriever")
+async def retrieve_node(state: AgentState, deps: SupervisorDeps) -> dict:
+    if state.get("selected_system") is None:
+        return {}
+    selected = state["selected_system"]
+    symptom = state.get("intake", {}).get("fields", {}).get("symptom", {}).get("value")
+    query = symptom or state["query"]
+    if deps.retriever is None:
+        user = operator = {"status": "error", "documents": [], "error": "검색기가 설정되지 않았습니다."}
+    else:
+        alerts = [str(a) for item in state.get("collected", []) if item["source"] == "monitoring"
+                  for a in item["data"].get("alerts", [])]
+        async def search(text, audience):
+            try:
+                return await deps.retriever.search(text, selected, audience=audience, k=3)
+            except Exception:
+                return {"status": "error", "documents": [], "error": "문서 검색을 완료하지 못했습니다."}
+        user, operator = await asyncio.gather(search(query, "user"),
+            search(query + "\n" + " ".join(alerts), "operator"))
+    user = {**user, "documents": [doc for doc in user.get("documents", [])
+                                   if doc.get("audience") == "user"]}
+    if user["status"] == "ok" and not user["documents"]:
+        user["status"] = "no_match"
+    # 운영자 매뉴얼은 별도 필드에 저장한다. 사용자 답변 생성 문맥에 섞지 않는다.
+    collected = state.get("collected", []) + [
+        {"source": "knowledge", "data": doc} for doc in user.get("documents", [])
+        if doc.get("audience") == "user"]
+    collected.append({"source": "retrieval_status", "data": {"status": user["status"]}})
+    return {"retrieval": user, "operator_retrieval": operator, "collected": collected,
+            "events": state["events"] + [{"type": "RetrievalCompleted", "status": user["status"],
+                "document_ids": [doc["document_id"] for doc in user.get("documents", [])]}]}
+
+
 @traceable(name="write_node")
 async def write_node(state: AgentState, deps: SupervisorDeps) -> dict:
-    """Wave 8/10a — 고품질 모델로 초안 작성 (1차는 의도적 저품질).
-
-    토큰마다 attempt 번호를 같이 실어 보낸다 — validate가 반려해 재작성(attempt 증가)
-    될 때 프론트가 새 말풍선으로 끊어서 보여줄 수 있게 하기 위함(Wave 8 재작성 루프를
-    그대로 노출)."""
+    """근거를 바탕으로 내부 초안을 작성한다. 검증 전 토큰은 사용자에게 보내지 않는다."""
     attempt = state.get("validation_attempts", 0) + 1
-    writer = get_stream_writer()
     write_query = state["query"]
     if state.get("selected_system") is not None:
         selected = validate_selected_system(state["selected_system"])
@@ -352,8 +372,8 @@ async def write_node(state: AgentState, deps: SupervisorDeps) -> dict:
     draft, usage = await deps.quality_llm.write(
         write_query, state.get("collected", []),
         attempt, state.get("validation_feedback"),
-        on_token=lambda piece: writer(
-            {"type": "AnswerToken", "attempt": attempt, "delta": piece}))
+        # 검증 전 문장은 전송하지 않는다. 진행 단계 이벤트와 저장된 최종 답변만 공개한다.
+        on_token=None)
     return {"draft": draft, "last_prompt": usage.get("prompt"),
             "cost_usd": _cost(state, usage),
             "events": state["events"] + [{"type": "DraftWritten", "attempt": attempt,
@@ -367,19 +387,25 @@ async def validate_node(state: AgentState, deps: SupervisorDeps) -> dict:
     attempts = state.get("validation_attempts", 0) + 1
     ok = len(draft) >= 30 and "1)" in draft
     verdict = "합격" if ok else "불합격"
-    if not ok and attempts >= 3:   # 실모델 무한 재작성 방지 — 최대 3회 후 통과 처리
-        ok, verdict = True, "합격(최대 시도 도달 — 통과 처리)"
-    feedback = None if ok else (
+    exhausted = not ok and attempts >= 3
+    if exhausted:
+        verdict = "추가 확인 필요(검증 실패)"
+    feedback = None if ok or exhausted else (
         f"응답이 너무 짧습니다({len(draft)}자, 최소 30자). 절차를 1) 2) 3) 번호로 "
         f"구체적으로 설명하세요.")
     event = {"type": "Validation", "attempt": attempts, "verdict": verdict}
     return {"validation_attempts": attempts, "validation_feedback": feedback,
+            "validation": {"status": "passed" if ok else ("fallback" if exhausted else "retry"),
+                           "errors": [] if ok else ["답변 형식 검사 실패"]},
             "events": state["events"] + [event]}
 
 
 @traceable(name="finalize_node")
 async def finalize_node(state: AgentState, deps: SupervisorDeps) -> dict:
     final = state["draft"]
+    if state.get("validation", {}).get("status") == "fallback":
+        from .answer_generation import evidence_fallback
+        final = evidence_fallback(state.get("selected_system"), state.get("collected", []))
     questions = state.get("intake", {}).get("questions", [])
     if questions:
         final += "\n\n추가 확인: " + " ".join(questions)
@@ -412,6 +438,7 @@ def build_graph(deps: SupervisorDeps):
     g.add_node("replan_check", node(replan_check_node))
     g.add_node("analysis", node(analysis_node))
     g.add_node("write", node(write_node))
+    g.add_node("retrieve", node(retrieve_node))
     g.add_node("validate", node(validate_node))
     g.add_node("finalize", node(finalize_node))
 
@@ -425,7 +452,8 @@ def build_graph(deps: SupervisorDeps):
     g.add_edge("research", "replan_check")
     g.add_conditional_edges("replan_check", _after_replan_check,
                             {"analysis": "analysis", "research": "research"})
-    g.add_edge("analysis", "write")
+    g.add_edge("analysis", "retrieve")
+    g.add_edge("retrieve", "write")
     g.add_edge("write", "validate")
     g.add_conditional_edges("validate", _after_validate,
                             {"finalize": "finalize", "write": "write"})

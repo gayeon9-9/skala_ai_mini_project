@@ -100,6 +100,7 @@ class ChatService:
                    "data_source": "sample" if self.request.selected_system else None,
                    "inquiry_id": result["inquiry_id"], "request_id": self.request.request_id,
                    "intake": result.get("intake"),
+                   "retrieval": result.get("retrieval"), "validation": result.get("validation"),
                    "langsmith_run_id": result.get("langsmith_run_id")}
         except asyncio.CancelledError:
             self.interrupted()

@@ -298,6 +298,66 @@ class BrowserSessionTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_answer_tokens_and_internal_prompt_never_become_visible_messages(self):
+        self.run_browser(r"""
+const { app, streams, saved } = await boot();
+app.selectedSystem.value = 'auth-service';
+app.onSelectedSystemChange();
+app.input.value = '로그인 실패';
+app.onSubmit();
+streams[0].emit({ type: 'AnswerToken', attempt: 1, delta: '서버를 즉시 재시작하세요' });
+streams[0].emit({ type: 'Validation', verdict: '불합격' });
+streams[0].emit({ type: 'AnswerToken', attempt: 2, delta: '다시 작성한 초안' });
+assert.equal(app.log.value.some(item => ['agent', 'draft'].includes(item.kind)), false);
+assert.equal(saved().messages.length, 1);
+streams[0].emit({ type: 'FinalAnswer', reply: '확인된 최종 답변', prompt: '내부용 원문' });
+assert.equal(app.log.value.filter(item => item.kind === 'agent').length, 1);
+assert.equal(app.log.value.find(item => item.kind === 'agent').text, '확인된 최종 답변');
+assert.equal(app.log.value.some(item => item.kind === 'prompt'), false);
+assert.equal(JSON.stringify(saved()).includes('내부용 원문'), false);
+""")
+
+    def test_retrieval_only_keeps_user_sources_and_resets_on_new_inquiry(self):
+        self.run_browser(r"""
+const { app, streams, saved } = await boot();
+app.selectedSystem.value = 'auth-service';
+app.onSelectedSystemChange();
+app.input.value = '로그인 실패';
+app.onSubmit();
+streams[0].emit({ type: 'FinalAnswer', reply: '확인된 안내', retrieval: { status: 'ok', documents: [
+  { document_id: 'faq-login', chunk_id: '1', title: '로그인 FAQ', audience: 'user', text: '문서 전체 원문' },
+  { document_id: 'faq-login', chunk_id: '2', title: '로그인 FAQ', audience: 'user' },
+  { document_id: 'runbook-private', title: '운영자 조치', audience: 'operator', text: '운영 절차' },
+] }, validation: { status: 'fallback', errors: ['내부 검증 상세'] } });
+assert.equal(app.retrieval.value.status, 'ok');
+assert.equal(app.retrieval.value.documents.length, 1);
+assert.equal(app.retrieval.value.documents[0].document_id, 'faq-login');
+assert.equal(app.validation.value.status, 'fallback');
+assert.equal(JSON.stringify(saved()).includes('runbook-private'), false);
+assert.equal(JSON.stringify(saved()).includes('문서 전체 원문'), false);
+assert.equal(JSON.stringify(saved()).includes('내부 검증 상세'), false);
+app.newInquiry();
+assert.equal(app.retrieval.value, null);
+assert.equal(app.validation.value, null);
+assert.equal(saved().retrieval, null);
+""")
+
+    def test_retrieval_restore_distinguishes_no_match_and_search_error(self):
+        self.run_browser(r"""
+for (const status of ['no_match', 'error']) {
+  const { app, saved } = await boot({
+    cache: { thread_id: 't-sources', selected_system: 'auth-service', messages: [] },
+    status: 200, payload: { thread_id: 't-sources', selected_system: 'auth-service', messages: [],
+      inquiry: { details: { retrieval: { status, error: '내부 오류 경로', documents: [] },
+                            validation: { status: 'passed' } } } },
+  });
+  assert.equal(app.retrieval.value.status, status);
+  assert.ok(app.retrievalStatusText.value.includes(status === 'error' ? '실패' : '찾지 못'));
+  assert.equal(saved().retrieval.status, status);
+  assert.equal(JSON.stringify(saved()).includes('내부 오류 경로'), false);
+}
+""")
+
     def test_intake_card_keeps_none_unknown_unmentioned_distinct(self):
         self.run_browser(r"""
 const { app, streams, saved } = await boot();

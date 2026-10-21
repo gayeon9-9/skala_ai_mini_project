@@ -143,9 +143,11 @@ class SqliteInquiryStore:
                          (now, request["inquiry_id"]))
             # 질문을 실제로 사용자에게 보낸 결과와 접수 필드를 함께 확정한다.
             # AI 생성 실패 시 '이미 질문했다'는 상태만 먼저 남지 않게 한다.
-            if result.get("intake") is not None:
-                details = json.loads(inquiry["details_json"])
-                details["intake"] = result["intake"]
+            details = json.loads(inquiry["details_json"])
+            for key in ("intake", "retrieval", "validation"):
+                if result.get(key) is not None:
+                    details[key] = result[key]
+            if details:
                 conn.execute("UPDATE inquiries SET details_json=? WHERE inquiry_id=?",
                              (_json(details), request["inquiry_id"]))
 
