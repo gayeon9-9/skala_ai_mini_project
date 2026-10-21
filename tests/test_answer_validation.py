@@ -36,6 +36,13 @@ class AnswerValidationTests(unittest.TestCase):
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["citations"], ["faq:login"])
 
+    def test_markdown_numbering_is_allowed_without_skipping_evidence_checks(self):
+        markdown = self.good.replace("1)", "1.").replace("2)", "2.").replace("3)", "3.")
+        self.assertTrue(self.check(markdown)["ok"], self.check(markdown))
+        self.assert_rejected(markdown.replace("CPU 42.5%", "CPU 999%"), "관측 수치")
+        self.assert_rejected(markdown.replace("[faq:login]", "[faq:invented]"), "검색 결과에 없습니다")
+        self.assert_rejected(markdown.replace("1. 샘플", "샘플"), "번호 목록")
+
     def test_fake_generated_and_limited_fallback_answers_pass(self):
         for reply in (deterministic_rag_answer("선택한 대상: auth-service", self.collected),
                       evidence_fallback("auth-service", self.collected)):

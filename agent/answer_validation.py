@@ -100,8 +100,11 @@ def validate_answer(draft: str, selected_system: str | None,
     errors = []
     if not isinstance(draft, str):
         return {"ok": False, "errors": ["답변이 문자열이 아닙니다."], "citations": []}
-    if len(draft.strip()) < 30 or "1)" not in draft:
-        errors.append("답변은 30자 이상이며 1) 번호를 포함해야 합니다.")
+    # 실모델은 일반 Markdown 목록인 '1.'도 사용한다. 닫는 괄호 하나의 차이로
+    # 근거가 있는 답변을 반복 반려하지 않는다. 수치/대상/출처 검사는 동일하게 수행한다.
+    numbered = re.search(r"(?m)^\s*(?:\*\*)?1[.)]\s", draft)
+    if len(draft.strip()) < 30 or not numbered:
+        errors.append("답변은 30자 이상이며 1) 또는 1. 번호 목록을 포함해야 합니다.")
 
     citations = list(dict.fromkeys(re.findall(r"\[([A-Za-z][A-Za-z0-9_-]*:[A-Za-z0-9:_-]+)\]", draft)))
     docs = _documents(collected, retrieval)
