@@ -1,0 +1,60 @@
+{
+  "capture_date": "2026-10-21",
+  "timezone": "Asia/Seoul",
+  "browser": "Chrome",
+  "image_size": {
+    "width": 1427,
+    "height": 744
+  },
+  "mode": "raw screenshot; no image content edits",
+  "files": [
+    {
+      "file": "screenshots/01_after_natural.jpg",
+      "captured_at": "2026-10-21T09:44:32.659140+09:00",
+      "bytes": 68391,
+      "sha256": "bbecccd30dcc174af4fa797c08e7372e456a0f06126db0043aa458d281045c5c"
+    },
+    {
+      "file": "screenshots/01_before_natural.jpg",
+      "captured_at": "2026-10-21T09:47:36.566935+09:00",
+      "bytes": 24668,
+      "sha256": "0c7aeacc7534f2ddb3066f7d66c7da623f793e8f0378a582d7785a598ba644d1"
+    },
+    {
+      "file": "screenshots/02_after_targets.jpg",
+      "captured_at": "2026-10-21T09:44:53.175212+09:00",
+      "bytes": 68529,
+      "sha256": "d26c05c01ea554145e200236c2fa92b16cc2cfca900c6c5b451b6a060025bfad"
+    },
+    {
+      "file": "screenshots/02_before_targets.jpg",
+      "captured_at": "2026-10-21T09:44:41.313159+09:00",
+      "bytes": 63038,
+      "sha256": "0eae33af14b51ecf04ae4e2a38146f90d3e700194a2f97fc72800c8c6e4ed4f5"
+    },
+    {
+      "file": "screenshots/03_after_healthy.jpg",
+      "captured_at": "2026-10-21T09:45:24.542365+09:00",
+      "bytes": 52136,
+      "sha256": "deb4b539a3465051ed17ab01299a02adc23327f223d5a3f3f2069bf052cbb216"
+    },
+    {
+      "file": "screenshots/03_before_healthy.jpg",
+      "captured_at": "2026-10-21T09:45:02.788068+09:00",
+      "bytes": 53106,
+      "sha256": "6707bbe9dd793fa9c7af4d82d7e32348441afc47209dda1e6b02404f43e0b3dc"
+    },
+    {
+      "file": "screenshots/04_after_input.jpg",
+      "captured_at": "2026-10-21T09:44:09.095373+09:00",
+      "bytes": 29025,
+      "sha256": "a90c61f5d8e9b1136e4b94d706d1c4a0afc500cb256e3d80c6938e5f4a278439"
+    },
+    {
+      "file": "screenshots/04_before_input.jpg",
+      "captured_at": "2026-10-21T09:47:21.654190+09:00",
+      "bytes": 20295,
+      "sha256": "fd832a0e32e0f38976709f98d8ed7360fc55d1309ff7bf6ec42e3c1a669503b2"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "created_at": "2026-10-21T09:42:36.658487+09:00",
+  "commits": {
+    "before": "ee32f7e298517e33aed8d0831a7643eceb756650",
+    "after": "7dd329fdcfce4558fc1d257fbae8286656e45183"
+  },
+  "dependencies": {
+    "fastapi": "0.150.0",
+    "uvicorn": "0.54.0",
+    "langgraph": "1.2.16",
+    "langchain-core": "1.6.12",
+    "langsmith": "0.14.11",
+    "fastmcp": "4.1.1",
+    "mcp": "2.3.0",
+    "httpx": "0.28.1",
+    "python-dotenv": "1.2.4",
+    "pydantic": "2.14.1",
+    "python": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 21.0.0 (clang-2100.0.123.102)]"
+  },
+  "mode": "fake LLM + actual MCP subprocesses",
+  "ports": {
+    "before": {
+      "backend": 18100,
+      "proxy": 18600
+    },
+    "after": {
+      "backend": 18101,
+      "proxy": 18601
+    }
+  },
+  "note": "샘플 CPU/메모리에는 무작위 변동이 있습니다. 실제 장애 진단·실모델 품질·속도 평가는 아닙니다."
+}
