@@ -1,0 +1,60 @@
+{
+  "created_at": "2026-10-21T06:05:42.164556+00:00",
+  "status": "real_api_and_hybrid_verified",
+  "tested_api_code_revision": "3bdc39cd88d4fec97f957fa72bf4198895e36048",
+  "test_git_dirty_as_recorded": true,
+  "checks": {
+    "dev_test_fingerprints_match": true,
+    "dev_report_sha_matches": true,
+    "calibrated_score_matches": true,
+    "ollama_score_unchanged": true,
+    "search_evaluation_source_unchanged": true,
+    "probe_succeeded": true,
+    "hybrid_completed": true,
+    "hybrid_first_rule_validation_passed": true,
+    "comparison_no_errors": true,
+    "ollama_manifest_matches": true,
+    "ollama_row_index_versions_match": true,
+    "openai_manifest_matches": true,
+    "openai_row_index_versions_match": true
+  },
+  "pytest": {
+    "passed": 189,
+    "subtests_passed": 111,
+    "failed": 0,
+    "command": ".venv/bin/python -m pytest -q --junitxml=/tmp/helpdesk-openai-api-tests.xml",
+    "junit": {
+      "tests": "300",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "8.998"
+    },
+    "junit_tests_includes_subtests": true
+  },
+  "artifacts_sha256": {
+    "probe.json": "e5d19acd0e5ebb137eacfc4c62e9405c596aacc365402d5f1970336570504884",
+    "dev.json": "184c5b9c1b0cb24fe150cdae6d9936b2eef2d9d4e36da472f3e77247c1a7cd78",
+    "test.json": "612a1e4b62ee6ed7213125e04f07b81d533d75becc42b5648d731e13b4a2c626",
+    "hybrid_model.json": "8e28b1161c08095baecc3d7df4c8da495f4cdeee95eee3be4513e739d2499f2a"
+  },
+  "default_changes": {
+    "openai_min_score": 0.3,
+    "ollama_min_score": 0.5,
+    "selection": "OpenAI dev calibration; no tuning on test",
+    "files_sha256": {
+      "tools/run_hybrid.py": "78c242594b6f2a1818a7adbe8a11e97a6eb29bcc73cca6c64853e9253263acfd",
+      "server.py": "928a06b3112afa6c4be6e453b3ef094dc3431d9f8e6fc0e3373b49383a019e71",
+      "tests/test_embedding_cli.py": "34ace8e4aefbdf8c64bf77e2396d8b05b0e7958ce2e38ea0b8f2b04dea20331c",
+      ".env.example": "b56e0a1ab946699053624d0ad62c7a7297bacc08812c3a5b2e42c8686bfd84a7"
+    }
+  },
+  "limitations": [
+    "test는 기존 사례 12개를 3회 반복한 회귀 비교다.",
+    "OpenAI는 Hit@3와 검색 지연에서 Ollama보다 좋은 결과를 보이지 않았다.",
+    "Qwen 통합 한 건의 규칙 검증 통과는 일반적인 답변 정확도를 뜻하지 않는다.",
+    "접수 추출은 rules_fallback이며 모델 추출 성공이 아니다.",
+    "기존 실행 중 서버와 실제 .env·대화 DB는 변경하지 않았다.",
+    "smoke 입력의 Qwen usage.usd는 이론 비용이며 실제 OpenAI 청구가 아니다."
+  ]
+}

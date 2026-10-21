@@ -109,7 +109,9 @@ async def lifespan(app: FastAPI):
     from agent.retrieval import KnowledgeRetriever
     # 답변 생성과 임베딩 제공자는 별도 설정이다. 구성 오류는 MCP를 띄우기 전에
     # 발견하고, OpenAI 연결 실패를 이유로 몰래 Ollama 검색으로 전환하지 않는다.
-    min_score = float(os.environ.get("RAG_MIN_SCORE", "0.50"))
+    # 임베딩 모델마다 점수 분포가 달라 dev 평가에서 선택한 기준을 사용한다.
+    default_score = "0.30" if os.environ.get("RAG_EMBEDDING_PROVIDER") == "openai" else "0.50"
+    min_score = float(os.environ.get("RAG_MIN_SCORE", default_score))
     if not 0 <= min_score <= 1:
         raise ValueError("RAG_MIN_SCORE는 0~1 범위여야 합니다.")
     retriever = KnowledgeRetriever(embedder=create_embedder(), min_score=min_score)

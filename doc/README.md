@@ -12,7 +12,8 @@
 
 ### 변경 설명과 비교 자료
 
-- [7단계 OpenAI 임베딩 선택](step_07_openai_embeddings.md): Qwen 답변 생성 유지, 공급자 선택·캐시·관리자 모델 표시. 실제 OpenAI 성능 비교는 측정 대기.
+- [7단계 OpenAI 임베딩 선택](step_07_openai_embeddings.md): Qwen 답변 생성 유지, 공급자 선택·캐시·관리자 모델 표시. 실제 연결·검색 비교·Qwen 통합 확인 완료.
+- [OpenAI / Ollama 실제 비교 결과](evidence/embedding_comparison/RESULTS.md): 이번 소표본에서는 Ollama 검색이 더 빠르고 Hit@3도 높았다는 결과와 한계.
 - [Ollama / OpenAI 비교 실행과 검증 상태](evidence/embedding_comparison/README.md): 기존 버전 태그, 검증 결과, 같은 질문의 재현 절차.
 - [기획·분석 발표용 보고서](final_report.md): 기존 코드 → 문제 → 사용자·관리자 영향 → 개선 → 반영 코드 → 전후 비교 → 활용 예시 순서.
 - [6단계 관리자·추적·평가](step_06_admin_evaluation.md): 저장된 문의의 통합 조회, LangSmith 실행 메타데이터, 평가 CLI.

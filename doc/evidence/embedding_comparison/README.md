@@ -1,10 +1,11 @@
 # Ollama / OpenAI 임베딩 비교 기록
 
-현재 상태: **구현·오프라인 테스트 완료 / OpenAI 실측 미완료**.
+현재 상태: **구현·실제 OpenAI 연결·검색 비교·Qwen 통합 테스트 완료**.
+[실측 결과와 해석](RESULTS.md)에 동일 조건 비교를 정리했다.
 `v1.0-ollama`는 이전 6단계 완료본 `f30ef7848ec6c0af54e5d5015d21d402a1dbb811`이다.
 이 폴더의 후속 결과를 과거 `doc/evidence/final/` 자료에 덮어쓰지 않는다.
 
-## 확인된 결과와 아직 확인하지 못한 결과
+## 확인된 결과
 
 | 항목 | 결과 | 근거 |
 |---|---|---|
@@ -12,14 +13,18 @@
 | 과거 Ollama Runbook Hit@3 | 4/4 | 같은 파일. 현재 OpenAI와 같은 시점에 측정한 값이 아님 |
 | 과거 Ollama 근거 없는 질문 | 2/2 no_match | 같은 파일 |
 | 과거 검색 평균 | FAQ 약 .187초 / Runbook 약 .028초 | 색인 준비 후 소표본. cold start 통제 없음 |
-| 새 공급자 분리·오류·캐시·평가를 포함한 전체 테스트 | 187개 + 하위 검사 111개 통과 | [오프라인 검증 기록](verification.json) |
-| OpenAI 연결 probe | 샌드박스 연결 오류, 권한 확장 실행 거절 | 인증 성공/실패를 판정할 수 없음 |
-| OpenAI 품질·속도·토큰·비용 | 미측정 | 실제 API 호출을 재시도하지 않음 |
-| 개선율·승자 | 산출하지 않음 | 양쪽 실제 결과가 필요 |
+| 최초 구현 시 전체 테스트 | 187개 + 하위 검사 111개 통과 | [오프라인 검증 기록](verification.json) |
+| 최초 OpenAI 연결 시도 | 샌드박스 연결 오류, 권한 확장 실행 거절 | 위 verification.json은 당시 기록으로 보존 |
+| 후속 OpenAI 실제 연결 | 성공, 1536차원, 입력 5토큰 | [probe.json](probe.json) |
+| dev 기준 점수 | OpenAI .30 선택, Ollama 기존 .50 유지 | [dev.json](dev.json)의 calibration.curve |
+| 같은 test 정답 Hit@3 | Ollama 30/30, OpenAI 27/30 | [test.json](test.json), 정답 질문 10개×3회 |
+| 같은 test 평균 검색 시간 | Ollama .036초, OpenAI .176초 | 같은 파일, 무관 질문 포함 제공자별 36회 |
+| Qwen + OpenAI 통합 | 1건 완료, 첫 규칙 검증 통과, 47.52초 | [hybrid_model.json](hybrid_model.json), 정보 추출은 규칙 보완 |
+| 후속 기본값·테스트·증거 검증 | 테스트 189개 + 하위 검사 111개 통과, 증거 검사 13개 통과 | [api_verification.json](api_verification.json) |
 
 MockTransport 테스트는 외부 서비스에 연결하지 않는다. API의 실제 유효성·품질·성능을
 증명하지 않으며, 테스트용 가짜 벡터나 답변을 실제 비교 결과로 넣지 않는다.
-OpenAI 실행 화면도 아직 캡처하지 않았다.
+이번 추가 검증은 실제 API/그래프 결과로 남겼으며 새 화면 캡처는 만들지 않았다.
 
 ## 실행 설정
 
@@ -44,9 +49,10 @@ bash sh/run_agent_hybrid.sh --embedding-provider ollama
 Ollama로 고정하고, 임베딩 공급자와 모델을 쌍으로 지정해 과거 `.env`의 Qwen 임베딩 모델이
 OpenAI 설정과 섞이지 않게 한다. 직접 `server.py` 실행 시에는 `.env.example`처럼 설정한다.
 
-## 실제 API 실행 허용 후 순서
+## 실제 테스트 재현 순서
 
-아래 실행은 OpenAI API 비용이 발생할 수 있다. 현재 실행 권한 거절 상태에서는 수행하지 않았다.
+아래 실행은 OpenAI API 비용이 발생한다. 후속 사용자 요청으로 실행을 허용받아 한 번 수행했다.
+현재 파일은 해당 실행 원본이다. 다시 측정하려면 output을 다른 파일명으로 지정해 원본을 보존한다.
 
 1. 합성 한 문장으로 연결을 확인한다.
 
@@ -60,10 +66,10 @@ OpenAI 설정과 섞이지 않게 한다. 직접 `server.py` 실행 시에는 `.
 .venv/bin/python evals/compare_embeddings.py --split dev --calibrate --openai-min-score .50 --output doc/evidence/embedding_comparison/dev.json
 ```
 
-3. 출력의 `suggested_openai_min_score`를 아래 `DEV_SCORE` 자리에 넣고 고정된 회귀 비교를 한다.
+3. 출력의 `suggested_openai_min_score`를 고정해 회귀 비교한다. 이번 dev에서는 `.30`이었다.
 
 ```bash
-.venv/bin/python evals/compare_embeddings.py --split test --dev-report doc/evidence/embedding_comparison/dev.json --openai-min-score DEV_SCORE --repetitions 3 --output doc/evidence/embedding_comparison/test.json
+.venv/bin/python evals/compare_embeddings.py --split test --dev-report doc/evidence/embedding_comparison/dev.json --openai-min-score .30 --repetitions 3 --output doc/evidence/embedding_comparison/test.json
 ```
 
 test 결과를 보고 점수를 다시 고르지 않는다. 모델·문서·평가 질문·검색 코드 해시가
@@ -73,11 +79,13 @@ dev 이후 달라지면 실행을 거절한다. 기존에 확인했던 test를 �
 4. 같은 점수로 Qwen 생성까지 연결한 합성 문의 한 건을 검증한다.
 
 ```bash
-.venv/bin/python tools/verify_local_model.py --embedding-provider openai --min-score DEV_SCORE --output doc/evidence/embedding_comparison/hybrid_model.json
+.venv/bin/python tools/verify_local_model.py --embedding-provider openai --min-score .30 --output doc/evidence/embedding_comparison/hybrid_model.json
 ```
 
 합성 문의·임시 DB·MCP 샘플만 사용하며 LangSmith는 끈다. 한 건 성공은 일반 답변 정확도가 아니다.
-선택된 점수는 새 런처의 `--min-score`와 운영 설정에 반영한다.
+선택된 `.30`은 새 런처와 `.env.example`, provider가 openai인 서버의 기본값에 반영했다.
+실제 `.env`나 기존 실행 중 서버는 바꾸지 않았다. 과거 `.env`에 다른 점수가 있으면 직접
+server.py 실행 시 그 값이 우선하므로, 새 런처 또는 설정 예시를 기준으로 실행한다.
 
 ## 평가 항목과 읽는 방법
 

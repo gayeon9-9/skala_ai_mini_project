@@ -24,8 +24,10 @@ def configure(args):
     os.environ["RAG_EMBEDDING_MODEL"] = args.embedding_model or (
         "text-embedding-3-small" if args.embedding_provider == "openai"
         else "qwen3-embedding:0.6b")
-    # OpenAI 점수는 아직 실제 API 비교가 승인되지 않아 임시 .50이다.
-    # dev 평가 후 --min-score로 고정하고, Ollama 비교 기준은 기존 .50을 유지한다.
+    # dev 사례에서 고정한 OpenAI .30을 사용한다. test 결과를 보고 재조정하지 않는다.
+    # 공급자를 바꿀 때 서로 다른 점수 척도를 섞지 않도록 Ollama 기본값은 기존 .50이다.
+    if args.min_score is None:
+        args.min_score = .30 if args.embedding_provider == "openai" else .50
     os.environ["RAG_MIN_SCORE"] = str(args.min_score)
 
 
@@ -50,10 +52,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Qwen 답변 + OpenAI/Ollama 문서 검색")
     parser.add_argument("--embedding-provider", choices=("openai", "ollama"), default="openai")
     parser.add_argument("--embedding-model")
-    parser.add_argument("--min-score", type=float, default=0.50)
+    parser.add_argument("--min-score", type=float, help="기본: OpenAI .30(dev 고정), Ollama .50")
     parser.add_argument("--port", type=int, default=8100)
     args = parser.parse_args(argv)
-    if not 1 <= args.port <= 65535 or not 0 <= args.min_score <= 1:
+    if not 1 <= args.port <= 65535 or (args.min_score is not None and not 0 <= args.min_score <= 1):
         parser.error("port는 1~65535, min-score는 0~1 범위여야 합니다.")
     configure(args)
     # 접속 검사보다 bind 검사가 기존 서버와 미사용 포트를 정확히 구별한다.

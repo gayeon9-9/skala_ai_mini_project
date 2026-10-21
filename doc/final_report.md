@@ -5,7 +5,8 @@
 
 이 보고서의 실측 값은 **1~6단계 Ollama 완료본** 기준이다. 후속
 [7단계 OpenAI 임베딩 선택](step_07_openai_embeddings.md)은 별도로 기록하며,
-OpenAI API 실제 성능 비교는 아직 측정하지 않았다.
+[새 실제 비교 결과](evidence/embedding_comparison/RESULTS.md)는 이전 성과와 구분한다.
+이 비교에서 OpenAI API 연결은 성공했지만 검색 품질·속도 우위는 확인되지 않았다.
 
 ## 1. 기존 코드는 무엇을 하는 코드였나
 

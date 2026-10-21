@@ -1,0 +1,3819 @@
+{
+  "created_at": "2026-10-21T06:01:00.423736+00:00",
+  "schema_version": 1,
+  "split": "test",
+  "configuration": {
+    "ollama": {
+      "model": "qwen3-embedding:0.6b",
+      "min_score": 0.5
+    },
+    "openai": {
+      "model": "text-embedding-3-small",
+      "dimensions": 1536,
+      "min_score": 0.3
+    }
+  },
+  "fingerprints": {
+    "dataset_sha256": "c39aabc7be02532821f70fb74286bb96789f3c241c57a82a40d6868ec7bdd1c3",
+    "catalog_sha256": "d29fb973dc2d2395a482defca0a11919de46c280bfe467a5e73cfc9e007c815f",
+    "document_sha256": {
+      "data/faq/login.md": "865148ff41ba7ec3e990128fdabba25e3280e2bd112f18b6e39357e7a4aad1b4",
+      "data/faq/payment.md": "b6630da024f9d137e4dcd89df9f1428ad260c0499b8cb3aaca54e76478f718a6",
+      "data/faq/connectivity.md": "c89e81a42f71ab8963a7535dc95adb8e6d249c3e0e33b54a7e13e9eede1c67a3",
+      "data/faq/browser.md": "e8003ecf6ed53ab46a71911936c2409e5b6a3b162d69c18ea0439fd2a21eec49",
+      "data/runbooks/high-latency.md": "0df4846e66993b0b9312327a3f51fe6de663d701c64c2c7c10a9e2c35e9e63a3",
+      "data/runbooks/cpu-spike.md": "30796f7b5c1d0bc09acfb2518b240e3a07b04136e84fe41397802a3bf2bff22d",
+      "data/runbooks/memory-leak.md": "085f00e9bba5effbb54e97a82d5f0b7032e027dac29816021729932a5e9a9ee1",
+      "data/runbooks/network-timeout.md": "ed68d1bc775138e7e66cfb50698949856bf27d5e11afefff6e5826223e063596",
+      "data/runbooks/disk-full.md": "72b9d4f006490887ccba981531129e5a42c0d7b8c789208db391fdc5acc566c7",
+      "data/runbooks/db-down.md": "a2d4f4d3bc89984348976e9012518ceba32f389a35bf5ee7da4c19f7e1de9be5"
+    },
+    "retrieval_source_sha256": {
+      "agent/retrieval.py": "7ba44622661e2152e8ed39ed79c0ce0b7ee89cf51aed02a7900abc7a21183ffc",
+      "agent/embeddings.py": "f12807fffaee124d5a37c82db720efcdc4fb6a1251e256b3b4628426417a05aa",
+      "evals/evaluate.py": "7969c5e634a67b177a72cc0c8e87b7ae065ed1a92875aa1d93231fa54439afa4",
+      "evals/compare_embeddings.py": "7d7491f4c803f4304a260bdf1218c98a7c411cc3e0524068efd9a7841ad69dcf"
+    }
+  },
+  "dataset_version": "2026-10-21-v1",
+  "code": {
+    "git_sha": "3bdc39cd88d4fec97f957fa72bf4198895e36048",
+    "git_dirty": true,
+    "source_file_sha256": {
+      "agent/retrieval.py": "7ba44622661e2152e8ed39ed79c0ce0b7ee89cf51aed02a7900abc7a21183ffc",
+      "agent/graph.py": "75a58683c49f55e31c9ffa8eee1a5b857219a3a000cfdebb989e1a5b5d4e9457",
+      "evals/evaluate.py": "7969c5e634a67b177a72cc0c8e87b7ae065ed1a92875aa1d93231fa54439afa4"
+    }
+  },
+  "calibration_provenance": {
+    "dev_report_sha256": "184c5b9c1b0cb24fe150cdae6d9936b2eef2d9d4e36da472f3e77247c1a7cd78",
+    "dev_created_at": "2026-10-21T06:00:22.040826+00:00",
+    "openai_min_score": 0.3
+  },
+  "selected_case_count": 10,
+  "checks_per_provider": 12,
+  "repetitions": 3,
+  "preparation": {
+    "ollama": {
+      "status": "ok",
+      "index": {
+        "status": "ok",
+        "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+        "model": "qwen3-embedding:0.6b",
+        "provider": "ollama",
+        "query_format": "Retrieve relevant IT helpdesk guidance or incident response procedures for the query.",
+        "document_count": 10,
+        "chunk_count": 10,
+        "dimensions": 1024
+      },
+      "manifest": {
+        "schema_version": 1,
+        "catalog_version": "2026-10-21-v1",
+        "embedding": {
+          "model": "qwen3-embedding:0.6b",
+          "digest": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d",
+          "dimensions": 1024
+        },
+        "query_instruction": "Retrieve relevant IT helpdesk guidance or incident response procedures for the query.",
+        "chunk_size": 900,
+        "chunk_overlap": 100,
+        "content_hash": "efd4527b3b2081a9dc2d8516af7a0eac9cca873b5c96d53fd5c9d1f87be04df9"
+      },
+      "query_format": "Retrieve relevant IT helpdesk guidance or incident response procedures for the query.",
+      "actual_dimensions": 1024,
+      "elapsed_seconds": 0.494974915869534
+    },
+    "openai": {
+      "status": "ok",
+      "index": {
+        "status": "ok",
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "model": "text-embedding-3-small",
+        "provider": "openai",
+        "query_format": "raw",
+        "document_count": 10,
+        "chunk_count": 10,
+        "dimensions": 1536
+      },
+      "manifest": {
+        "schema_version": 1,
+        "catalog_version": "2026-10-21-v1",
+        "embedding": {
+          "provider": "openai",
+          "model": "text-embedding-3-small",
+          "dimensions": 1536,
+          "query_format": "raw",
+          "cache_revision": "openai-v1"
+        },
+        "query_instruction": "raw",
+        "chunk_size": 900,
+        "chunk_overlap": 100,
+        "content_hash": "efd4527b3b2081a9dc2d8516af7a0eac9cca873b5c96d53fd5c9d1f87be04df9"
+      },
+      "query_format": "raw",
+      "actual_dimensions": 1536,
+      "elapsed_seconds": 0.26350729120895267
+    }
+  },
+  "warmup": {
+    "ollama": {
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.690286,
+          "raw_score": 0.6902862760677205,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.544675,
+          "raw_score": 0.5446748676082491,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "elapsed_seconds": 0.02822062512859702,
+      "scored": false
+    },
+    "openai": {
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.697379,
+          "raw_score": 0.6973786028590035,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.465223,
+          "raw_score": 0.46522309011694807,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.378317,
+          "raw_score": 0.37831690086106984,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "elapsed_seconds": 0.46760424971580505,
+      "scored": false
+    }
+  },
+  "planned_embedding_requests": {
+    "ollama": {
+      "document_build_batches": 1,
+      "warmup_queries": 1,
+      "timed_queries": 36
+    },
+    "openai": {
+      "document_build_batches": 1,
+      "warmup_queries": 1,
+      "timed_queries": 36
+    }
+  },
+  "usage": {
+    "ollama": {
+      "index_build": {
+        "successful_api_calls": 1,
+        "unknown_usage_api_calls": 0,
+        "failed_api_calls": 0,
+        "input_tokens": 2276
+      },
+      "warmup": {
+        "successful_api_calls": 1,
+        "unknown_usage_api_calls": 0,
+        "failed_api_calls": 0,
+        "input_tokens": 35
+      },
+      "timed_queries": {
+        "successful_api_calls": 36,
+        "unknown_usage_api_calls": 0,
+        "failed_api_calls": 0,
+        "input_tokens": 1473
+      }
+    },
+    "openai": {
+      "index_build": {
+        "successful_api_calls": 1,
+        "unknown_usage_api_calls": 0,
+        "failed_api_calls": 0,
+        "input_tokens": 2926
+      },
+      "warmup": {
+        "successful_api_calls": 1,
+        "unknown_usage_api_calls": 0,
+        "failed_api_calls": 0,
+        "input_tokens": 17
+      },
+      "timed_queries": {
+        "successful_api_calls": 36,
+        "unknown_usage_api_calls": 0,
+        "failed_api_calls": 0,
+        "input_tokens": 963
+      }
+    }
+  },
+  "results": [
+    {
+      "provider": "ollama",
+      "case_id": "test-01",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 1,
+      "provider_position": 0,
+      "query": "계정 인증 뒤 다음 페이지로 이동을 못 하고 기다리기만 해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.045711958315223455,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.722787,
+          "raw_score": 0.7227868176506376,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.558993,
+          "raw_score": 0.5589931405370586,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-01",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 1,
+      "provider_position": 1,
+      "query": "계정 인증 뒤 다음 페이지로 이동을 못 하고 기다리기만 해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.13446362502872944,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.556065,
+          "raw_score": 0.5560654084499875,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.433245,
+          "raw_score": 0.4332447137174565,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-02",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 2,
+      "provider_position": 0,
+      "query": "카드 승인 완료가 안 보여 다시 승인 요청하면 중복 청구될까 걱정돼요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.15858724992722273,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.524532,
+          "raw_score": 0.5245316161044505,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-02",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 2,
+      "provider_position": 1,
+      "query": "카드 승인 완료가 안 보여 다시 승인 요청하면 중복 청구될까 걱정돼요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.039123792201280594,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.653335,
+          "raw_score": 0.6533352518061084,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-03",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 3,
+      "provider_position": 0,
+      "query": "다른 서비스로 넘어갈 때 응답을 기다리다 끊김, Gateway Timeout",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.027429666835814714,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.580264,
+          "raw_score": 0.5802642057368682,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-03",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 3,
+      "provider_position": 1,
+      "query": "다른 서비스로 넘어갈 때 응답을 기다리다 끊김, Gateway Timeout",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.17821933329105377,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.568133,
+          "raw_score": 0.5681326249824676,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-03",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 4,
+      "provider_position": 0,
+      "query": "서비스 사이 패킷 손실과 upstream 호출 대기 제한 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.14767487486824393,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": false,
+      "recall": 0.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-03",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 4,
+      "provider_position": 1,
+      "query": "서비스 사이 패킷 손실과 upstream 호출 대기 제한 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.03876549983397126,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.525292,
+          "raw_score": 0.5252917614238519,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.502829,
+          "raw_score": 0.5028285203166568,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.500979,
+          "raw_score": 0.5009793047393353,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.5,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-04",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 5,
+      "provider_position": 0,
+      "query": "프로세스가 쓰는 RAM이 반환되지 않고 힙이 계속 커져 OOM 위험",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.02815962489694357,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.660836,
+          "raw_score": 0.6608361442174603,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.50082,
+          "raw_score": 0.5008200636074003,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:memory-leak",
+        "runbook:disk-full"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-04",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 5,
+      "provider_position": 1,
+      "query": "프로세스가 쓰는 RAM이 반환되지 않고 힙이 계속 커져 OOM 위험",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.18536229198798537,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.504265,
+          "raw_score": 0.5042654280209881,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.364718,
+          "raw_score": 0.3647178486128821,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:memory-leak",
+        "runbook:cpu-spike"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-05",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 6,
+      "provider_position": 0,
+      "query": "로그 볼륨 여유 공간 부족, 기록 파일 증가, 보존 정책 점검",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.22894170926883817,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.414252,
+          "raw_score": 0.41425182821887246,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.356879,
+          "raw_score": 0.3568794075994804,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.327749,
+          "raw_score": 0.32774923851511684,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:disk-full",
+        "runbook:cpu-spike",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-05",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 6,
+      "provider_position": 1,
+      "query": "로그 볼륨 여유 공간 부족, 기록 파일 증가, 보존 정책 점검",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.03554379241541028,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.718554,
+          "raw_score": 0.718554247224827,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.511472,
+          "raw_score": 0.5114715580604154,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:disk-full",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-06",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 7,
+      "provider_position": 0,
+      "query": "홈페이지가 엣지 브라우저에서 빈 화면으로 표시",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.027775374706834555,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.709478,
+          "raw_score": 0.7094780501300432,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-06",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 7,
+      "provider_position": 1,
+      "query": "홈페이지가 엣지 브라우저에서 빈 화면으로 표시",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.1766300001181662,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.584918,
+          "raw_score": 0.5849181359512038,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.325963,
+          "raw_score": 0.3259634456280518,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:browser",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-07",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 8,
+      "provider_position": 0,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.18958945898339152,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-07",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 8,
+      "provider_position": 1,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.034401833079755306,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-07",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 9,
+      "provider_position": 0,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.01629554107785225,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-07",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 9,
+      "provider_position": 1,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.1636706660501659,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-08",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 10,
+      "provider_position": 0,
+      "query": "로그인 이후 로딩 표시만 계속 돌아요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.16047050012275577,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.57531,
+          "raw_score": 0.5753100190222585,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.339047,
+          "raw_score": 0.3390466794982509,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.306147,
+          "raw_score": 0.3061471487429874,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity",
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-08",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 10,
+      "provider_position": 1,
+      "query": "로그인 이후 로딩 표시만 계속 돌아요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.04952316591516137,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.773603,
+          "raw_score": 0.7736029894694383,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.519907,
+          "raw_score": 0.5199070202142656,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-09",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 11,
+      "provider_position": 0,
+      "query": "auth-service 로그인 응답이 늦고 connection pool 사용률이 높음",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.028946999926120043,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.611674,
+          "raw_score": 0.6116738463833347,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-09",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 11,
+      "provider_position": 1,
+      "query": "auth-service 로그인 응답이 늦고 connection pool 사용률이 높음",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.18682874972000718,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.382316,
+          "raw_score": 0.3823157659888873,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.344832,
+          "raw_score": 0.34483220339523357,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.319387,
+          "raw_score": 0.3193874992322616,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:disk-full",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-10",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 12,
+      "provider_position": 0,
+      "query": "회사 와이파이에서 사내 페이지에 접속하면 504 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.13623087527230382,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.642695,
+          "raw_score": 0.6426950546019004,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-10",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 12,
+      "provider_position": 1,
+      "query": "회사 와이파이에서 사내 페이지에 접속하면 504 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.042897208128124475,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.734231,
+          "raw_score": 0.7342310072591255,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-01",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 13,
+      "provider_position": 0,
+      "query": "계정 인증 뒤 다음 페이지로 이동을 못 하고 기다리기만 해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.19624175038188696,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.556065,
+          "raw_score": 0.5560654084499875,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.433245,
+          "raw_score": 0.4332447137174565,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-01",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 13,
+      "provider_position": 1,
+      "query": "계정 인증 뒤 다음 페이지로 이동을 못 하고 기다리기만 해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.03932654159143567,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.722787,
+          "raw_score": 0.7227868176506376,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.558993,
+          "raw_score": 0.5589931405370586,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-02",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 14,
+      "provider_position": 0,
+      "query": "카드 승인 완료가 안 보여 다시 승인 요청하면 중복 청구될까 걱정돼요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.02880124980583787,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.653335,
+          "raw_score": 0.6533352518061084,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-02",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 14,
+      "provider_position": 1,
+      "query": "카드 승인 완료가 안 보여 다시 승인 요청하면 중복 청구될까 걱정돼요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.17819070862606168,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.524532,
+          "raw_score": 0.5245316161044505,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-03",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 15,
+      "provider_position": 0,
+      "query": "다른 서비스로 넘어갈 때 응답을 기다리다 끊김, Gateway Timeout",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.16676908312365413,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.568133,
+          "raw_score": 0.5681326249824676,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-03",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 15,
+      "provider_position": 1,
+      "query": "다른 서비스로 넘어갈 때 응답을 기다리다 끊김, Gateway Timeout",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.029485042206943035,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.580264,
+          "raw_score": 0.5802642057368682,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-03",
+      "check_index": 1,
+      "repetition": 2,
+      "pair_index": 16,
+      "provider_position": 0,
+      "query": "서비스 사이 패킷 손실과 upstream 호출 대기 제한 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.030829832889139652,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.525292,
+          "raw_score": 0.5252917614238519,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.502829,
+          "raw_score": 0.5028285203166568,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.500979,
+          "raw_score": 0.5009793047393353,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.5,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-03",
+      "check_index": 1,
+      "repetition": 2,
+      "pair_index": 16,
+      "provider_position": 1,
+      "query": "서비스 사이 패킷 손실과 upstream 호출 대기 제한 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.1789691662415862,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": false,
+      "recall": 0.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-04",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 17,
+      "provider_position": 0,
+      "query": "프로세스가 쓰는 RAM이 반환되지 않고 힙이 계속 커져 OOM 위험",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.1675280830822885,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.504265,
+          "raw_score": 0.5042654280209881,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.364718,
+          "raw_score": 0.3647178486128821,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:memory-leak",
+        "runbook:cpu-spike"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-04",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 17,
+      "provider_position": 1,
+      "query": "프로세스가 쓰는 RAM이 반환되지 않고 힙이 계속 커져 OOM 위험",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.04354233294725418,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.660836,
+          "raw_score": 0.6608361442174603,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.50082,
+          "raw_score": 0.5008200636074003,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:memory-leak",
+        "runbook:disk-full"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-05",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 18,
+      "provider_position": 0,
+      "query": "로그 볼륨 여유 공간 부족, 기록 파일 증가, 보존 정책 점검",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.03181650023907423,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.718554,
+          "raw_score": 0.718554247224827,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.511472,
+          "raw_score": 0.5114715580604154,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:disk-full",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-05",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 18,
+      "provider_position": 1,
+      "query": "로그 볼륨 여유 공간 부족, 기록 파일 증가, 보존 정책 점검",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.19836029084399343,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.414252,
+          "raw_score": 0.41425182821887246,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.356879,
+          "raw_score": 0.3568794075994804,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.327749,
+          "raw_score": 0.32774923851511684,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:disk-full",
+        "runbook:cpu-spike",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-06",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 19,
+      "provider_position": 0,
+      "query": "홈페이지가 엣지 브라우저에서 빈 화면으로 표시",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.18265129113569856,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.584918,
+          "raw_score": 0.5849181359512038,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.325963,
+          "raw_score": 0.3259634456280518,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:browser",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-06",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 19,
+      "provider_position": 1,
+      "query": "홈페이지가 엣지 브라우저에서 빈 화면으로 표시",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.04363500000908971,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.709478,
+          "raw_score": 0.7094780501300432,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-07",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 20,
+      "provider_position": 0,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.03118608333170414,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-07",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 20,
+      "provider_position": 1,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.18175933277234435,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-07",
+      "check_index": 1,
+      "repetition": 2,
+      "pair_index": 21,
+      "provider_position": 0,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.16819958295673132,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-07",
+      "check_index": 1,
+      "repetition": 2,
+      "pair_index": 21,
+      "provider_position": 1,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.027506666723638773,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-08",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 22,
+      "provider_position": 0,
+      "query": "로그인 이후 로딩 표시만 계속 돌아요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.030241457745432854,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.773603,
+          "raw_score": 0.7736029894694383,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.519907,
+          "raw_score": 0.5199070202142656,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-08",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 22,
+      "provider_position": 1,
+      "query": "로그인 이후 로딩 표시만 계속 돌아요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.18091179057955742,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.57531,
+          "raw_score": 0.5753100190222585,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.339047,
+          "raw_score": 0.3390466794982509,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.306147,
+          "raw_score": 0.3061471487429874,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity",
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-09",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 23,
+      "provider_position": 0,
+      "query": "auth-service 로그인 응답이 늦고 connection pool 사용률이 높음",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.18598549999296665,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.382316,
+          "raw_score": 0.3823157659888873,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.344832,
+          "raw_score": 0.34483220339523357,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.319387,
+          "raw_score": 0.3193874992322616,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:disk-full",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-09",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 23,
+      "provider_position": 1,
+      "query": "auth-service 로그인 응답이 늦고 connection pool 사용률이 높음",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.06044550007209182,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.611674,
+          "raw_score": 0.6116738463833347,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-10",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 24,
+      "provider_position": 0,
+      "query": "회사 와이파이에서 사내 페이지에 접속하면 504 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.030407665763050318,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.734231,
+          "raw_score": 0.7342310072591255,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-10",
+      "check_index": 0,
+      "repetition": 2,
+      "pair_index": 24,
+      "provider_position": 1,
+      "query": "회사 와이파이에서 사내 페이지에 접속하면 504 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.2192127089947462,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.642695,
+          "raw_score": 0.6426950546019004,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-01",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 25,
+      "provider_position": 0,
+      "query": "계정 인증 뒤 다음 페이지로 이동을 못 하고 기다리기만 해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.03587179072201252,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.722787,
+          "raw_score": 0.7227868176506376,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.558993,
+          "raw_score": 0.5589931405370586,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-01",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 25,
+      "provider_position": 1,
+      "query": "계정 인증 뒤 다음 페이지로 이동을 못 하고 기다리기만 해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.18519187532365322,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.556065,
+          "raw_score": 0.5560654084499875,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.433245,
+          "raw_score": 0.4332447137174565,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-02",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 26,
+      "provider_position": 0,
+      "query": "카드 승인 완료가 안 보여 다시 승인 요청하면 중복 청구될까 걱정돼요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.15888600004836917,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.524532,
+          "raw_score": 0.5245316161044505,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-02",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 26,
+      "provider_position": 1,
+      "query": "카드 승인 완료가 안 보여 다시 승인 요청하면 중복 청구될까 걱정돼요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.04711049981415272,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.653335,
+          "raw_score": 0.6533352518061084,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-03",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 27,
+      "provider_position": 0,
+      "query": "다른 서비스로 넘어갈 때 응답을 기다리다 끊김, Gateway Timeout",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.030598457902669907,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.580264,
+          "raw_score": 0.5802642057368682,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-03",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 27,
+      "provider_position": 1,
+      "query": "다른 서비스로 넘어갈 때 응답을 기다리다 끊김, Gateway Timeout",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.16290695872157812,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.568133,
+          "raw_score": 0.5681326249824676,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-03",
+      "check_index": 1,
+      "repetition": 3,
+      "pair_index": 28,
+      "provider_position": 0,
+      "query": "서비스 사이 패킷 손실과 upstream 호출 대기 제한 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.19903804222121835,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": false,
+      "recall": 0.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-03",
+      "check_index": 1,
+      "repetition": 3,
+      "pair_index": 28,
+      "provider_position": 1,
+      "query": "서비스 사이 패킷 손실과 upstream 호출 대기 제한 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.040370707865804434,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.525292,
+          "raw_score": 0.5252917614238519,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.502829,
+          "raw_score": 0.5028285203166568,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.500979,
+          "raw_score": 0.5009793047393353,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.5,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-04",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 29,
+      "provider_position": 0,
+      "query": "프로세스가 쓰는 RAM이 반환되지 않고 힙이 계속 커져 OOM 위험",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.028833165764808655,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.660836,
+          "raw_score": 0.6608361442174603,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.50082,
+          "raw_score": 0.5008200636074003,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:memory-leak",
+        "runbook:disk-full"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-04",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 29,
+      "provider_position": 1,
+      "query": "프로세스가 쓰는 RAM이 반환되지 않고 힙이 계속 커져 OOM 위험",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.17407904099673033,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.504265,
+          "raw_score": 0.5042654280209881,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.364718,
+          "raw_score": 0.3647178486128821,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:memory-leak",
+        "runbook:cpu-spike"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-05",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 30,
+      "provider_position": 0,
+      "query": "로그 볼륨 여유 공간 부족, 기록 파일 증가, 보존 정책 점검",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.1592841250821948,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.414252,
+          "raw_score": 0.41425182821887246,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.356879,
+          "raw_score": 0.3568794075994804,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.327749,
+          "raw_score": 0.32774923851511684,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:disk-full",
+        "runbook:cpu-spike",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-05",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 30,
+      "provider_position": 1,
+      "query": "로그 볼륨 여유 공간 부족, 기록 파일 증가, 보존 정책 점검",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.04040070902556181,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.718554,
+          "raw_score": 0.718554247224827,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.511472,
+          "raw_score": 0.5114715580604154,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:disk-full",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-06",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 31,
+      "provider_position": 0,
+      "query": "홈페이지가 엣지 브라우저에서 빈 화면으로 표시",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.028854291886091232,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.709478,
+          "raw_score": 0.7094780501300432,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-06",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 31,
+      "provider_position": 1,
+      "query": "홈페이지가 엣지 브라우저에서 빈 화면으로 표시",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.17137458315119147,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.584918,
+          "raw_score": 0.5849181359512038,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.325963,
+          "raw_score": 0.3259634456280518,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:browser",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-07",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 32,
+      "provider_position": 0,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.15579458279535174,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-07",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 32,
+      "provider_position": 1,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.044093791861087084,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-07",
+      "check_index": 1,
+      "repetition": 3,
+      "pair_index": 33,
+      "provider_position": 0,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.016735333018004894,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-07",
+      "check_index": 1,
+      "repetition": 3,
+      "pair_index": 33,
+      "provider_position": 1,
+      "query": "출장 숙박비 정산 한도와 영수증 제출 기준",
+      "system": "web-01",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.15874245762825012,
+      "status": "no_match",
+      "documents": [],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.3,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-08",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 34,
+      "provider_position": 0,
+      "query": "로그인 이후 로딩 표시만 계속 돌아요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.16579445777460933,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.57531,
+          "raw_score": 0.5753100190222585,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.339047,
+          "raw_score": 0.3390466794982509,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.306147,
+          "raw_score": 0.3061471487429874,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:connectivity",
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-08",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 34,
+      "provider_position": 1,
+      "query": "로그인 이후 로딩 표시만 계속 돌아요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.06167116714641452,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.773603,
+          "raw_score": 0.7736029894694383,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.519907,
+          "raw_score": 0.5199070202142656,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-09",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 35,
+      "provider_position": 0,
+      "query": "auth-service 로그인 응답이 늦고 connection pool 사용률이 높음",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.030973250046372414,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.611674,
+          "raw_score": 0.6116738463833347,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-09",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 35,
+      "provider_position": 1,
+      "query": "auth-service 로그인 응답이 늦고 connection pool 사용률이 높음",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.21970208315178752,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.382316,
+          "raw_score": 0.3823157659888873,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.344832,
+          "raw_score": 0.34483220339523357,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.319387,
+          "raw_score": 0.3193874992322616,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:disk-full",
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "test-10",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 36,
+      "provider_position": 0,
+      "query": "회사 와이파이에서 사내 페이지에 접속하면 504 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.17385529214516282,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.642695,
+          "raw_score": 0.6426950546019004,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.3,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "test-10",
+      "check_index": 0,
+      "repetition": 3,
+      "pair_index": 36,
+      "provider_position": 1,
+      "query": "회사 와이파이에서 사내 페이지에 접속하면 504 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.04912016587331891,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.734231,
+          "raw_score": 0.7342310072591255,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    }
+  ],
+  "summaries": {
+    "ollama": {
+      "all": {
+        "executions": 36,
+        "unique_checks": 12,
+        "positive_denominator": 30,
+        "no_match_denominator": 6,
+        "hit_at_1": 0.9,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.3333333333333333,
+        "mean_reciprocal_rank_at_3": 0.95,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 18,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 36,
+          "mean_seconds": 0.0360119905995412,
+          "median_seconds": 0.03310916665941477,
+          "p95_seconds": 0.06044550007209182
+        },
+        "successful_latency": {
+          "count": 36,
+          "mean_seconds": 0.0360119905995412,
+          "median_seconds": 0.03310916665941477,
+          "p95_seconds": 0.06044550007209182
+        }
+      },
+      "user": {
+        "executions": 21,
+        "unique_checks": 7,
+        "positive_denominator": 18,
+        "no_match_denominator": 3,
+        "hit_at_1": 1.0,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.33333333333333326,
+        "mean_reciprocal_rank_at_3": 1.0,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 6,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 21,
+          "mean_seconds": 0.03796505737340167,
+          "median_seconds": 0.03587179072201252,
+          "p95_seconds": 0.04952316591516137
+        },
+        "successful_latency": {
+          "count": 21,
+          "mean_seconds": 0.03796505737340167,
+          "median_seconds": 0.03587179072201252,
+          "p95_seconds": 0.04952316591516137
+        }
+      },
+      "operator": {
+        "executions": 15,
+        "unique_checks": 5,
+        "positive_denominator": 12,
+        "no_match_denominator": 3,
+        "hit_at_1": 0.75,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.3333333333333333,
+        "mean_reciprocal_rank_at_3": 0.875,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 12,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 15,
+          "mean_seconds": 0.033277697116136554,
+          "median_seconds": 0.030973250046372414,
+          "p95_seconds": 0.06044550007209182
+        },
+        "successful_latency": {
+          "count": 15,
+          "mean_seconds": 0.033277697116136554,
+          "median_seconds": 0.030973250046372414,
+          "p95_seconds": 0.06044550007209182
+        }
+      }
+    },
+    "openai": {
+      "all": {
+        "executions": 36,
+        "unique_checks": 12,
+        "positive_denominator": 30,
+        "no_match_denominator": 6,
+        "hit_at_1": 0.9,
+        "hit_at_3": 0.9,
+        "recall_at_3": 0.9,
+        "precision_at_3": 0.29999999999999993,
+        "mean_reciprocal_rank_at_3": 0.9,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 27,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 36,
+          "mean_seconds": 0.17600272562251323,
+          "median_seconds": 0.17535452055744827,
+          "p95_seconds": 0.21970208315178752
+        },
+        "successful_latency": {
+          "count": 36,
+          "mean_seconds": 0.17600272562251323,
+          "median_seconds": 0.17535452055744827,
+          "p95_seconds": 0.21970208315178752
+        }
+      },
+      "user": {
+        "executions": 21,
+        "unique_checks": 7,
+        "positive_denominator": 18,
+        "no_match_denominator": 3,
+        "hit_at_1": 1.0,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.33333333333333326,
+        "mean_reciprocal_rank_at_3": 1.0,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 12,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 21,
+          "mean_seconds": 0.17208245039607087,
+          "median_seconds": 0.17385529214516282,
+          "p95_seconds": 0.19624175038188696
+        },
+        "successful_latency": {
+          "count": 21,
+          "mean_seconds": 0.17208245039607087,
+          "median_seconds": 0.17385529214516282,
+          "p95_seconds": 0.19624175038188696
+        }
+      },
+      "operator": {
+        "executions": 15,
+        "unique_checks": 5,
+        "positive_denominator": 12,
+        "no_match_denominator": 3,
+        "hit_at_1": 0.75,
+        "hit_at_3": 0.75,
+        "recall_at_3": 0.75,
+        "precision_at_3": 0.25,
+        "mean_reciprocal_rank_at_3": 0.75,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 15,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 15,
+          "mean_seconds": 0.18149111093953252,
+          "median_seconds": 0.1789691662415862,
+          "p95_seconds": 0.22894170926883817
+        },
+        "successful_latency": {
+          "count": 15,
+          "mean_seconds": 0.18149111093953252,
+          "median_seconds": 0.1789691662415862,
+          "p95_seconds": 0.22894170926883817
+        }
+      }
+    }
+  },
+  "calibration": null,
+  "status": "completed",
+  "scope": {
+    "dataset": "기존에 확인한 test의 회귀 비교이며 새로운 독립 held-out 평가가 아님.",
+    "fairness": "동일 문서/질문/system/audience/top3. Ollama cutoff0.50고정, OpenAI dev추천고정. provider 권장 query formatting 차이는 manifest로 공개.",
+    "precision": "정답 있는 질문만 평균, Precision@3 분모는 반환 개수와 무관하게 3. MRR은 상위3개 안에서만 계산. 오답 문서 수는 제공 정답 집합 밖의 문서 수이며 미표기 문서의 실제 무관함까지 확정하지 않음.",
+    "errors": "오류를 품질 분모에 포함. latency는 실제 요청의 오류 포함 전체와 성공 표본을 별도 제시. 색인 실패로 요청하지 못한 행은 null이며 지연 표본에서 제외. p95는 nearest-rank.",
+    "latency": "색인 생성과 warmup 제외, 쿼리 동시성1·provider교대. 모델 unload/OS캐시통제 없이 실행하므로 cold start 비교 아님.",
+    "usage": "API가 보고한 토큰/호출만 집계. Ollama identity 조회·HTTP 재시도와 임베딩 요청 수는 구분. 요금 계산은 포함하지 않음.",
+    "limits": "검색 단계 비교이며 LLM 답변 품질·실제 장애 진단 정확도·사용자 전체 대기시간 개선을 뜻하지 않음."
+  }
+}

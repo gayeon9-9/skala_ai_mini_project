@@ -37,6 +37,14 @@ def test_launcher_keeps_qwen_generation_and_explicit_provider_model_pair(provide
         assert os.environ["RAG_MIN_SCORE"] == "0.5"
 
 
+@pytest.mark.parametrize("provider,score", [("openai", "0.3"), ("ollama", "0.5")])
+def test_calibrated_provider_default_score_does_not_inherit_other_provider(provider, score):
+    args = Namespace(embedding_provider=provider, embedding_model=None, min_score=None)
+    with patch.dict(os.environ, {"RAG_MIN_SCORE": "0.99"}, clear=True), patch("dotenv.load_dotenv"):
+        run_hybrid.configure(args)
+        assert os.environ["RAG_MIN_SCORE"] == score
+
+
 def test_busy_port_stops_before_server_or_key_check():
     with patch("tools.run_hybrid.configure"), patch("tools.run_hybrid.socket.socket") as socket, \
             patch("uvicorn.run") as serve, patch("agent.embeddings.OpenAIEmbedder._api_key") as key:

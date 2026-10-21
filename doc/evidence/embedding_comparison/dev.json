@@ -1,0 +1,2539 @@
+{
+  "created_at": "2026-10-21T06:00:22.040826+00:00",
+  "schema_version": 1,
+  "split": "dev",
+  "configuration": {
+    "ollama": {
+      "model": "qwen3-embedding:0.6b",
+      "min_score": 0.5
+    },
+    "openai": {
+      "model": "text-embedding-3-small",
+      "dimensions": 1536,
+      "min_score": 0.5
+    }
+  },
+  "fingerprints": {
+    "dataset_sha256": "c39aabc7be02532821f70fb74286bb96789f3c241c57a82a40d6868ec7bdd1c3",
+    "catalog_sha256": "d29fb973dc2d2395a482defca0a11919de46c280bfe467a5e73cfc9e007c815f",
+    "document_sha256": {
+      "data/faq/login.md": "865148ff41ba7ec3e990128fdabba25e3280e2bd112f18b6e39357e7a4aad1b4",
+      "data/faq/payment.md": "b6630da024f9d137e4dcd89df9f1428ad260c0499b8cb3aaca54e76478f718a6",
+      "data/faq/connectivity.md": "c89e81a42f71ab8963a7535dc95adb8e6d249c3e0e33b54a7e13e9eede1c67a3",
+      "data/faq/browser.md": "e8003ecf6ed53ab46a71911936c2409e5b6a3b162d69c18ea0439fd2a21eec49",
+      "data/runbooks/high-latency.md": "0df4846e66993b0b9312327a3f51fe6de663d701c64c2c7c10a9e2c35e9e63a3",
+      "data/runbooks/cpu-spike.md": "30796f7b5c1d0bc09acfb2518b240e3a07b04136e84fe41397802a3bf2bff22d",
+      "data/runbooks/memory-leak.md": "085f00e9bba5effbb54e97a82d5f0b7032e027dac29816021729932a5e9a9ee1",
+      "data/runbooks/network-timeout.md": "ed68d1bc775138e7e66cfb50698949856bf27d5e11afefff6e5826223e063596",
+      "data/runbooks/disk-full.md": "72b9d4f006490887ccba981531129e5a42c0d7b8c789208db391fdc5acc566c7",
+      "data/runbooks/db-down.md": "a2d4f4d3bc89984348976e9012518ceba32f389a35bf5ee7da4c19f7e1de9be5"
+    },
+    "retrieval_source_sha256": {
+      "agent/retrieval.py": "7ba44622661e2152e8ed39ed79c0ce0b7ee89cf51aed02a7900abc7a21183ffc",
+      "agent/embeddings.py": "f12807fffaee124d5a37c82db720efcdc4fb6a1251e256b3b4628426417a05aa",
+      "evals/evaluate.py": "7969c5e634a67b177a72cc0c8e87b7ae065ed1a92875aa1d93231fa54439afa4",
+      "evals/compare_embeddings.py": "7d7491f4c803f4304a260bdf1218c98a7c411cc3e0524068efd9a7841ad69dcf"
+    }
+  },
+  "dataset_version": "2026-10-21-v1",
+  "code": {
+    "git_sha": "3bdc39cd88d4fec97f957fa72bf4198895e36048",
+    "git_dirty": false,
+    "source_file_sha256": {
+      "agent/retrieval.py": "7ba44622661e2152e8ed39ed79c0ce0b7ee89cf51aed02a7900abc7a21183ffc",
+      "agent/graph.py": "75a58683c49f55e31c9ffa8eee1a5b857219a3a000cfdebb989e1a5b5d4e9457",
+      "evals/evaluate.py": "7969c5e634a67b177a72cc0c8e87b7ae065ed1a92875aa1d93231fa54439afa4"
+    }
+  },
+  "selected_case_count": 10,
+  "checks_per_provider": 14,
+  "repetitions": 1,
+  "preparation": {
+    "ollama": {
+      "status": "ok",
+      "index": {
+        "status": "ok",
+        "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+        "model": "qwen3-embedding:0.6b",
+        "provider": "ollama",
+        "query_format": "Retrieve relevant IT helpdesk guidance or incident response procedures for the query.",
+        "document_count": 10,
+        "chunk_count": 10,
+        "dimensions": 1024
+      },
+      "manifest": {
+        "schema_version": 1,
+        "catalog_version": "2026-10-21-v1",
+        "embedding": {
+          "model": "qwen3-embedding:0.6b",
+          "digest": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d",
+          "dimensions": 1024
+        },
+        "query_instruction": "Retrieve relevant IT helpdesk guidance or incident response procedures for the query.",
+        "chunk_size": 900,
+        "chunk_overlap": 100,
+        "content_hash": "efd4527b3b2081a9dc2d8516af7a0eac9cca873b5c96d53fd5c9d1f87be04df9"
+      },
+      "query_format": "Retrieve relevant IT helpdesk guidance or incident response procedures for the query.",
+      "actual_dimensions": 1024,
+      "elapsed_seconds": 1.632844875101
+    },
+    "openai": {
+      "status": "ok",
+      "index": {
+        "status": "ok",
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "model": "text-embedding-3-small",
+        "provider": "openai",
+        "query_format": "raw",
+        "document_count": 10,
+        "chunk_count": 10,
+        "dimensions": 1536
+      },
+      "manifest": {
+        "schema_version": 1,
+        "catalog_version": "2026-10-21-v1",
+        "embedding": {
+          "provider": "openai",
+          "model": "text-embedding-3-small",
+          "dimensions": 1536,
+          "query_format": "raw",
+          "cache_revision": "openai-v1"
+        },
+        "query_instruction": "raw",
+        "chunk_size": 900,
+        "chunk_overlap": 100,
+        "content_hash": "efd4527b3b2081a9dc2d8516af7a0eac9cca873b5c96d53fd5c9d1f87be04df9"
+      },
+      "query_format": "raw",
+      "actual_dimensions": 1536,
+      "elapsed_seconds": 0.5648874999023974
+    }
+  },
+  "warmup": {
+    "ollama": {
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.690286,
+          "raw_score": 0.6902862760677205,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.544675,
+          "raw_score": 0.5446748676082491,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.491434,
+          "raw_score": 0.49143357595209824,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "elapsed_seconds": 0.030164458323270082,
+      "scored": false
+    },
+    "openai": {
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.698475,
+          "raw_score": 0.6984751342509055,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.465223,
+          "raw_score": 0.46522309011694807,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.378443,
+          "raw_score": 0.3784428942758291,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "elapsed_seconds": 0.18994545796886086,
+      "scored": false
+    }
+  },
+  "planned_embedding_requests": {
+    "ollama": {
+      "document_build_batches": 1,
+      "warmup_queries": 1,
+      "timed_queries": 14
+    },
+    "openai": {
+      "document_build_batches": 1,
+      "warmup_queries": 1,
+      "timed_queries": 14
+    }
+  },
+  "usage": {
+    "ollama": {
+      "index_build": {
+        "unknown_usage_api_calls": 0,
+        "successful_api_calls": 1,
+        "failed_api_calls": 0,
+        "input_tokens": 2276
+      },
+      "warmup": {
+        "unknown_usage_api_calls": 0,
+        "successful_api_calls": 1,
+        "failed_api_calls": 0,
+        "input_tokens": 35
+      },
+      "timed_queries": {
+        "unknown_usage_api_calls": 0,
+        "successful_api_calls": 14,
+        "failed_api_calls": 0,
+        "input_tokens": 520
+      }
+    },
+    "openai": {
+      "index_build": {
+        "unknown_usage_api_calls": 0,
+        "successful_api_calls": 1,
+        "failed_api_calls": 0,
+        "input_tokens": 2926
+      },
+      "warmup": {
+        "unknown_usage_api_calls": 0,
+        "successful_api_calls": 1,
+        "failed_api_calls": 0,
+        "input_tokens": 17
+      },
+      "timed_queries": {
+        "unknown_usage_api_calls": 0,
+        "successful_api_calls": 14,
+        "failed_api_calls": 0,
+        "input_tokens": 295
+      }
+    }
+  },
+  "results": [
+    {
+      "provider": "ollama",
+      "case_id": "dev-01",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 1,
+      "provider_position": 0,
+      "query": "로그인 후 화면이 넘어가지 않고 크롬에서 계속 대기해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.050602416042238474,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.709935,
+          "raw_score": 0.7099354288763763,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.620113,
+          "raw_score": 0.6201126291479301,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.52388,
+          "raw_score": 0.5238797955829407,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:browser",
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 2,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-01",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 1,
+      "provider_position": 1,
+      "query": "로그인 후 화면이 넘어가지 않고 크롬에서 계속 대기해요",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.18041487503796816,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.572815,
+          "raw_score": 0.5728152733801178,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.448057,
+          "raw_score": 0.4480566760744342,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.325977,
+          "raw_score": 0.3259770149718675,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-01",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 2,
+      "provider_position": 0,
+      "query": "p95 latency 2.4s connection pool 92% used 응답 지연",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.1547132502309978,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.595678,
+          "raw_score": 0.5956778697901967,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.391199,
+          "raw_score": 0.39119878278985787,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.379685,
+          "raw_score": 0.37968454121467166,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-01",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 2,
+      "provider_position": 1,
+      "query": "p95 latency 2.4s connection pool 92% used 응답 지연",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency"
+      ],
+      "elapsed_seconds": 0.0275281248614192,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.825415,
+          "raw_score": 0.8254154675691703,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.563575,
+          "raw_score": 0.5635749014556499,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:db-down",
+          "chunk_id": "runbook:db-down:0",
+          "score": 0.467839,
+          "raw_score": 0.4678392501971394,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-02",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 3,
+      "provider_position": 0,
+      "query": "결제 버튼 처리 중 대기, 결제를 다시 눌러도 되나요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.02739425003528595,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.736895,
+          "raw_score": 0.7368947337938557,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.402914,
+          "raw_score": 0.4029144067381147,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-02",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 3,
+      "provider_position": 1,
+      "query": "결제 버튼 처리 중 대기, 결제를 다시 눌러도 되나요",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.18960941722616553,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.677331,
+          "raw_score": 0.6773312406636559,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.354118,
+          "raw_score": 0.3541178651705086,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-02",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 4,
+      "provider_position": 0,
+      "query": "CPU 91% payments-service 인스턴스 응답 지연",
+      "system": "payments-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:cpu-spike"
+      ],
+      "elapsed_seconds": 0.19933024980127811,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.520278,
+          "raw_score": 0.5202783251115932,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.501709,
+          "raw_score": 0.5017091369572713,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.369439,
+          "raw_score": 0.36943871806193473,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:cpu-spike",
+        "runbook:high-latency"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-02",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 4,
+      "provider_position": 1,
+      "query": "CPU 91% payments-service 인스턴스 응답 지연",
+      "system": "payments-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:cpu-spike"
+      ],
+      "elapsed_seconds": 0.03872616635635495,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.733618,
+          "raw_score": 0.7336183945819147,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.616501,
+          "raw_score": 0.616500715631968,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.477687,
+          "raw_score": 0.47768700466081876,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:cpu-spike"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.5,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-03",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 5,
+      "provider_position": 0,
+      "query": "업무 페이지 접속 시 504 타임아웃 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.031634250190109015,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.780795,
+          "raw_score": 0.7807949111419551,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-03",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 5,
+      "provider_position": 1,
+      "query": "업무 페이지 접속 시 504 타임아웃 오류",
+      "system": "gateway-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:connectivity"
+      ],
+      "elapsed_seconds": 0.26612658333033323,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.719775,
+          "raw_score": 0.7197747420532957,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:connectivity"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-03",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 6,
+      "provider_position": 0,
+      "query": "upstream timeout network packet loss 네트워크 요청 시간 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.173355916980654,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.431676,
+          "raw_score": 0.4316758819231468,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.350811,
+          "raw_score": 0.35081122580906093,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.316022,
+          "raw_score": 0.3160217468698924,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": false,
+      "recall": 0.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-03",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 6,
+      "provider_position": 1,
+      "query": "upstream timeout network packet loss 네트워크 요청 시간 초과",
+      "system": "gateway-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.04032679134979844,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.675067,
+          "raw_score": 0.6750674729248302,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.589535,
+          "raw_score": 0.5895352888861,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.441159,
+          "raw_score": 0.44115862187066884,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:network-timeout",
+        "runbook:high-latency"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-04",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 7,
+      "provider_position": 0,
+      "query": "memory usage climbing steadily over 6h heap near limit 메모리 누수",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.028889874927699566,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.778523,
+          "raw_score": 0.7785231286726328,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.502538,
+          "raw_score": 0.5025375578231754,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.46278,
+          "raw_score": 0.46277981226788634,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:memory-leak",
+        "runbook:disk-full"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-04",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 7,
+      "provider_position": 1,
+      "query": "memory usage climbing steadily over 6h heap near limit 메모리 누수",
+      "system": "cache-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "elapsed_seconds": 0.21344883413985372,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.549191,
+          "raw_score": 0.5491907351075046,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.31148,
+          "raw_score": 0.31148038706073367,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.294285,
+          "raw_score": 0.2942851292510789,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:memory-leak"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-05",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 8,
+      "provider_position": 0,
+      "query": "disk usage 95% on /var/log, No space left on device",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.14728908380493522,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.3314,
+          "raw_score": 0.33139962914357923,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.282802,
+          "raw_score": 0.2828024810940882,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.226662,
+          "raw_score": 0.22666200137447165,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": false,
+      "recall": 0.0,
+      "no_match_correct": null,
+      "hit_at_1": false,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-05",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 8,
+      "provider_position": 1,
+      "query": "disk usage 95% on /var/log, No space left on device",
+      "system": "log-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:disk-full"
+      ],
+      "elapsed_seconds": 0.03798241727054119,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.707242,
+          "raw_score": 0.7072421338107733,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.468191,
+          "raw_score": 0.46819052120934596,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.416812,
+          "raw_score": 0.41681169696168213,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:disk-full"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-06",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 9,
+      "provider_position": 0,
+      "query": "크롬 업무 화면이 하얗게 나오는 브라우저 표시 문제",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.027343583293259144,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.807911,
+          "raw_score": 0.807910947860861,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.377443,
+          "raw_score": 0.37744343153980414,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-06",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 9,
+      "provider_position": 1,
+      "query": "크롬 업무 화면이 하얗게 나오는 브라우저 표시 문제",
+      "system": "web-01",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:browser"
+      ],
+      "elapsed_seconds": 0.23287925031036139,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.584804,
+          "raw_score": 0.5848038435894923,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.311699,
+          "raw_score": 0.3116989562702146,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-07",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 10,
+      "provider_position": 0,
+      "query": "다음 달 사내 식당 메뉴표",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.18819304089993238,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.202837,
+          "raw_score": 0.20283675362423023,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.163978,
+          "raw_score": 0.16397794582024292,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.13976,
+          "raw_score": 0.1397598781837829,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-07",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 10,
+      "provider_position": 1,
+      "query": "다음 달 사내 식당 메뉴표",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.047843582928180695,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.239785,
+          "raw_score": 0.23978506999666047,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.23579,
+          "raw_score": 0.23578995122757404,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.234325,
+          "raw_score": 0.23432472332026066,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-07",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 11,
+      "provider_position": 0,
+      "query": "다음 달 사내 식당 메뉴표",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.016582833137363195,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.255531,
+          "raw_score": 0.25553148738819575,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.250311,
+          "raw_score": 0.2503113559081912,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:db-down",
+          "chunk_id": "runbook:db-down:0",
+          "score": 0.220416,
+          "raw_score": 0.22041581768157453,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-07",
+      "check_index": 1,
+      "repetition": 1,
+      "pair_index": 11,
+      "provider_position": 1,
+      "query": "다음 달 사내 식당 메뉴표",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [],
+      "elapsed_seconds": 0.1748191248625517,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:db-down",
+          "chunk_id": "runbook:db-down:0",
+          "score": 0.20171,
+          "raw_score": 0.20170986368844643,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:memory-leak",
+          "chunk_id": "runbook:memory-leak:0",
+          "score": 0.198991,
+          "raw_score": 0.19899106217269671,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.198027,
+          "raw_score": 0.19802688836581211,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "no_match",
+      "min_score": 0.5,
+      "returned_document_ids": [],
+      "hit": null,
+      "recall": null,
+      "no_match_correct": true,
+      "hit_at_1": null,
+      "reciprocal_rank_at_3": 0.0,
+      "precision_at_3": 0.0,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-08",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 12,
+      "provider_position": 0,
+      "query": "로그인 버튼을 눌러도 화면 변화 없음",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.2056490001268685,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.611889,
+          "raw_score": 0.6118885584563543,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.432366,
+          "raw_score": 0.4323663615279431,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.319956,
+          "raw_score": 0.31995555195893116,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-08",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 12,
+      "provider_position": 1,
+      "query": "로그인 버튼을 눌러도 화면 변화 없음",
+      "system": "auth-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:login"
+      ],
+      "elapsed_seconds": 0.06707054190337658,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:login",
+          "chunk_id": "faq:login:0",
+          "score": 0.714499,
+          "raw_score": 0.7144989683148888,
+          "audience": "user",
+          "systems": [
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:browser",
+          "chunk_id": "faq:browser:0",
+          "score": 0.570392,
+          "raw_score": 0.5703918429050795,
+          "audience": "user",
+          "systems": [
+            "web-01",
+            "auth-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.462534,
+          "raw_score": 0.4625335379405568,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:login",
+        "faq:browser"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 1,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-09",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 13,
+      "provider_position": 0,
+      "query": "응답 지연과 네트워크 호출 타임아웃이 함께 발생하여 각각 점검 필요",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.03343345783650875,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.742448,
+          "raw_score": 0.7424481776867737,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.671699,
+          "raw_score": 0.6716990152272843,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:cpu-spike",
+          "chunk_id": "runbook:cpu-spike:0",
+          "score": 0.395011,
+          "raw_score": 0.39501095534545205,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:network-timeout",
+        "runbook:high-latency"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.6666666666666666,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-09",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 13,
+      "provider_position": 1,
+      "query": "응답 지연과 네트워크 호출 타임아웃이 함께 발생하여 각각 점검 필요",
+      "system": "auth-service",
+      "audience": "operator",
+      "expected_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout"
+      ],
+      "elapsed_seconds": 0.1599486251361668,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "runbook:high-latency",
+          "chunk_id": "runbook:high-latency:0",
+          "score": 0.561192,
+          "raw_score": 0.5611915548555707,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:network-timeout",
+          "chunk_id": "runbook:network-timeout:0",
+          "score": 0.534915,
+          "raw_score": 0.5349149981087976,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        },
+        {
+          "document_id": "runbook:disk-full",
+          "chunk_id": "runbook:disk-full:0",
+          "score": 0.398019,
+          "raw_score": 0.39801942888775715,
+          "audience": "operator",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "runbook:high-latency",
+        "runbook:network-timeout"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.6666666666666666,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "openai",
+      "case_id": "dev-10",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 14,
+      "provider_position": 0,
+      "query": "결제가 진행되지 않을 때 사용자가 확인할 사항",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.17166558280587196,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.619003,
+          "raw_score": 0.6190026130792343,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.391801,
+          "raw_score": 0.3918010110483949,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    },
+    {
+      "provider": "ollama",
+      "case_id": "dev-10",
+      "check_index": 0,
+      "repetition": 1,
+      "pair_index": 14,
+      "provider_position": 1,
+      "query": "결제가 진행되지 않을 때 사용자가 확인할 사항",
+      "system": "payments-service",
+      "audience": "user",
+      "expected_document_ids": [
+        "faq:payment"
+      ],
+      "elapsed_seconds": 0.03939637495204806,
+      "status": "ok",
+      "documents": [
+        {
+          "document_id": "faq:payment",
+          "chunk_id": "faq:payment:0",
+          "score": 0.71258,
+          "raw_score": 0.712579972793521,
+          "audience": "user",
+          "systems": [
+            "payments-service"
+          ]
+        },
+        {
+          "document_id": "faq:connectivity",
+          "chunk_id": "faq:connectivity:0",
+          "score": 0.439886,
+          "raw_score": 0.43988634976624286,
+          "audience": "user",
+          "systems": [
+            "*"
+          ]
+        }
+      ],
+      "index_version": "f97ce19064b41995de8fbf4ef0517bdf1e32a6a4325665ebae728f9f12a67695",
+      "effective_status": "ok",
+      "min_score": 0.5,
+      "returned_document_ids": [
+        "faq:payment"
+      ],
+      "hit": true,
+      "recall": 1.0,
+      "no_match_correct": null,
+      "hit_at_1": true,
+      "reciprocal_rank_at_3": 1.0,
+      "precision_at_3": 0.3333333333333333,
+      "irrelevant_documents": 0,
+      "cross_system_documents": 0,
+      "cross_audience_documents": 0
+    }
+  ],
+  "summaries": {
+    "ollama": {
+      "all": {
+        "executions": 14,
+        "unique_checks": 14,
+        "positive_denominator": 12,
+        "no_match_denominator": 2,
+        "hit_at_1": 0.9166666666666666,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.3611111111111111,
+        "mean_reciprocal_rank_at_3": 0.9583333333333334,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 7,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 14,
+          "mean_seconds": 0.03676819036315594,
+          "median_seconds": 0.03570793755352497,
+          "p95_seconds": 0.06707054190337658
+        },
+        "successful_latency": {
+          "count": 14,
+          "mean_seconds": 0.03676819036315594,
+          "median_seconds": 0.03570793755352497,
+          "p95_seconds": 0.06707054190337658
+        }
+      },
+      "user": {
+        "executions": 7,
+        "unique_checks": 7,
+        "positive_denominator": 6,
+        "no_match_denominator": 1,
+        "hit_at_1": 1.0,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.3333333333333333,
+        "mean_reciprocal_rank_at_3": 1.0,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 3,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 7,
+          "mean_seconds": 0.041612142763499706,
+          "median_seconds": 0.03939637495204806,
+          "p95_seconds": 0.06707054190337658
+        },
+        "successful_latency": {
+          "count": 7,
+          "mean_seconds": 0.041612142763499706,
+          "median_seconds": 0.03939637495204806,
+          "p95_seconds": 0.06707054190337658
+        }
+      },
+      "operator": {
+        "executions": 7,
+        "unique_checks": 7,
+        "positive_denominator": 6,
+        "no_match_denominator": 1,
+        "hit_at_1": 0.8333333333333334,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.38888888888888884,
+        "mean_reciprocal_rank_at_3": 0.9166666666666666,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 4,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 7,
+          "mean_seconds": 0.031924237962812185,
+          "median_seconds": 0.03343345783650875,
+          "p95_seconds": 0.04032679134979844
+        },
+        "successful_latency": {
+          "count": 7,
+          "mean_seconds": 0.031924237962812185,
+          "median_seconds": 0.03343345783650875,
+          "p95_seconds": 0.04032679134979844
+        }
+      }
+    },
+    "openai": {
+      "all": {
+        "executions": 14,
+        "unique_checks": 14,
+        "positive_denominator": 12,
+        "no_match_denominator": 2,
+        "hit_at_1": 0.8333333333333334,
+        "hit_at_3": 0.8333333333333334,
+        "recall_at_3": 0.8333333333333334,
+        "precision_at_3": 0.3055555555555555,
+        "mean_reciprocal_rank_at_3": 0.8333333333333334,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 1,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 14,
+          "mean_seconds": 0.18981734533528133,
+          "median_seconds": 0.18430395796895027,
+          "p95_seconds": 0.26612658333033323
+        },
+        "successful_latency": {
+          "count": 14,
+          "mean_seconds": 0.18981734533528133,
+          "median_seconds": 0.18430395796895027,
+          "p95_seconds": 0.26612658333033323
+        }
+      },
+      "user": {
+        "executions": 7,
+        "unique_checks": 7,
+        "positive_denominator": 6,
+        "no_match_denominator": 1,
+        "hit_at_1": 1.0,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "precision_at_3": 0.3333333333333333,
+        "mean_reciprocal_rank_at_3": 1.0,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 0,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 7,
+          "mean_seconds": 0.20493396424821445,
+          "median_seconds": 0.18960941722616553,
+          "p95_seconds": 0.26612658333033323
+        },
+        "successful_latency": {
+          "count": 7,
+          "mean_seconds": 0.20493396424821445,
+          "median_seconds": 0.18960941722616553,
+          "p95_seconds": 0.26612658333033323
+        }
+      },
+      "operator": {
+        "executions": 7,
+        "unique_checks": 7,
+        "positive_denominator": 6,
+        "no_match_denominator": 1,
+        "hit_at_1": 0.6666666666666666,
+        "hit_at_3": 0.6666666666666666,
+        "recall_at_3": 0.6666666666666666,
+        "precision_at_3": 0.27777777777777773,
+        "mean_reciprocal_rank_at_3": 0.6666666666666666,
+        "no_match_correct_rate": 1.0,
+        "error_count": 0,
+        "not_attempted_count": 0,
+        "irrelevant_document_count": 1,
+        "cross_system_document_count": 0,
+        "cross_audience_document_count": 0,
+        "latency": {
+          "count": 7,
+          "mean_seconds": 0.17470072642234818,
+          "median_seconds": 0.173355916980654,
+          "p95_seconds": 0.21344883413985372
+        },
+        "successful_latency": {
+          "count": 7,
+          "mean_seconds": 0.17470072642234818,
+          "median_seconds": 0.173355916980654,
+          "p95_seconds": 0.21344883413985372
+        }
+      }
+    }
+  },
+  "calibration": {
+    "recommended_openai_min_score": 0.3,
+    "ollama_min_score": 0.5,
+    "curve": [
+      {
+        "min_score": 0.2,
+        "balanced_score": 0.5,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 1.0,
+          "precision_at_3": 0.3611111111111111,
+          "mean_reciprocal_rank_at_3": 1.0,
+          "no_match_correct_rate": 0.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 20,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.25,
+        "balanced_score": 1.0,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 1.0,
+          "precision_at_3": 0.3611111111111111,
+          "mean_reciprocal_rank_at_3": 1.0,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 17,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.3,
+        "balanced_score": 1.0,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 1.0,
+          "precision_at_3": 0.3611111111111111,
+          "mean_reciprocal_rank_at_3": 1.0,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 15,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.35,
+        "balanced_score": 0.9583333333333333,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.9166666666666666,
+          "hit_at_3": 0.9166666666666666,
+          "recall_at_3": 0.9166666666666666,
+          "precision_at_3": 0.3333333333333333,
+          "mean_reciprocal_rank_at_3": 0.9166666666666666,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 10,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.4,
+        "balanced_score": 0.9583333333333333,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.9166666666666666,
+          "hit_at_3": 0.9166666666666666,
+          "recall_at_3": 0.9166666666666666,
+          "precision_at_3": 0.3333333333333333,
+          "mean_reciprocal_rank_at_3": 0.9166666666666666,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 3,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.45,
+        "balanced_score": 0.9166666666666667,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.8333333333333334,
+          "hit_at_3": 0.8333333333333334,
+          "recall_at_3": 0.8333333333333334,
+          "precision_at_3": 0.3055555555555555,
+          "mean_reciprocal_rank_at_3": 0.8333333333333334,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 1,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.5,
+        "balanced_score": 0.9166666666666667,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.8333333333333334,
+          "hit_at_3": 0.8333333333333334,
+          "recall_at_3": 0.8333333333333334,
+          "precision_at_3": 0.3055555555555555,
+          "mean_reciprocal_rank_at_3": 0.8333333333333334,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 1,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.55,
+        "balanced_score": 0.8333333333333333,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.6666666666666666,
+          "hit_at_3": 0.6666666666666666,
+          "recall_at_3": 0.625,
+          "precision_at_3": 0.2222222222222222,
+          "mean_reciprocal_rank_at_3": 0.6666666666666666,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 0,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.6,
+        "balanced_score": 0.6666666666666666,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.3333333333333333,
+          "hit_at_3": 0.3333333333333333,
+          "recall_at_3": 0.3333333333333333,
+          "precision_at_3": 0.1111111111111111,
+          "mean_reciprocal_rank_at_3": 0.3333333333333333,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 0,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.65,
+        "balanced_score": 0.5833333333333334,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.16666666666666666,
+          "hit_at_3": 0.16666666666666666,
+          "recall_at_3": 0.16666666666666666,
+          "precision_at_3": 0.05555555555555555,
+          "mean_reciprocal_rank_at_3": 0.16666666666666666,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 0,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.7,
+        "balanced_score": 0.5416666666666666,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.08333333333333333,
+          "hit_at_3": 0.08333333333333333,
+          "recall_at_3": 0.08333333333333333,
+          "precision_at_3": 0.027777777777777776,
+          "mean_reciprocal_rank_at_3": 0.08333333333333333,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 0,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.75,
+        "balanced_score": 0.5,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.0,
+          "hit_at_3": 0.0,
+          "recall_at_3": 0.0,
+          "precision_at_3": 0.0,
+          "mean_reciprocal_rank_at_3": 0.0,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 0,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      },
+      {
+        "min_score": 0.8,
+        "balanced_score": 0.5,
+        "summary": {
+          "executions": 14,
+          "unique_checks": 14,
+          "positive_denominator": 12,
+          "no_match_denominator": 2,
+          "hit_at_1": 0.0,
+          "hit_at_3": 0.0,
+          "recall_at_3": 0.0,
+          "precision_at_3": 0.0,
+          "mean_reciprocal_rank_at_3": 0.0,
+          "no_match_correct_rate": 1.0,
+          "error_count": 0,
+          "not_attempted_count": 0,
+          "irrelevant_document_count": 0,
+          "cross_system_document_count": 0,
+          "cross_audience_document_count": 0,
+          "latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          },
+          "successful_latency": {
+            "count": 14,
+            "mean_seconds": 0.18981734533528133,
+            "median_seconds": 0.18430395796895027,
+            "p95_seconds": 0.26612658333033323
+          }
+        }
+      }
+    ],
+    "selection_rule": "dev Hit@3와 no-match 처리율의 평균 최대화; 동점은 오답 문서 수 최소, Precision@3 최대, 낮은 문턱값 순. 설정 파일은 수정하지 않음."
+  },
+  "status": "completed",
+  "scope": {
+    "dataset": "기존에 확인한 test의 회귀 비교이며 새로운 독립 held-out 평가가 아님.",
+    "fairness": "동일 문서/질문/system/audience/top3. Ollama cutoff0.50고정, OpenAI dev추천고정. provider 권장 query formatting 차이는 manifest로 공개.",
+    "precision": "정답 있는 질문만 평균, Precision@3 분모는 반환 개수와 무관하게 3. MRR은 상위3개 안에서만 계산. 오답 문서 수는 제공 정답 집합 밖의 문서 수이며 미표기 문서의 실제 무관함까지 확정하지 않음.",
+    "errors": "오류를 품질 분모에 포함. latency는 실제 요청의 오류 포함 전체와 성공 표본을 별도 제시. 색인 실패로 요청하지 못한 행은 null이며 지연 표본에서 제외. p95는 nearest-rank.",
+    "latency": "색인 생성과 warmup 제외, 쿼리 동시성1·provider교대. 모델 unload/OS캐시통제 없이 실행하므로 cold start 비교 아님.",
+    "usage": "API가 보고한 토큰/호출만 집계. Ollama identity 조회·HTTP 재시도와 임베딩 요청 수는 구분. 요금 계산은 포함하지 않음.",
+    "limits": "검색 단계 비교이며 LLM 답변 품질·실제 장애 진단 정확도·사용자 전체 대기시간 개선을 뜻하지 않음."
+  }
+}
