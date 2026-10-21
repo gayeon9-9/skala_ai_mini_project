@@ -92,6 +92,9 @@ async def verify(args) -> dict:
             report["graph_wall_seconds"] = round(time.perf_counter() - graph_started, 6)
             report["result"] = {
                 "final": result.get("final"), "intake": result.get("intake"),
+                # 합성 실험의 반려 원인을 재검토하기 위해 보존한다. 사용자 UI에 보내는
+                # 응답이 아니며, final과 명확히 구분한 검사 도구의 내부 증거다.
+                "unvalidated_draft": result.get("draft"),
                 "validation": result.get("validation"),
                 "validation_attempts": result.get("validation_attempts"),
                 "retrieval": source_summary(result.get("retrieval")),

@@ -75,6 +75,31 @@ class AnswerValidationTests(unittest.TestCase):
         self.assert_rejected(self.good.replace("알림 1건", "알림 3건"), "알림 3건")
         self.assert_rejected(self.good.replace("알림 1건", "2건의 알림"), "알림 2건")
 
+    def test_observed_alert_percentage_is_allowed_without_becoming_cpu_value(self):
+        root = Path(__file__).resolve().parents[1]
+        sample = json.loads((root / "data/monitoring.json").read_text())["auth-service"]
+        observation = {"system_name": "auth-service", "status": sample["status"],
+                       "cpu_percent": sample["cpu_base"], "memory_percent": sample["memory_base"],
+                       "alerts": sample["alerts"]}
+        items = [{"source": "monitoring", "data": observation}, *self.collected[1:]]
+        reply = (f"1) 샘플 점검: auth-service 상태={sample['status']}, CPU {sample['cpu_base']}%, "
+                 f"메모리 {sample['memory_base']}%, 알림 {len(sample['alerts'])}건. "
+                 "연결 풀 사용률 92% 알림을 확인했습니다.\n"
+                 "2) 사용자 환경을 확인해주세요. [faq:login]\n3) 실제 원인은 추가 확인이 필요합니다.")
+        result = self.check(reply, collected=items)
+        self.assertTrue(result["ok"], result)
+        # 92%는 연결 풀 알림의 값이지 CPU 관측값이 아니다.
+        wrong_cpu = reply.replace(f"CPU {sample['cpu_base']}%", "CPU 92%")
+        result = self.check(wrong_cpu, collected=items)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any("CPU 92%" in error for error in result["errors"]), result)
+        # 다른 대상의 알림이나 관측하지 않은 값으로 허용 범위를 넓히지 않는다.
+        other = {"source": "monitoring", "data": {"system_name": "payments-service", "alerts": ["pool 91% used"]}}
+        for number in (91, 93):
+            result = self.check(reply.replace("사용률 92%", f"사용률 {number}%"), collected=[*items, other])
+            self.assertFalse(result["ok"], result)
+            self.assertTrue(any(f"비율 {number}%" in error for error in result["errors"]), result)
+
     def test_markdown_emphasis_does_not_hide_wrong_or_swapped_metric(self):
         for metric in ("CPU **999%**", "**CPU** 999%", "CPU **31.0%**", "`CPU` `31.0%`"):
             with self.subTest(metric=metric):

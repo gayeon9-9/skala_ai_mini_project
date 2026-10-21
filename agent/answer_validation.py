@@ -43,6 +43,7 @@ def _metric_errors(draft, selected_system, collected, docs):
                     if item.get("source") == "monitoring" and isinstance(item.get("data"), dict)
                     and (selected_system is None or item["data"].get("system_name") == selected_system)]
     expected = {"cpu": set(), "memory": set(), "alerts": set()}
+    alert_percentages = set()
     for data in observations:
         for key, field in (("cpu", "cpu_percent"), ("memory", "memory_percent")):
             value = _number(data.get(field))
@@ -50,6 +51,13 @@ def _metric_errors(draft, selected_system, collected, docs):
                 expected[key].add(value)
         if isinstance(data.get("alerts"), list):
             expected["alerts"].add(float(len(data["alerts"])))
+            # 연결 풀 사용률처럼 CPU/메모리 외의 비율도 실제 알림에 포함될 수 있다.
+            # 선택 대상의 관측 알림 문자열에서만 읽고, 수치가 있다는 이유로 다른
+            # 지표(CPU 등)에 바꿔 붙이는 것은 아래의 지표별 검사에서 계속 차단한다.
+            for alert in data["alerts"]:
+                if isinstance(alert, str):
+                    alert_percentages.update(float(value) for value in re.findall(
+                        r"(?<![\w.])(-?\d+(?:\.\d+)?)\s*%", alert))
 
     metric_names = r"CPU|메모리|memory|RAM"
     between = r"(?:\s|사용률|사용량|점유율|사용|는|은|이|가|:|=|약|현재|율|률)*"
@@ -70,7 +78,7 @@ def _metric_errors(draft, selected_system, collected, docs):
     for key, doc in docs.items():
         if key in cited_ids:
             documented_percentages.update(float(value) for value in re.findall(r"(\d+(?:\.\d+)?)\s*%", doc.get("text", "")))
-    allowed = expected["cpu"] | expected["memory"] | documented_percentages
+    allowed = expected["cpu"] | expected["memory"] | alert_percentages | documented_percentages
     for match in re.finditer(r"(?<![\w.])(?P<value>-?\d+(?:\.\d+)?)\s*%", draft):
         if match.span("value") not in matched_percent_spans and not _same(float(match.group("value")), allowed):
             errors.append(f"제공된 점검·인용 문서에 없는 비율 {match.group('value')}%를 사용했습니다.")
