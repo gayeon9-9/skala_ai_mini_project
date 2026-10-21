@@ -1,0 +1,72 @@
+{
+  "created_at": "2026-10-21T23:17:17.658696+09:00",
+  "screenshots": [
+    {
+      "file": "screenshots/01_input.png",
+      "sha256": "3c74cba5428901c32f15f9f95e07c9a4b11b180fb8fd49bbc96226c9e503ddc2",
+      "bytes": 43502,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/02_answer.png",
+      "sha256": "479db1aa24bf6c2023d11b9ca2c8cf086aff0aba540088c81cb0968e4943119c",
+      "bytes": 201511,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/03_sources_intake.png",
+      "sha256": "1189a1c3a68aa34eed0c826dfb50fe77a98a6ebcd35f4f7bf42f3f3e539fbf05",
+      "bytes": 205279,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/04_restored.png",
+      "sha256": "2355a808459b88f67a49c097f967672f8eb38e21e9f42f62286d3e042a6c2a25",
+      "bytes": 187224,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/05_admin_fullpage.png",
+      "sha256": "72cffc3b9590277e4239bd5eb964049a9aef063961c805849e26639d1a27ac7c",
+      "bytes": 338844,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/06_admin_top.png",
+      "sha256": "5fd3fe668c5c449be17f4417f0a59faacbf3c7ca0b44986b07f566c70f88e4dc",
+      "bytes": 168408,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/07_intake_panel.png",
+      "sha256": "fc30681d1202d894b241433736e586144a715e8cede3f323a37ded338d59e9bc",
+      "bytes": 36148,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/08_validation_panel.png",
+      "sha256": "8d1e2a94025a74b084223794f1a8b59e54e467c9727b98f1670c05f2ea2befa7",
+      "bytes": 15096,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/09_documents_panels.png",
+      "sha256": "a14719bfdbe0fa4f3299775ba6835eb95c8a242e28224f3e1819b3310e747505",
+      "bytes": 33443,
+      "type": "unmodified_live_ui"
+    },
+    {
+      "file": "screenshots/10_tests_trace_report.png",
+      "sha256": "2dac7b9033553804764fd9ec696fa82e805e75d6a19751682ed48262a1d38eed",
+      "bytes": 133239,
+      "type": "stored_execution_report"
+    },
+    {
+      "file": "screenshots/11_execution_models_panel.png",
+      "sha256": "b564f714db7ad93a962667db2c3db6c0d54101a8a70ce57ae25b832971d3b4a6",
+      "bytes": 33518,
+      "type": "unmodified_live_ui"
+    }
+  ],
+  "note": "01~09 및 11은 실제 UI/요소. 10은 실제 저장 JSON을 표시한 보고서. 내용·DOM·답변 변경 없음."
+}

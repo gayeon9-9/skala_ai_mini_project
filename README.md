@@ -11,16 +11,18 @@ Base AI Agent 실습 코드를 확장한 **자연어 IT 문의 접수·문서 �
 
 ## 먼저 볼 자료
 
-- [20장 최종 발표 자료 안내](doc/presentation/README.md)
-- [발표용 PowerPoint](doc/presentation/output/G081_성가연_AI_헬프데스크_결과보고_v2.pptx)
+- [21장 최종 발표 자료 안내](doc/presentation/README.md)
+- [템플릿·프리텐다드 반영 PowerPoint](doc/presentation/output/G081_성가연_AI_헬프데스크_템플릿반영_최종.pptx)
 - [기획·분석 보고서](doc/final_report.md)
-- [실제 Qwen·OpenAI 실행과 화면](doc/evidence/final_openai/README.md)
+- [최신 코드의 실제 Qwen·OpenAI 실행과 화면](doc/evidence/template_final_20261021/README.md)
 - [최종 시연 후 접수·답변 검증 보완](doc/evidence/post_demo_fixes/README.md)
 - [Ollama·OpenAI 검색 실측 비교](doc/evidence/embedding_comparison/RESULTS.md)
 - [파일 역할·API·현재 처리 흐름](doc/README.md)
 
-발표 자료와 UI 근거는 [adce28f](https://github.com/gayeon9-9/skala_ai_mini_project/commit/adce28f)에
-보존했다. 과거 코드·실패 결과·비교 자료도 해당 시점의 기록으로 유지한다.
+최신 발표본은 `ba5a883`의 접수 추출·오류 안내 보완을 반영하고, 격리 실행에서 다시 확보한
+화면·테스트·LangSmith 기록을 사용한다. 이전 20장 발표본과 UI 근거는
+[adce28f](https://github.com/gayeon9-9/skala_ai_mini_project/commit/adce28f)에 보존했다.
+과거 코드·실패 결과·비교 자료도 해당 시점의 기록으로 유지한다.
 
 ## 구현한 기능
 

@@ -1,0 +1,91 @@
+{
+  "captured_at": "2026-10-21T14:13:02.671Z",
+  "input": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+  "selected_system": "auth-service",
+  "inquiry_id": "873a97da-cafc-4698-a711-f39aedb1abc2",
+  "thread_id": "t-web-f057e34e-df06-4acb-830a-9bb974638224",
+  "browser_elapsed_seconds": 48.39223175,
+  "checks": {
+    "thread_http_ok": true,
+    "admin_http_ok": true,
+    "restored_answer_equal": true,
+    "selected_system_retained": true,
+    "same_inquiry": true,
+    "has_answer": true,
+    "no_page_errors": true,
+    "intake_model_source": true,
+    "no_unreported_504": true,
+    "no_internal_markers": true
+  },
+  "page_errors": [],
+  "screenshots": [
+    {
+      "file": "screenshots/01_input.png",
+      "description": "선택한 서비스와 입력 문의. 최신 커밋의 실제 UI.",
+      "url": "http://127.0.0.1:8620/",
+      "captured_at": "2026-10-21T14:12:12.235Z",
+      "sha256": "3c74cba5428901c32f15f9f95e07c9a4b11b180fb8fd49bbc96226c9e503ddc2"
+    },
+    {
+      "file": "screenshots/02_answer.png",
+      "description": "검증 이후 제공된 실제 답변. 답변·DOM 수정 없음.",
+      "url": "http://127.0.0.1:8620/",
+      "captured_at": "2026-10-21T14:13:00.819Z",
+      "sha256": "479db1aa24bf6c2023d11b9ca2c8cf086aff0aba540088c81cb0968e4943119c"
+    },
+    {
+      "file": "screenshots/03_sources_intake.png",
+      "description": "사용자 문서 검색 결과와 구조화된 문의 정보.",
+      "url": "http://127.0.0.1:8620/",
+      "captured_at": "2026-10-21T14:13:00.890Z",
+      "sha256": "1189a1c3a68aa34eed0c826dfb50fe77a98a6ebcd35f4f7bf42f3f3e539fbf05"
+    },
+    {
+      "file": "screenshots/04_restored.png",
+      "description": "새로고침으로 같은 문의·답변·정보가 복원된 화면.",
+      "url": "http://127.0.0.1:8620/",
+      "captured_at": "2026-10-21T14:13:01.556Z",
+      "sha256": "2355a808459b88f67a49c097f967672f8eb38e21e9f42f62286d3e042a6c2a25"
+    },
+    {
+      "file": "screenshots/05_admin_fullpage.png",
+      "description": "동일 문의의 관리자 상세 전체 화면.",
+      "url": "http://127.0.0.1:8620/admin",
+      "captured_at": "2026-10-21T14:13:02.443Z",
+      "sha256": "72cffc3b9590277e4239bd5eb964049a9aef063961c805849e26639d1a27ac7c"
+    },
+    {
+      "file": "screenshots/06_admin_top.png",
+      "description": "접수 목록·문의 정보·기초 점검·답변 검증.",
+      "url": "http://127.0.0.1:8620/admin",
+      "captured_at": "2026-10-21T14:13:02.469Z",
+      "sha256": "5fd3fe668c5c449be17f4417f0a59faacbf3c7ca0b44986b07f566c70f88e4dc"
+    },
+    {
+      "file": "screenshots/07_intake_panel.png",
+      "description": "관리자 화면의 문의 정리 영역 그대로 캡처",
+      "url": "http://127.0.0.1:8620/admin",
+      "captured_at": "2026-10-21T14:13:02.671Z",
+      "sha256": "fc30681d1202d894b241433736e586144a715e8cede3f323a37ded338d59e9bc"
+    },
+    {
+      "file": "screenshots/08_validation_panel.png",
+      "description": "관리자 화면의 검증 결과 영역 그대로 캡처",
+      "url": "http://127.0.0.1:8620/admin",
+      "captured_at": "2026-10-21T14:13:02.671Z",
+      "sha256": "8d1e2a94025a74b084223794f1a8b59e54e467c9727b98f1670c05f2ea2befa7"
+    },
+    {
+      "file": "screenshots/09_documents_panels.png",
+      "description": "사용자 안내와 운영자 확인 자료 영역 그대로 캡처",
+      "url": "http://127.0.0.1:8620/admin",
+      "captured_at": "2026-10-21T14:13:02.671Z",
+      "sha256": "a14719bfdbe0fa4f3299775ba6835eb95c8a242e28224f3e1819b3310e747505"
+    }
+  ],
+  "notes": [
+    "최신 실제 UI 내용 변경 없음",
+    "합성 문의 1건·샘플 모니터링·격리 임시 DB",
+    "브라우저 시간은 클릭부터 완료까지의 단일 관측이며 성능 향상률 아님"
+  ]
+}

@@ -1,0 +1,11 @@
+import {chromium} from '/Users/gayeon/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const root='/Users/gayeon/all_total_vue_student/doc/evidence/template_final_20261021';
+const browser=await chromium.launch({channel:'chrome',headless:true});
+const page=await browser.newPage({viewport:{width:1440,height:1050},deviceScaleFactor:1});
+await page.goto('file://'+root+'/verification_report.html',{waitUntil:'load'});
+await page.screenshot({path:root+'/screenshots/10_tests_trace_report.png',fullPage:true});
+await page.goto('http://127.0.0.1:8620/admin',{waitUntil:'networkidle'});
+await page.locator('.case').first().click();
+await page.locator('.detail .answer').waitFor();
+await page.locator('details.panel').filter({has:page.locator('summary').filter({hasText:'실행 모델 및 기록'})}).screenshot({path:root+'/screenshots/11_execution_models_panel.png'});
+await browser.close();

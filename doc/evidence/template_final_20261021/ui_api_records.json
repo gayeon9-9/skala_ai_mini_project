@@ -1,0 +1,679 @@
+{
+  "checked_at": "2026-10-21T23:13:32.814550+09:00",
+  "synthetic": true,
+  "source": "http://127.0.0.1:8620",
+  "read_only": true,
+  "list": {
+    "items": [
+      {
+        "inquiry_id": "873a97da-cafc-4698-a711-f39aedb1abc2",
+        "thread_id": "t-web-f057e34e-df06-4acb-830a-9bb974638224",
+        "selected_system": "auth-service",
+        "status": "completed",
+        "created_at": "2026-10-21T14:12:12.324798+00:00",
+        "updated_at": "2026-10-21T14:13:00.546355+00:00",
+        "symptom": "로그인 후 화면이 넘어가지 않아요",
+        "request_count": 1
+      },
+      {
+        "inquiry_id": "cf18cd9f-5189-4c86-a4bb-2ab24083597f",
+        "thread_id": "t-web-7a71719f-c67a-4132-9f95-7a9671084dd3",
+        "selected_system": "auth-service",
+        "status": "completed",
+        "created_at": "2026-10-21T14:07:43.060090+00:00",
+        "updated_at": "2026-10-21T14:08:37.349191+00:00",
+        "symptom": "로그인 후 화면이 넘어가지 않아요",
+        "request_count": 1
+      }
+    ],
+    "limit": 20,
+    "offset": 0,
+    "has_more": false
+  },
+  "details": [
+    {
+      "inquiry_id": "873a97da-cafc-4698-a711-f39aedb1abc2",
+      "thread_id": "t-web-f057e34e-df06-4acb-830a-9bb974638224",
+      "selected_system": "auth-service",
+      "status": "completed",
+      "created_at": "2026-10-21T14:12:12.324798+00:00",
+      "updated_at": "2026-10-21T14:13:00.546355+00:00",
+      "evidence_request_id": "ee6f2926-c6bd-4a11-a555-ca02f8265ef8",
+      "evidence_created_at": "2026-10-21T14:13:00.546355+00:00",
+      "evidence_is_current": true,
+      "details": {
+        "intake": {
+          "questions": [],
+          "missing_fields": [],
+          "asked_fields": [],
+          "last_question_field": null,
+          "source": "model",
+          "warnings": [],
+          "fields": {
+            "symptom": {
+              "status": "provided",
+              "value": "로그인 후 화면이 넘어가지 않아요",
+              "evidence": "로그인 후 화면이 넘어가지 않아요"
+            },
+            "occurred_at": {
+              "status": "provided",
+              "value": "오전 9시",
+              "evidence": "오전 9시"
+            },
+            "error_message": {
+              "status": "none",
+              "value": null,
+              "evidence": "오류 메시지는 없어요"
+            },
+            "environment": {
+              "status": "provided",
+              "value": "윈도우 크롬",
+              "evidence": "윈도우 크롬"
+            }
+          },
+          "usage": {
+            "model": "ollama:qwen3:0.6b",
+            "tokens": 702,
+            "usd": 0.000105
+          }
+        },
+        "retrieval": {
+          "status": "ok",
+          "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+          "model": "text-embedding-3-small",
+          "min_score": 0.3,
+          "provider": "openai",
+          "dimensions": 1536,
+          "query_format": "raw",
+          "documents": [
+            {
+              "document_id": "faq:login",
+              "chunk_id": "faq:login:0",
+              "title": "로그인 후 화면이 넘어가지 않을 때",
+              "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+              "path": "data/faq/login.md",
+              "audience": "user",
+              "systems": [
+                "auth-service"
+              ],
+              "version": "1",
+              "document_hash": "c02f5aced04faacba5745a01f02d79a8bf675abe03644f1189bcc481036cd02c",
+              "score": 0.658141
+            },
+            {
+              "document_id": "faq:browser",
+              "chunk_id": "faq:browser:0",
+              "title": "브라우저에서 업무 화면이 하얗거나 비어 보일 때",
+              "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+              "path": "data/faq/browser.md",
+              "audience": "user",
+              "systems": [
+                "web-01",
+                "auth-service"
+              ],
+              "version": "1",
+              "document_hash": "50e0ca26c88de4ca0123324d58df72efee86a7392ccf4ebf03dd8f6c617a5c64",
+              "score": 0.425203
+            },
+            {
+              "document_id": "faq:connectivity",
+              "chunk_id": "faq:connectivity:0",
+              "title": "페이지 접속 실패와 504 시간 초과 확인",
+              "text": "# 페이지 접속 실패와 504 시간 초과 확인\n\n업무 페이지에 접속하지 못하거나 다른 서비스로 이동할 때 504 Gateway Timeout, 연결 시간 초과가 표시되는 경우의 사용자 안내입니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 시간 초과 메시지만으로 네트워크 장비나 특정 서버가 고장 났다고 확정하지 않습니다.",
+              "path": "data/faq/connectivity.md",
+              "audience": "user",
+              "systems": [
+                "*"
+              ],
+              "version": "1",
+              "document_hash": "9c34af031c3c6cea923cc431eb42882d8c043ffbd5bdfd4677e2d6a90897a0a7",
+              "score": 0.352657
+            }
+          ]
+        },
+        "validation": {
+          "status": "passed",
+          "errors": [],
+          "citations": [
+            "faq:login",
+            "faq:browser"
+          ]
+        }
+      },
+      "intake": {
+        "questions": [],
+        "missing_fields": [],
+        "asked_fields": [],
+        "last_question_field": null,
+        "source": "model",
+        "warnings": [],
+        "fields": {
+          "symptom": {
+            "status": "provided",
+            "value": "로그인 후 화면이 넘어가지 않아요",
+            "evidence": "로그인 후 화면이 넘어가지 않아요"
+          },
+          "occurred_at": {
+            "status": "provided",
+            "value": "오전 9시",
+            "evidence": "오전 9시"
+          },
+          "error_message": {
+            "status": "none",
+            "value": null,
+            "evidence": "오류 메시지는 없어요"
+          },
+          "environment": {
+            "status": "provided",
+            "value": "윈도우 크롬",
+            "evidence": "윈도우 크롬"
+          }
+        },
+        "usage": {
+          "model": "ollama:qwen3:0.6b",
+          "tokens": 702,
+          "usd": 0.000105
+        }
+      },
+      "retrieval": {
+        "status": "ok",
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "model": "text-embedding-3-small",
+        "min_score": 0.3,
+        "provider": "openai",
+        "dimensions": 1536,
+        "query_format": "raw",
+        "documents": [
+          {
+            "document_id": "faq:login",
+            "chunk_id": "faq:login:0",
+            "title": "로그인 후 화면이 넘어가지 않을 때",
+            "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+            "path": "data/faq/login.md",
+            "audience": "user",
+            "systems": [
+              "auth-service"
+            ],
+            "version": "1",
+            "document_hash": "c02f5aced04faacba5745a01f02d79a8bf675abe03644f1189bcc481036cd02c",
+            "score": 0.658141
+          },
+          {
+            "document_id": "faq:browser",
+            "chunk_id": "faq:browser:0",
+            "title": "브라우저에서 업무 화면이 하얗거나 비어 보일 때",
+            "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+            "path": "data/faq/browser.md",
+            "audience": "user",
+            "systems": [
+              "web-01",
+              "auth-service"
+            ],
+            "version": "1",
+            "document_hash": "50e0ca26c88de4ca0123324d58df72efee86a7392ccf4ebf03dd8f6c617a5c64",
+            "score": 0.425203
+          },
+          {
+            "document_id": "faq:connectivity",
+            "chunk_id": "faq:connectivity:0",
+            "title": "페이지 접속 실패와 504 시간 초과 확인",
+            "text": "# 페이지 접속 실패와 504 시간 초과 확인\n\n업무 페이지에 접속하지 못하거나 다른 서비스로 이동할 때 504 Gateway Timeout, 연결 시간 초과가 표시되는 경우의 사용자 안내입니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 시간 초과 메시지만으로 네트워크 장비나 특정 서버가 고장 났다고 확정하지 않습니다.",
+            "path": "data/faq/connectivity.md",
+            "audience": "user",
+            "systems": [
+              "*"
+            ],
+            "version": "1",
+            "document_hash": "9c34af031c3c6cea923cc431eb42882d8c043ffbd5bdfd4677e2d6a90897a0a7",
+            "score": 0.352657
+          }
+        ]
+      },
+      "operator_retrieval": {
+        "status": "ok",
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "model": "text-embedding-3-small",
+        "min_score": 0.3,
+        "provider": "openai",
+        "dimensions": 1536,
+        "query_format": "raw",
+        "documents": [
+          {
+            "document_id": "runbook:high-latency",
+            "chunk_id": "runbook:high-latency:0",
+            "title": "응답 지연 대응 절차",
+            "text": "# Runbook: 응답 지연(High Latency) 대응 절차\n\n1. get_monitoring_status로 p95 지연시간과 커넥션 풀 사용률을 확인한다.\n2. 커넥션 풀 사용률이 90%를 넘으면 풀 크기를 늘리거나 느린 쿼리/외부 호출에 타임아웃을 건다.\n3. 지연이 특정 리전/인스턴스에 몰려 있으면 해당 인스턴스를 로드밸런서에서 일시 제외한다.\n4. 5분 내 p95가 임계치(1.0s) 아래로 내려오지 않으면 캐시 계층 또는 읽기 복제본으로 트래픽을 분산한다.\n5. 정상화 후 느린 쿼리 로그를 분석해 근본 원인을 문서화하고 후속 최적화 티켓을 등록한다.",
+            "path": "data/runbooks/high-latency.md",
+            "audience": "operator",
+            "systems": [
+              "*"
+            ],
+            "version": "original",
+            "document_hash": "72d562f37f635cde2198c8c26e96f5917e371645ed4267d336c1388db084a7f5",
+            "score": 0.461712
+          },
+          {
+            "document_id": "runbook:disk-full",
+            "chunk_id": "runbook:disk-full:0",
+            "title": "디스크 용량 부족 대응 절차",
+            "text": "# Runbook: 디스크 용량 부족 대응 절차\n\n1. get_monitoring_status와 서버 디스크 사용률을 확인해 임계 수준(90% 이상)인지 판단한다.\n2. 로그 파일, 임시 파일, 오래된 백업처럼 안전하게 지울 수 있는 항목부터 정리해 여유 공간을 즉시 확보한다.\n3. 특정 프로세스가 비정상적으로 로그를 쌓고 있다면 로그 레벨을 낮추거나 로테이션 주기를 단축한다.\n4. 임시 조치로도 부족하면 볼륨을 확장하거나 추가 스토리지를 연결한다.\n5. 정상화 후 로그 보존 정책과 디스크 사용률 알림 임계값을 재검토해 조기에 감지되도록 조정한다.",
+            "path": "data/runbooks/disk-full.md",
+            "audience": "operator",
+            "systems": [
+              "*"
+            ],
+            "version": "original",
+            "document_hash": "54dacb0d55a7747f846c0b7b63edce987d7ecefef9aca9289873a0da0f8786e1",
+            "score": 0.337731
+          },
+          {
+            "document_id": "runbook:cpu-spike",
+            "chunk_id": "runbook:cpu-spike:0",
+            "title": "CPU 급증 대응 절차",
+            "text": "# Runbook: CPU 급증 대응 절차\n\n1. get_monitoring_status로 CPU 사용률과 최근 배포/트래픽 변화 시점을 확인한다.\n2. 반복 호출, 배치 작업 중복 실행 같은 특정 요청 패턴이 원인인지 최근 로그에서 확인한다.\n3. CPU가 90%를 넘고 지속되면 해당 인스턴스를 오토스케일링 그룹에서 한 대 더 띄워 부하를 분산한다.\n4. 급증이 특정 배포 직후 시작됐다면 직전 배포를 롤백하고 원인 분석은 별도로 진행한다.\n5. 정상화 후 프로파일링 결과를 바탕으로 핫스팟 코드를 식별해 최적화 작업을 등록한다.",
+            "path": "data/runbooks/cpu-spike.md",
+            "audience": "operator",
+            "systems": [
+              "*"
+            ],
+            "version": "original",
+            "document_hash": "7cc46d5566deee26ef59706d6b1427e3f15829ba4484664451c8b21c596728aa",
+            "score": 0.334202
+          }
+        ]
+      },
+      "validation": {
+        "status": "passed",
+        "errors": [],
+        "citations": [
+          "faq:login",
+          "faq:browser"
+        ]
+      },
+      "observations": [
+        {
+          "system_name": "auth-service",
+          "status": "degraded",
+          "cpu_percent": 83.4,
+          "memory_percent": 63.7,
+          "alerts": [
+            "p95 latency 2.4s (threshold 1.0s)",
+            "connection pool 92% used"
+          ],
+          "last_checked": "2026-10-21T23:12:14.478616"
+        }
+      ],
+      "answer": "1. **샘플 점검**  \n   - 제공된 모니터링 데이터에 따르면 `auth-service`는 `degraded` 상태로, CPU 사용률 83.4%, 메모리 사용률 63.7%의 고부하 상태입니다.  \n   - 알림 내용에는 `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`가 포함되어 있어, 서버 응답 지연 또는 연결 풀 부족이 원인일 수 있습니다. 하지만 이는 샘플 데이터로 실제 장애 원인을 확정할 수 없습니다.  \n\n2. **문서 안내**  \n   - 사용자 증상(`로그인 후 화면이 넘어가지 않음`)에 해당하는 문서는 [faq:login]입니다.  \n     - **확인 사항**:  \n       - 발생 시각(오전 9시), 사용 환경(윈도우 크롬), 오류 메시지(없음)를 기록했는지 확인합니다.  \n       - 페이지 새로고침 및 다른 브라우저/시크릿 창에서 재현 여부를 확인해야 합니다.  \n       - 오류 메시지가 없으므로, 브라우저 캐시/확장 프로그램, 네트워크 설정, 서비스 상태와 관련된 추가 확인이 필요합니다.  \n   - [faq:browser] 문서는 브라우저 화면 문제에 대한 안내이지만, 사용자 증상과 직접적인 연관성이 없습니다.  \n\n3. **추가 확인**  \n   - **확인 사항**:  \n     - 브라우저 캐시/쿠키 삭제 후 재시도 여부를 확인해야 합니다.  \n     - 네트워크 연결 상태(예: 다른 사이트 접근 여부)를 확인해야 합니다.  \n     - 서비스 상태 모니터링 데이터는 샘플이므로, 실제 서버 장애 여부는 담당자 확인이 필요합니다.  \n   - **제외 사항**:  \n     - HTTP 4xx/5xx 코드는 확인되지 않았으며, 오류 메시지가 없으므로 추측할 수 없습니다.  \n     - 문서에 명시된 절차 외 시스템 복구/명령 실행은 권장되지 않습니다.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요."
+        },
+        {
+          "role": "assistant",
+          "content": "1. **샘플 점검**  \n   - 제공된 모니터링 데이터에 따르면 `auth-service`는 `degraded` 상태로, CPU 사용률 83.4%, 메모리 사용률 63.7%의 고부하 상태입니다.  \n   - 알림 내용에는 `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`가 포함되어 있어, 서버 응답 지연 또는 연결 풀 부족이 원인일 수 있습니다. 하지만 이는 샘플 데이터로 실제 장애 원인을 확정할 수 없습니다.  \n\n2. **문서 안내**  \n   - 사용자 증상(`로그인 후 화면이 넘어가지 않음`)에 해당하는 문서는 [faq:login]입니다.  \n     - **확인 사항**:  \n       - 발생 시각(오전 9시), 사용 환경(윈도우 크롬), 오류 메시지(없음)를 기록했는지 확인합니다.  \n       - 페이지 새로고침 및 다른 브라우저/시크릿 창에서 재현 여부를 확인해야 합니다.  \n       - 오류 메시지가 없으므로, 브라우저 캐시/확장 프로그램, 네트워크 설정, 서비스 상태와 관련된 추가 확인이 필요합니다.  \n   - [faq:browser] 문서는 브라우저 화면 문제에 대한 안내이지만, 사용자 증상과 직접적인 연관성이 없습니다.  \n\n3. **추가 확인**  \n   - **확인 사항**:  \n     - 브라우저 캐시/쿠키 삭제 후 재시도 여부를 확인해야 합니다.  \n     - 네트워크 연결 상태(예: 다른 사이트 접근 여부)를 확인해야 합니다.  \n     - 서비스 상태 모니터링 데이터는 샘플이므로, 실제 서버 장애 여부는 담당자 확인이 필요합니다.  \n   - **제외 사항**:  \n     - HTTP 4xx/5xx 코드는 확인되지 않았으며, 오류 메시지가 없으므로 추측할 수 없습니다.  \n     - 문서에 명시된 절차 외 시스템 복구/명령 실행은 권장되지 않습니다."
+        }
+      ],
+      "requests": [
+        {
+          "request_id": "ee6f2926-c6bd-4a11-a555-ca02f8265ef8",
+          "status": "completed",
+          "message": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+          "error": null,
+          "created_at": "2026-10-21T14:12:12.324798+00:00",
+          "updated_at": "2026-10-21T14:13:00.546355+00:00",
+          "run_id": "01a15ece-2bb3-766d-9130-cea272b1671f"
+        }
+      ],
+      "langsmith_run_id": "01a15ece-2bb3-766d-9130-cea272b1671f",
+      "telemetry": {
+        "code_revision": "ba5a883ccc0a4d215107fc444089a253b9736cc9",
+        "code_dirty": null,
+        "catalog_version": "2026-10-21-v1",
+        "fast_model": "ollama:qwen3:0.6b",
+        "quality_model": "ollama:qwen3:8b",
+        "embedding_model": "text-embedding-3-small",
+        "embedding_provider": "openai",
+        "embedding_dimensions": 1536,
+        "embedding_query_format": "raw",
+        "inquiry_id": "873a97da-cafc-4698-a711-f39aedb1abc2",
+        "request_id": "ee6f2926-c6bd-4a11-a555-ca02f8265ef8",
+        "thread_id": "t-web-f057e34e-df06-4acb-830a-9bb974638224",
+        "selected_system": "auth-service",
+        "data_source": "sample",
+        "validation_status": "passed",
+        "retrieved_document_ids": [
+          "faq:login",
+          "faq:browser",
+          "faq:connectivity"
+        ],
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "processing_seconds": 48.193973,
+        "processing_scope": "graph_until_persistence",
+        "tracing_enabled": true
+      }
+    },
+    {
+      "inquiry_id": "cf18cd9f-5189-4c86-a4bb-2ab24083597f",
+      "thread_id": "t-web-7a71719f-c67a-4132-9f95-7a9671084dd3",
+      "selected_system": "auth-service",
+      "status": "completed",
+      "created_at": "2026-10-21T14:07:43.060090+00:00",
+      "updated_at": "2026-10-21T14:08:37.349191+00:00",
+      "evidence_request_id": "a82a043a-0f78-4ef7-ac00-c1ca64ba0950",
+      "evidence_created_at": "2026-10-21T14:08:37.349191+00:00",
+      "evidence_is_current": true,
+      "details": {
+        "intake": {
+          "questions": [],
+          "missing_fields": [],
+          "asked_fields": [],
+          "last_question_field": null,
+          "source": "model",
+          "warnings": [],
+          "fields": {
+            "symptom": {
+              "status": "provided",
+              "value": "로그인 후 화면이 넘어가지 않아요",
+              "evidence": "로그인 후 화면이 넘어가지 않아요"
+            },
+            "occurred_at": {
+              "status": "provided",
+              "value": "오전 9시",
+              "evidence": "오전 9시"
+            },
+            "error_message": {
+              "status": "none",
+              "value": null,
+              "evidence": "오류 메시지는 없어요"
+            },
+            "environment": {
+              "status": "provided",
+              "value": "윈도우 크롬",
+              "evidence": "윈도우 크롬"
+            }
+          },
+          "usage": {
+            "model": "ollama:qwen3:0.6b",
+            "tokens": 702,
+            "usd": 0.000105
+          }
+        },
+        "retrieval": {
+          "status": "ok",
+          "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+          "model": "text-embedding-3-small",
+          "min_score": 0.3,
+          "provider": "openai",
+          "dimensions": 1536,
+          "query_format": "raw",
+          "documents": [
+            {
+              "document_id": "faq:login",
+              "chunk_id": "faq:login:0",
+              "title": "로그인 후 화면이 넘어가지 않을 때",
+              "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+              "path": "data/faq/login.md",
+              "audience": "user",
+              "systems": [
+                "auth-service"
+              ],
+              "version": "1",
+              "document_hash": "c02f5aced04faacba5745a01f02d79a8bf675abe03644f1189bcc481036cd02c",
+              "score": 0.658141
+            },
+            {
+              "document_id": "faq:browser",
+              "chunk_id": "faq:browser:0",
+              "title": "브라우저에서 업무 화면이 하얗거나 비어 보일 때",
+              "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+              "path": "data/faq/browser.md",
+              "audience": "user",
+              "systems": [
+                "web-01",
+                "auth-service"
+              ],
+              "version": "1",
+              "document_hash": "50e0ca26c88de4ca0123324d58df72efee86a7392ccf4ebf03dd8f6c617a5c64",
+              "score": 0.425203
+            },
+            {
+              "document_id": "faq:connectivity",
+              "chunk_id": "faq:connectivity:0",
+              "title": "페이지 접속 실패와 504 시간 초과 확인",
+              "text": "# 페이지 접속 실패와 504 시간 초과 확인\n\n업무 페이지에 접속하지 못하거나 다른 서비스로 이동할 때 504 Gateway Timeout, 연결 시간 초과가 표시되는 경우의 사용자 안내입니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 시간 초과 메시지만으로 네트워크 장비나 특정 서버가 고장 났다고 확정하지 않습니다.",
+              "path": "data/faq/connectivity.md",
+              "audience": "user",
+              "systems": [
+                "*"
+              ],
+              "version": "1",
+              "document_hash": "9c34af031c3c6cea923cc431eb42882d8c043ffbd5bdfd4677e2d6a90897a0a7",
+              "score": 0.352657
+            }
+          ]
+        },
+        "validation": {
+          "status": "passed",
+          "errors": [],
+          "citations": [
+            "faq:login",
+            "faq:browser"
+          ]
+        }
+      },
+      "intake": {
+        "questions": [],
+        "missing_fields": [],
+        "asked_fields": [],
+        "last_question_field": null,
+        "source": "model",
+        "warnings": [],
+        "fields": {
+          "symptom": {
+            "status": "provided",
+            "value": "로그인 후 화면이 넘어가지 않아요",
+            "evidence": "로그인 후 화면이 넘어가지 않아요"
+          },
+          "occurred_at": {
+            "status": "provided",
+            "value": "오전 9시",
+            "evidence": "오전 9시"
+          },
+          "error_message": {
+            "status": "none",
+            "value": null,
+            "evidence": "오류 메시지는 없어요"
+          },
+          "environment": {
+            "status": "provided",
+            "value": "윈도우 크롬",
+            "evidence": "윈도우 크롬"
+          }
+        },
+        "usage": {
+          "model": "ollama:qwen3:0.6b",
+          "tokens": 702,
+          "usd": 0.000105
+        }
+      },
+      "retrieval": {
+        "status": "ok",
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "model": "text-embedding-3-small",
+        "min_score": 0.3,
+        "provider": "openai",
+        "dimensions": 1536,
+        "query_format": "raw",
+        "documents": [
+          {
+            "document_id": "faq:login",
+            "chunk_id": "faq:login:0",
+            "title": "로그인 후 화면이 넘어가지 않을 때",
+            "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+            "path": "data/faq/login.md",
+            "audience": "user",
+            "systems": [
+              "auth-service"
+            ],
+            "version": "1",
+            "document_hash": "c02f5aced04faacba5745a01f02d79a8bf675abe03644f1189bcc481036cd02c",
+            "score": 0.658141
+          },
+          {
+            "document_id": "faq:browser",
+            "chunk_id": "faq:browser:0",
+            "title": "브라우저에서 업무 화면이 하얗거나 비어 보일 때",
+            "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+            "path": "data/faq/browser.md",
+            "audience": "user",
+            "systems": [
+              "web-01",
+              "auth-service"
+            ],
+            "version": "1",
+            "document_hash": "50e0ca26c88de4ca0123324d58df72efee86a7392ccf4ebf03dd8f6c617a5c64",
+            "score": 0.425203
+          },
+          {
+            "document_id": "faq:connectivity",
+            "chunk_id": "faq:connectivity:0",
+            "title": "페이지 접속 실패와 504 시간 초과 확인",
+            "text": "# 페이지 접속 실패와 504 시간 초과 확인\n\n업무 페이지에 접속하지 못하거나 다른 서비스로 이동할 때 504 Gateway Timeout, 연결 시간 초과가 표시되는 경우의 사용자 안내입니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 시간 초과 메시지만으로 네트워크 장비나 특정 서버가 고장 났다고 확정하지 않습니다.",
+            "path": "data/faq/connectivity.md",
+            "audience": "user",
+            "systems": [
+              "*"
+            ],
+            "version": "1",
+            "document_hash": "9c34af031c3c6cea923cc431eb42882d8c043ffbd5bdfd4677e2d6a90897a0a7",
+            "score": 0.352657
+          }
+        ]
+      },
+      "operator_retrieval": {
+        "status": "ok",
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "model": "text-embedding-3-small",
+        "min_score": 0.3,
+        "provider": "openai",
+        "dimensions": 1536,
+        "query_format": "raw",
+        "documents": [
+          {
+            "document_id": "runbook:high-latency",
+            "chunk_id": "runbook:high-latency:0",
+            "title": "응답 지연 대응 절차",
+            "text": "# Runbook: 응답 지연(High Latency) 대응 절차\n\n1. get_monitoring_status로 p95 지연시간과 커넥션 풀 사용률을 확인한다.\n2. 커넥션 풀 사용률이 90%를 넘으면 풀 크기를 늘리거나 느린 쿼리/외부 호출에 타임아웃을 건다.\n3. 지연이 특정 리전/인스턴스에 몰려 있으면 해당 인스턴스를 로드밸런서에서 일시 제외한다.\n4. 5분 내 p95가 임계치(1.0s) 아래로 내려오지 않으면 캐시 계층 또는 읽기 복제본으로 트래픽을 분산한다.\n5. 정상화 후 느린 쿼리 로그를 분석해 근본 원인을 문서화하고 후속 최적화 티켓을 등록한다.",
+            "path": "data/runbooks/high-latency.md",
+            "audience": "operator",
+            "systems": [
+              "*"
+            ],
+            "version": "original",
+            "document_hash": "72d562f37f635cde2198c8c26e96f5917e371645ed4267d336c1388db084a7f5",
+            "score": 0.461712
+          },
+          {
+            "document_id": "runbook:disk-full",
+            "chunk_id": "runbook:disk-full:0",
+            "title": "디스크 용량 부족 대응 절차",
+            "text": "# Runbook: 디스크 용량 부족 대응 절차\n\n1. get_monitoring_status와 서버 디스크 사용률을 확인해 임계 수준(90% 이상)인지 판단한다.\n2. 로그 파일, 임시 파일, 오래된 백업처럼 안전하게 지울 수 있는 항목부터 정리해 여유 공간을 즉시 확보한다.\n3. 특정 프로세스가 비정상적으로 로그를 쌓고 있다면 로그 레벨을 낮추거나 로테이션 주기를 단축한다.\n4. 임시 조치로도 부족하면 볼륨을 확장하거나 추가 스토리지를 연결한다.\n5. 정상화 후 로그 보존 정책과 디스크 사용률 알림 임계값을 재검토해 조기에 감지되도록 조정한다.",
+            "path": "data/runbooks/disk-full.md",
+            "audience": "operator",
+            "systems": [
+              "*"
+            ],
+            "version": "original",
+            "document_hash": "54dacb0d55a7747f846c0b7b63edce987d7ecefef9aca9289873a0da0f8786e1",
+            "score": 0.337731
+          },
+          {
+            "document_id": "runbook:cpu-spike",
+            "chunk_id": "runbook:cpu-spike:0",
+            "title": "CPU 급증 대응 절차",
+            "text": "# Runbook: CPU 급증 대응 절차\n\n1. get_monitoring_status로 CPU 사용률과 최근 배포/트래픽 변화 시점을 확인한다.\n2. 반복 호출, 배치 작업 중복 실행 같은 특정 요청 패턴이 원인인지 최근 로그에서 확인한다.\n3. CPU가 90%를 넘고 지속되면 해당 인스턴스를 오토스케일링 그룹에서 한 대 더 띄워 부하를 분산한다.\n4. 급증이 특정 배포 직후 시작됐다면 직전 배포를 롤백하고 원인 분석은 별도로 진행한다.\n5. 정상화 후 프로파일링 결과를 바탕으로 핫스팟 코드를 식별해 최적화 작업을 등록한다.",
+            "path": "data/runbooks/cpu-spike.md",
+            "audience": "operator",
+            "systems": [
+              "*"
+            ],
+            "version": "original",
+            "document_hash": "7cc46d5566deee26ef59706d6b1427e3f15829ba4484664451c8b21c596728aa",
+            "score": 0.334202
+          }
+        ]
+      },
+      "validation": {
+        "status": "passed",
+        "errors": [],
+        "citations": [
+          "faq:login",
+          "faq:browser"
+        ]
+      },
+      "observations": [
+        {
+          "system_name": "auth-service",
+          "status": "degraded",
+          "cpu_percent": 84.7,
+          "memory_percent": 64.4,
+          "alerts": [
+            "p95 latency 2.4s (threshold 1.0s)",
+            "connection pool 92% used"
+          ],
+          "last_checked": "2026-10-21T23:07:45.522770"
+        }
+      ],
+      "answer": "1. **샘플 점검**  \n   - 제공된 모니터링 데이터에 따르면 `auth-service`는 `degraded` 상태로, CPU 사용률 84.7%, 메모리 사용률 64.4%의 고부하 상태입니다.  \n   - 알림 내용에는 `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`가 포함되어 있어, 서버 응답 지연 또는 연결 풀 부족이 원인일 수 있습니다. 하지만 이는 샘플 데이터로 실제 장애 원인을 확정할 수 없습니다.  \n\n2. **문서 안내**  \n   - 사용자 증상(`로그인 후 화면이 넘어가지 않음`)에 해당하는 문서는 [faq:login]입니다.  \n     - **확인 사항**:  \n       - 발생 시각(오전 9시), 사용 환경(윈도우 크롬), 오류 메시지(없음)를 기록했는지 확인합니다.  \n       - 페이지 새로고침 및 다른 브라우저/시크릿 창에서 재현 여부를 확인해야 합니다.  \n       - 오류 메시지가 없으므로, 브라우저 캐시/확장 프로그램, 네트워크 문제를 의심할 수 있습니다.  \n   - [faq:browser] 문서는 브라우저 화면 문제에 대한 안내이지만, 사용자 증상과 직접적인 연관성이 없습니다.  \n\n3. **추가 확인**  \n   - **필요 조치**:  \n     - 사용자가 시크릿 창 또는 다른 브라우저에서 동일한 현상이 발생하는지 확인해야 합니다.  \n     - 서버 모니터링 데이터는 샘플이므로, 실제 장애 여부는 담당자 확인이 필요합니다.  \n   - **제외 사항**:  \n     - HTTP 4xx/5xx 코드는 확인되지 않았으며, 오류 메시지가 없으므로 추측할 수 없습니다.  \n     - 문서에 명시된 절차 외 시스템 복구/명령 실행은 권장되지 않습니다.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요."
+        },
+        {
+          "role": "assistant",
+          "content": "1. **샘플 점검**  \n   - 제공된 모니터링 데이터에 따르면 `auth-service`는 `degraded` 상태로, CPU 사용률 84.7%, 메모리 사용률 64.4%의 고부하 상태입니다.  \n   - 알림 내용에는 `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`가 포함되어 있어, 서버 응답 지연 또는 연결 풀 부족이 원인일 수 있습니다. 하지만 이는 샘플 데이터로 실제 장애 원인을 확정할 수 없습니다.  \n\n2. **문서 안내**  \n   - 사용자 증상(`로그인 후 화면이 넘어가지 않음`)에 해당하는 문서는 [faq:login]입니다.  \n     - **확인 사항**:  \n       - 발생 시각(오전 9시), 사용 환경(윈도우 크롬), 오류 메시지(없음)를 기록했는지 확인합니다.  \n       - 페이지 새로고침 및 다른 브라우저/시크릿 창에서 재현 여부를 확인해야 합니다.  \n       - 오류 메시지가 없으므로, 브라우저 캐시/확장 프로그램, 네트워크 문제를 의심할 수 있습니다.  \n   - [faq:browser] 문서는 브라우저 화면 문제에 대한 안내이지만, 사용자 증상과 직접적인 연관성이 없습니다.  \n\n3. **추가 확인**  \n   - **필요 조치**:  \n     - 사용자가 시크릿 창 또는 다른 브라우저에서 동일한 현상이 발생하는지 확인해야 합니다.  \n     - 서버 모니터링 데이터는 샘플이므로, 실제 장애 여부는 담당자 확인이 필요합니다.  \n   - **제외 사항**:  \n     - HTTP 4xx/5xx 코드는 확인되지 않았으며, 오류 메시지가 없으므로 추측할 수 없습니다.  \n     - 문서에 명시된 절차 외 시스템 복구/명령 실행은 권장되지 않습니다."
+        }
+      ],
+      "requests": [
+        {
+          "request_id": "a82a043a-0f78-4ef7-ac00-c1ca64ba0950",
+          "status": "completed",
+          "message": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+          "error": null,
+          "created_at": "2026-10-21T14:07:43.060090+00:00",
+          "updated_at": "2026-10-21T14:08:37.349191+00:00",
+          "run_id": "01a15eca-0fd6-7996-9100-c5e8a2fd2ec1"
+        }
+      ],
+      "langsmith_run_id": "01a15eca-0fd6-7996-9100-c5e8a2fd2ec1",
+      "telemetry": {
+        "code_revision": "ba5a883ccc0a4d215107fc444089a253b9736cc9",
+        "code_dirty": null,
+        "catalog_version": "2026-10-21-v1",
+        "fast_model": "ollama:qwen3:0.6b",
+        "quality_model": "ollama:qwen3:8b",
+        "embedding_model": "text-embedding-3-small",
+        "embedding_provider": "openai",
+        "embedding_dimensions": 1536,
+        "embedding_query_format": "raw",
+        "inquiry_id": "cf18cd9f-5189-4c86-a4bb-2ab24083597f",
+        "request_id": "a82a043a-0f78-4ef7-ac00-c1ca64ba0950",
+        "thread_id": "t-web-7a71719f-c67a-4132-9f95-7a9671084dd3",
+        "selected_system": "auth-service",
+        "data_source": "sample",
+        "validation_status": "passed",
+        "retrieved_document_ids": [
+          "faq:login",
+          "faq:browser",
+          "faq:connectivity"
+        ],
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "processing_seconds": 54.261791,
+        "processing_scope": "graph_until_persistence",
+        "tracing_enabled": true
+      }
+    }
+  ]
+}

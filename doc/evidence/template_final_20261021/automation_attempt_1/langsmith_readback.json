@@ -1,0 +1,243 @@
+{
+  "checked_at": "2026-10-21T23:10:02.281664+09:00",
+  "synthetic": true,
+  "project": "skala-helpdesk-template-ui-synthetic-20261021",
+  "scope": "UI에서 만든 합성 접수의 원격 추적 readback. 추가 생성/임베딩 호출 없음. 품질 점수 아님.",
+  "runs": [
+    {
+      "inquiry_id": "cf18cd9f-5189-4c86-a4bb-2ab24083597f",
+      "request_id": "a82a043a-0f78-4ef7-ac00-c1ca64ba0950",
+      "run_id": "01a15eca-0fd6-7996-9100-c5e8a2fd2ec1",
+      "root_duration_seconds": 54.287567,
+      "children": [
+        {
+          "name": "LangGraph",
+          "duration_seconds": 54.260615,
+          "has_error": false
+        },
+        {
+          "name": "route",
+          "duration_seconds": 0.002707,
+          "has_error": false
+        },
+        {
+          "name": "route_node",
+          "duration_seconds": 0.000578,
+          "has_error": false
+        },
+        {
+          "name": "_after_route",
+          "duration_seconds": 0.000252,
+          "has_error": false
+        },
+        {
+          "name": "intake",
+          "duration_seconds": 1.617854,
+          "has_error": false
+        },
+        {
+          "name": "intake_node",
+          "duration_seconds": 1.617265,
+          "has_error": false
+        },
+        {
+          "name": "intake.extract",
+          "duration_seconds": 1.612757,
+          "has_error": false
+        },
+        {
+          "name": "plan",
+          "duration_seconds": 0.000865,
+          "has_error": false
+        },
+        {
+          "name": "plan_node",
+          "duration_seconds": 0.000316,
+          "has_error": false
+        },
+        {
+          "name": "gate",
+          "duration_seconds": 0.000484,
+          "has_error": false
+        },
+        {
+          "name": "gate_node",
+          "duration_seconds": 0.000158,
+          "has_error": false
+        },
+        {
+          "name": "research",
+          "duration_seconds": 0.86976,
+          "has_error": false
+        },
+        {
+          "name": "research_node",
+          "duration_seconds": 0.869376,
+          "has_error": false
+        },
+        {
+          "name": "with_retry",
+          "duration_seconds": 0.517408,
+          "has_error": false
+        },
+        {
+          "name": "mcp.call_tool",
+          "duration_seconds": 0.000417,
+          "has_error": true
+        },
+        {
+          "name": "mcp.call_tool",
+          "duration_seconds": 0.215883,
+          "has_error": false
+        },
+        {
+          "name": "replan_check",
+          "duration_seconds": 0.001313,
+          "has_error": false
+        },
+        {
+          "name": "replan_check_node",
+          "duration_seconds": 0.000273,
+          "has_error": false
+        },
+        {
+          "name": "_after_replan_check",
+          "duration_seconds": 0.000197,
+          "has_error": false
+        },
+        {
+          "name": "analysis",
+          "duration_seconds": 0.000618,
+          "has_error": false
+        },
+        {
+          "name": "analysis_node",
+          "duration_seconds": 0.000188,
+          "has_error": false
+        },
+        {
+          "name": "retrieve",
+          "duration_seconds": 2.579049,
+          "has_error": false
+        },
+        {
+          "name": "retrieve_node",
+          "duration_seconds": 2.578371,
+          "has_error": false
+        },
+        {
+          "name": "write",
+          "duration_seconds": 49.16079,
+          "has_error": false
+        },
+        {
+          "name": "write_node",
+          "duration_seconds": 49.157802,
+          "has_error": false
+        },
+        {
+          "name": "ollama_quality.write",
+          "duration_seconds": 49.147893,
+          "has_error": false
+        },
+        {
+          "name": "validate",
+          "duration_seconds": 0.015421,
+          "has_error": false
+        },
+        {
+          "name": "validate_node",
+          "duration_seconds": 0.006395,
+          "has_error": false
+        },
+        {
+          "name": "_after_validate",
+          "duration_seconds": 0.00025,
+          "has_error": false
+        },
+        {
+          "name": "finalize",
+          "duration_seconds": 0.000501,
+          "has_error": false
+        },
+        {
+          "name": "finalize_node",
+          "duration_seconds": 0.000167,
+          "has_error": false
+        }
+      ],
+      "name": "chat_request_stream",
+      "completed": true,
+      "has_error": false,
+      "child_count": 31,
+      "child_names": [
+        "LangGraph",
+        "_after_replan_check",
+        "_after_route",
+        "_after_validate",
+        "analysis",
+        "analysis_node",
+        "finalize",
+        "finalize_node",
+        "gate",
+        "gate_node",
+        "intake",
+        "intake.extract",
+        "intake_node",
+        "mcp.call_tool",
+        "ollama_quality.write",
+        "plan",
+        "plan_node",
+        "replan_check",
+        "replan_check_node",
+        "research",
+        "research_node",
+        "retrieve",
+        "retrieve_node",
+        "route",
+        "route_node",
+        "validate",
+        "validate_node",
+        "with_retry",
+        "write",
+        "write_node"
+      ],
+      "metadata": {
+        "code_revision": "ba5a883ccc0a4d215107fc444089a253b9736cc9",
+        "fast_model": "ollama:qwen3:0.6b",
+        "quality_model": "ollama:qwen3:8b",
+        "embedding_provider": "openai",
+        "embedding_model": "text-embedding-3-small",
+        "embedding_dimensions": 1536,
+        "selected_system": "auth-service",
+        "inquiry_id": "cf18cd9f-5189-4c86-a4bb-2ab24083597f",
+        "request_id": "a82a043a-0f78-4ef7-ac00-c1ca64ba0950",
+        "thread_id": "t-web-7a71719f-c67a-4132-9f95-7a9671084dd3",
+        "validation_status": "passed",
+        "retrieved_document_ids": [
+          "faq:login",
+          "faq:browser",
+          "faq:connectivity"
+        ],
+        "index_version": "6308a66097c61d32b93747ac059dc858eb486ad05d2ef1217d07bae5c996c43d",
+        "processing_seconds": 54.261791
+      },
+      "run_url": "https://smith.langchain.com/o/dc9f0af6-8ebd-4181-a32d-c694e5a2dd19/projects/p/1bd21b29-36cf-4aee-9f34-978e8fa45d51/r/01a15eca-0fd6-7996-9100-c5e8a2fd2ec1?poll=true",
+      "checks": {
+        "root_name": true,
+        "root_completed": true,
+        "root_no_error": true,
+        "children_present": true,
+        "inquiry_matches": true,
+        "request_matches": true,
+        "revision_matches": true,
+        "embedding_openai": true,
+        "embedding_model_matches": true,
+        "fast_model_matches": true,
+        "quality_model_matches": true
+      },
+      "verified": true
+    }
+  ],
+  "verified": true
+}

@@ -1,0 +1,13 @@
+{
+  "created_at": "2026-10-21T23:08:26.665949+09:00",
+  "code_revision": "ba5a883ccc0a4d215107fc444089a253b9736cc9",
+  "command": "PYTHON_DOTENV_DISABLED=1 LANGSMITH_TRACING=false LANGCHAIN_TRACING_V2=false .venv/bin/python -m pytest -q --junitxml=doc/evidence/template_final_20261021/tests.xml",
+  "tests_passed": 217,
+  "subtests_passed": 173,
+  "junit_tests_including_subtests": 390,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 11.54,
+  "scope": "격리/모의 의존성을 이용한 자동 회귀 검사. 실제 모델 정확도와 운영 장애 진단 성능 평가가 아님."
+}

@@ -1,0 +1,38 @@
+{
+  "started_at": "2026-10-21T23:06:35.345697+09:00",
+  "code_revision": "ba5a883ccc0a4d215107fc444089a253b9736cc9",
+  "runtime_dir": "/var/folders/tq/5gl8kfts6cx9n_kk8rwqgz240000gn/T/helpdesk-template-ui-6whdmm9c",
+  "session_db": "/var/folders/tq/5gl8kfts6cx9n_kk8rwqgz240000gn/T/helpdesk-template-ui-6whdmm9c/session.db",
+  "backend_url": "http://127.0.0.1:8120",
+  "frontend_url": "http://127.0.0.1:8620",
+  "health": {
+    "status": "ok",
+    "instance_id": 4468421776,
+    "creation_count": 1,
+    "supervisor_version": "v2",
+    "llm_backend": "ollama",
+    "fast_llm": "ollama:qwen3:0.6b",
+    "quality_llm": "ollama:qwen3:8b",
+    "code_revision": "ba5a883ccc0a4d215107fc444089a253b9736cc9",
+    "embedding_provider": "openai",
+    "embedding_model": "text-embedding-3-small"
+  },
+  "rag_min_score": 0.3,
+  "embedding_dimensions": 1536,
+  "tracing_enabled": true,
+  "langsmith_project": "skala-helpdesk-template-ui-synthetic-20261021",
+  "synthetic_only": true,
+  "sample_monitoring": true,
+  "pid": 60428,
+  "children": [
+    {
+      "name": "backend",
+      "pid": 60431
+    },
+    {
+      "name": "frontend",
+      "pid": 60432
+    }
+  ],
+  "note": "실제 OpenAI 임베딩과 로컬 Qwen 생성. 기존 서버/DB/.env는 변경하지 않고 커밋 추출본을 별도 포트로 실행. 기존 색인 복사; UI 입력은 합성 문의만 사용."
+}

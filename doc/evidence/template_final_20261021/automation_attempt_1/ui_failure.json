@@ -1,0 +1,21 @@
+{
+  "error_type": "TimeoutError",
+  "message": "page.waitForFunction: Timeout 240000ms exceeded.",
+  "page_errors": [],
+  "screenshots": [
+    {
+      "file": "screenshots/01_input.png",
+      "description": "선택한 서비스와 입력 문의. 최신 커밋의 실제 UI.",
+      "url": "http://127.0.0.1:8620/",
+      "captured_at": "2026-10-21T14:07:42.987Z",
+      "sha256": "3c74cba5428901c32f15f9f95e07c9a4b11b180fb8fd49bbc96226c9e503ddc2"
+    },
+    {
+      "file": "screenshots/failure.png",
+      "description": "실패 시 실제 화면",
+      "url": "http://127.0.0.1:8620/",
+      "captured_at": "2026-10-21T14:11:43.330Z",
+      "sha256": "48e48628984ca4e703e18cf9950504c634086800afe7fbf5db6e9478a4032717"
+    }
+  ]
+}
