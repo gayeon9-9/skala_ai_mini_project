@@ -1,0 +1,52 @@
+{
+  "started_at": "2026-10-21T15:32:13.689897+09:00",
+  "code_revision": "1517e8d1fe970bffc651ea948c30e5f96cb37f2a",
+  "runtime_dir": "/var/folders/tq/5gl8kfts6cx9n_kk8rwqgz240000gn/T/helpdesk-openai-ui-soxyisbq",
+  "session_db": "/var/folders/tq/5gl8kfts6cx9n_kk8rwqgz240000gn/T/helpdesk-openai-ui-soxyisbq/session.db",
+  "backend_url": "http://127.0.0.1:8110",
+  "frontend_url": "http://127.0.0.1:8610",
+  "health": {
+    "status": "ok",
+    "instance_id": 4499304464,
+    "creation_count": 1,
+    "supervisor_version": "v2",
+    "llm_backend": "ollama",
+    "fast_llm": "ollama:qwen3:0.6b",
+    "quality_llm": "ollama:qwen3:8b",
+    "code_revision": "1517e8d1fe970bffc651ea948c30e5f96cb37f2a",
+    "embedding_provider": "openai",
+    "embedding_model": "text-embedding-3-small"
+  },
+  "rag_min_score": 0.3,
+  "embedding_dimensions": 1536,
+  "tracing_enabled": true,
+  "langsmith_project": "skala-helpdesk-openai-ui-synthetic-20261021",
+  "synthetic_only": true,
+  "sample_monitoring": true,
+  "pid": 24109,
+  "children": [
+    {
+      "name": "backend",
+      "pid": 24113
+    },
+    {
+      "name": "frontend",
+      "pid": 24114
+    }
+  ],
+  "note": "실제 OpenAI 임베딩과 로컬 Qwen 생성. 기존 서버/DB/.env는 변경하지 않고 커밋 추출본을 별도 포트로 실행. 기존 색인 복사; UI 입력은 합성 문의만 사용.",
+  "cleanup": {
+    "completed_at": "2026-10-21T16:04:12.366866+09:00",
+    "method": "Ctrl+C sent to task-owned launcher session 76091; launcher exited normally",
+    "launcher_exit_code": 0,
+    "own_ports_closed": {
+      "8110": true,
+      "8610": true
+    },
+    "existing_server_health_status": {
+      "8100": 200,
+      "8600": 200
+    },
+    "note": "촬영용 서버만 종료했다. 기존 8100/8600은 변경하지 않았으며 종료 후 health 200을 확인했다. 임시 DB와 로그는 증거 보존을 위해 삭제하지 않았다."
+  }
+}

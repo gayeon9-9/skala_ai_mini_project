@@ -1,0 +1,4 @@
+.build/
+.chart-data-*/
+.codex-finalizer/
+node_modules/

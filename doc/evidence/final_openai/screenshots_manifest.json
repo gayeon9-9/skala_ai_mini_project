@@ -1,0 +1,140 @@
+{
+  "capture": "실제 Chrome 화면. 응답·DOM·픽셀 내용 편집 없음. PPT에서는 일부 영역을 원본 비율로 확대해 표시.",
+  "source_revision": "1517e8d1fe970bffc651ea948c30e5f96cb37f2a",
+  "screenshots": [
+    {
+      "file": "screenshots/01_input.png",
+      "sha256": "cd53e9f40219ada8fc69057aa090865ab39c8458e303c1bec2a965634359feab",
+      "pixels": [
+        1440,
+        1100
+      ],
+      "saved_at": "2026-10-21T06:43:20.333412+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/02_answer.png",
+      "sha256": "23f23aae31f6495537eb2ce5f34780391b683f854cb1ada55eac55be0e735452",
+      "pixels": [
+        1440,
+        1100
+      ],
+      "saved_at": "2026-10-21T06:44:12.963894+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/03_sources_intake.png",
+      "sha256": "d209e0258631b3b894de91816621dce697c38eeab357b67d4a53aca4d89ce8fb",
+      "pixels": [
+        1440,
+        1100
+      ],
+      "saved_at": "2026-10-21T06:44:13.025719+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/04_restored.png",
+      "sha256": "64d32dd64af869951c8543ac6a374799a7111891d7df5e7385606fe20af1dbf1",
+      "pixels": [
+        1440,
+        1100
+      ],
+      "saved_at": "2026-10-21T06:44:13.709491+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/05_admin_fullpage.png",
+      "sha256": "8c4aa46b54c7399083cd8800b78537b4eba04c19b74709302c6ed1b0826484fb",
+      "pixels": [
+        1440,
+        2079
+      ],
+      "saved_at": "2026-10-21T06:44:14.002748+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/06_admin_top.png",
+      "sha256": "17a9449cc90ae9922cf988f6b914052a494c8a81b62f96e4c17881dc8811ffbf",
+      "pixels": [
+        1440,
+        1100
+      ],
+      "saved_at": "2026-10-21T06:44:14.038462+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/08_intake_panel.png",
+      "sha256": "27b5f177c315d3bbc999272e11d4413afa01ace684c89264829cdd51ffa7e67a",
+      "pixels": [
+        1044,
+        297
+      ],
+      "saved_at": "2026-10-21T06:46:42.972286+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/09_monitoring_panel.png",
+      "sha256": "e2a1ce1d4abdf8db682c1d87e2385cc94bbf03a0c6f1cc7c256699e9796daa97",
+      "pixels": [
+        514,
+        275
+      ],
+      "saved_at": "2026-10-21T06:46:43.033925+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/10_validation_panel.png",
+      "sha256": "6f6732ba0f08c1e905303cd26fdbb7f182f1b47b22030f345125da4015ec6f08",
+      "pixels": [
+        514,
+        275
+      ],
+      "saved_at": "2026-10-21T06:46:43.101640+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/11_models_trace.png",
+      "sha256": "af41761cbb825740e1b9ba3bb940a842d4125df3d0da93e58d87ffc202e09390",
+      "pixels": [
+        1440,
+        1100
+      ],
+      "saved_at": "2026-10-21T06:46:43.235349+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/12_models_trace_panel.png",
+      "sha256": "b4a74c26b66d98f11f375e7e35da3db0c1dd5b4c5bda4ec7fd4c7ede2e7f7567",
+      "pixels": [
+        1044,
+        308
+      ],
+      "saved_at": "2026-10-21T06:55:22.528040+00:00",
+      "kind": "actual_application_browser_capture"
+    },
+    {
+      "file": "screenshots/13_baseline_rag_report.png",
+      "sha256": "9323abcbac7f049c347792532b6fd773628db62a380a01e5c113ec76609c3904",
+      "pixels": [
+        1200,
+        874
+      ],
+      "saved_at": "2026-10-21T06:55:22.785453+00:00",
+      "kind": "stored_json_report_browser_capture"
+    },
+    {
+      "file": "screenshots/14_embedding_report.png",
+      "sha256": "49cf81ec74e82373221572592fefc4264c7759053b87ae1fac25c5f040ddf6dc",
+      "pixels": [
+        1200,
+        1159
+      ],
+      "saved_at": "2026-10-21T06:55:22.873331+00:00",
+      "kind": "stored_json_report_browser_capture"
+    }
+  ],
+  "notes": [
+    "11_models_trace.png는 실행 기록 패널이 접힌 상태로 보존한 캡처다. 12_models_trace_panel.png가 펼친 패널이다.",
+    "13~14번은 저장된 실제 JSON으로 생성한 측정 보고서이며 제품 화면이 아니다."
+  ]
+}

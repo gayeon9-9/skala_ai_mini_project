@@ -1,0 +1,67 @@
+{
+  "captured_at": "2026-10-21T06:44:14.046Z",
+  "input": "오전 9시부터 로그인 후 화면이 넘어가지 않아요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.",
+  "selected_system": "auth-service",
+  "inquiry_id": "f9204629-8b4f-4dc5-88fa-e0544c3b2cdc",
+  "thread_id": "t-web-249dad25-b8b6-4b35-a9c5-40b5cb27610a",
+  "browser_elapsed_seconds": 52.490599542000005,
+  "checks": {
+    "thread_http_ok": true,
+    "admin_http_ok": true,
+    "restored_answer_equal": true,
+    "selected_system_retained": true,
+    "same_inquiry": true,
+    "has_answer": true,
+    "no_page_errors": true
+  },
+  "page_errors": [],
+  "screenshots": [
+    {
+      "file": "screenshots/01_input.png",
+      "description": "최신 구성에서 시스템을 선택하고 합성 자연어 문의를 입력한 실제 화면",
+      "url": "http://127.0.0.1:8610/",
+      "captured_at": "2026-10-21T06:43:20.333Z",
+      "sha256": "cd53e9f40219ada8fc69057aa090865ab39c8458e303c1bec2a965634359feab"
+    },
+    {
+      "file": "screenshots/02_answer.png",
+      "description": "실제 Qwen 답변과 OpenAI 검색을 사용한 사용자 응답 화면",
+      "url": "http://127.0.0.1:8610/",
+      "captured_at": "2026-10-21T06:44:12.964Z",
+      "sha256": "23f23aae31f6495537eb2ce5f34780391b683f854cb1ada55eac55be0e735452"
+    },
+    {
+      "file": "screenshots/03_sources_intake.png",
+      "description": "문서 출처와 자연어에서 정리한 문의 정보",
+      "url": "http://127.0.0.1:8610/",
+      "captured_at": "2026-10-21T06:44:13.026Z",
+      "sha256": "d209e0258631b3b894de91816621dce697c38eeab357b67d4a53aca4d89ce8fb"
+    },
+    {
+      "file": "screenshots/04_restored.png",
+      "description": "새로고침 후 동일 문의의 답변·문서·접수 정보 복원",
+      "url": "http://127.0.0.1:8610/",
+      "captured_at": "2026-10-21T06:44:13.709Z",
+      "sha256": "64d32dd64af869951c8543ac6a374799a7111891d7df5e7385606fe20af1dbf1"
+    },
+    {
+      "file": "screenshots/05_admin_fullpage.png",
+      "description": "같은 문의의 관리자 상세 전체 화면",
+      "url": "http://127.0.0.1:8610/admin",
+      "captured_at": "2026-10-21T06:44:14.003Z",
+      "sha256": "8c4aa46b54c7399083cd8800b78537b4eba04c19b74709302c6ed1b0826484fb"
+    },
+    {
+      "file": "screenshots/06_admin_top.png",
+      "description": "관리자 목록과 문의 정보·샘플 점검·검증 화면",
+      "url": "http://127.0.0.1:8610/admin",
+      "captured_at": "2026-10-21T06:44:14.038Z",
+      "sha256": "17a9449cc90ae9922cf988f6b914052a494c8a81b62f96e4c17881dc8811ffbf"
+    }
+  ],
+  "notes": [
+    "実測 UI・内容改変なし",
+    "합성 문의, 샘플 관측, 임시 DB",
+    "브라우저 시간은 UI 클릭부터 응답 완료까지이며 그래프 시간과 다름"
+  ]
+}

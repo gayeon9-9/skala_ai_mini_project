@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>실측 결과 보고서 · 저장된 JSON 기반</title>
+<style>
+* { box-sizing:border-box; }
+body { margin:0; color:#142138; background:#f2f5f9; font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif; font-size:24px; line-height:1.4; }
+main { max-width:1200px; margin:0 auto; }
+section { background:white; padding:34px 42px 28px; margin:0 0 30px; scroll-margin-top:0; }
+.report-label { margin:0 0 10px; font-size:20px; font-weight:700; color:#255db8; letter-spacing:.01em; }
+h1,h2 { font-size:38px; line-height:1.23; letter-spacing:-.035em; margin:0 0 15px; }
+.intro { margin:0 0 21px; font-size:24px; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; table-layout:fixed; }
+thead th { font-size:23px; color:#1c4f9d; background:#f0f5fd; border-top:2px solid #2b65bc; padding:15px 10px; }
+thead th:first-child { width:42%; text-align:left; }
+td,tbody th { padding:12px 10px; border-bottom:1px solid #dae1ec; text-align:center; vertical-align:middle; }
+tbody th { text-align:left; font-size:23px; font-weight:600; }
+td { font-size:25px; font-variant-numeric:tabular-nums; }
+.highlight td { color:#194f9e; font-weight:700; }
+td strong { font-size:40px; font-weight:750; }
+.fraction { display:block; font-size:22px; line-height:1.2; color:#34465e; font-weight:500; }
+.conditions { font-size:22px; color:#34465e; margin:14px 0; }
+.conditions p { margin:7px 0; }
+.caution { border-left:4px solid #2d63b8; padding:0 0 0 16px; margin:19px 0 17px; font-size:22px; }
+.caution p { margin:6px 0; }
+.finding { font-size:24px; font-weight:700; color:#194f9e; margin:17px 0; }
+footer { font-size:18px; line-height:1.55; color:#53627a; padding-top:13px; border-top:1px solid #dbe3ee; }
+footer span { font-weight:700; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:17px; overflow-wrap:anywhere; }
+.scope { font-size:21px; margin:10px 0 15px; color:#34465e; }
+@media(max-width:760px) { body {font-size:20px;} section {padding:25px 20px;} h1,h2 {font-size:30px;} thead th,tbody th,td {font-size:19px;} }
+@media print { body {background:white;} section {break-after:page; margin:0;} }
+</style>
+</head>
+<body><main>
+<section id="baseline-rag" aria-labelledby="baseline-title">
+<p class="report-label">실측 결과 보고서 · 저장된 JSON 기반</p>
+<h1 id="baseline-title">기존 규칙과 RAG의 문서 검색 비교</h1>
+<p class="intro">같은 운영 Runbook에서 정답 문서가 있는 질의 <b>4개</b>를 비교했다.</p>
+<table aria-label="기존 규칙과 의미 검색 결과">
+<thead><tr><th>지표</th><th>기존 규칙 어댑터</th><th>Ollama 의미 검색</th></tr></thead>
+<tbody><tr class=highlight><th scope="row">정답 문서 포함 비율</th><td><strong>25%</strong><span class="fraction">1/4회</span></td><td><strong>100%</strong><span class="fraction">4/4회</span></td></tr>
+<tr><th scope="row">검색 후보 수</th><td>최대 1개</td><td>상위 3개</td></tr>
+<tr><th scope="row">근거 없는 질의 구분</th><td>0/1 · 기본 문서 반환</td><td>1/1 · no_match</td></tr></tbody></table>
+<div class="conditions">
+<p><b>조건</b> 기존 Runbook 6개, 정답 질의 4개 + 근거 없는 질의 1개, 각 1회.</p>
+<p><b>검색</b> 실제 qwen3-embedding:0.6b 임베딩, 1,024차원, 문턱값 0.50.</p>
+</div>
+<div class="caution">
+<p><b>기존 규칙 어댑터:</b> 같은 검색문을 합성 모니터링 알림으로 넣어 규칙을 적용했다. 원본 서비스 전체의 응답·진단 성능 비교가 아니다.</p>
+<p>FAQ는 새 기능이므로 이 전후 비율에 합산하지 않았다. 소수 합성 질의의 문서 회수 결과이며, 모든 검색 후보나 실제 답변이 정확하다는 뜻은 아니다.</p>
+</div>
+<p class="scope">이 표는 실제 임베딩의 <b>검색 단계</b>만 측정했다. fake 생성 모델의 화면 시연 및 실제 Qwen 답변 생성 확인과 별도다.</p>
+<footer><span>원시 자료</span> <code>doc/evidence/final/rag_test.json</code><br>실측 시점 2026-10-21 11:32 KST · 코드 7bb6d35</footer>
+</section>
+
+<section id="embedding-comparison" aria-labelledby="embedding-title">
+<p class="report-label">실측 결과 보고서 · 저장된 JSON 기반</p>
+<h2 id="embedding-title">Ollama와 OpenAI 임베딩 비교</h2>
+<p class="intro">동일 문서·고유 검색 질의 <b>12개 × 3회</b>를 공급자별로 실행했다.</p>
+<table aria-label="임베딩 공급자별 검색 품질과 지연">
+<thead><tr><th>지표</th><th>Ollama Qwen</th><th>OpenAI small</th></tr></thead>
+<tbody><tr class=highlight><th scope="row">Hit@3 · 상위 3개 정답 포함</th><td><strong>100%</strong><span class="fraction">30/30회</span></td><td><strong>90%</strong><span class="fraction">27/30회</span></td></tr>
+<tr><th scope="row">Hit@1 · 첫 결과 정답 포함</th><td>90% · 27/30회</td><td>90% · 27/30회</td></tr>
+<tr><th scope="row">근거 없는 질의 · no_match</th><td>6/6회</td><td>6/6회</td></tr>
+<tr class=highlight><th scope="row">검색 시간 · 평균</th><td>36.0 ms</td><td>176.0 ms</td></tr>
+<tr><th scope="row">검색 시간 · 중앙값</th><td>33.1 ms</td><td>175.4 ms</td></tr>
+<tr><th scope="row">검색 시간 · p95</th><td>60.4 ms</td><td>219.7 ms</td></tr>
+<tr><th scope="row">API·검색 오류</th><td>0건</td><td>0건</td></tr></tbody></table>
+<div class="conditions">
+<p><b>분모</b> 정답 질의 10개 × 3회 = 30회. 근거 없는 질의 2개 × 3회 = 6회.</p>
+<p><b>모델·기준</b> qwen3-embedding:0.6b (0.50) / text-embedding-3-small (0.30).</p>
+<p><b>시간</b> 검색 36회씩, 동시성 1·공급자 순서 교대. 색인 생성·준비 질의 제외. p95는 nearest-rank.</p>
+</div>
+<p class="finding">이 표본에서는 OpenAI의 정답 문서 발견률·검색 속도 우위를 확인하지 못했다.</p>
+<div class="caution">
+<p>기존에 확인한 합성 질의의 회귀 비교다. 최초 실행·OS 캐시를 통제한 실험이 아니며, 검색 시간은 전체 사용자 대기시간이 아니다.</p>
+<p>두 공급자 모두 실제 임베딩을 호출했다. 최종 답변 생성은 이 비교에서 실행하지 않았다. fake 시연 결과나 실제 장애 진단 정확도와 구분한다.</p>
+</div>
+<footer><span>원시 자료</span> <code>doc/evidence/embedding_comparison/test.json</code><br>실측 시점 2026-10-21 15:01 KST · 코드 3bdc39c</footer>
+</section>
+</main></body></html>
