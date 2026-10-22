@@ -413,6 +413,8 @@ async def validate_node(state: AgentState, deps: SupervisorDeps) -> dict:
                    "citations": []}
     ok = checked["ok"]
     verdict = "합격" if ok else "불합격"
+    # attempts는 재작성 횟수가 아니라 최초 작성을 포함한 검증 횟수다.
+    # 최초 1회 + 재작성 최대 2회 = 총 3회이며, 실패하면 최소 근거만 안내한다.
     exhausted = not ok and attempts >= 3
     if exhausted:
         verdict = "추가 확인 필요(검증 실패)"

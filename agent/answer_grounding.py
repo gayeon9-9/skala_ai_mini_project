@@ -31,6 +31,8 @@ def reported_http_error_codes(intake: dict | None) -> set[str]:
     증상·문서·샘플 알림에는 부정된 오류나 일반적인 예시도 있을 수 있다.
     따라서 해당 문자열을 합쳐 허용 범위를 넓히지 않고, 명시적으로 접수한
     오류 메시지가 없거나 불명확하면 코드 대신 추가 확인을 안내한다.
+    예: 사용자가 '오류 메시지는 없어요'라고 했으면 문서에 504가 있어도
+    허용 코드는 빈 집합이다. 'HTTP 504가 떠요'를 접수한 경우에만 504를 허용한다.
     """
     field = (intake or {}).get("fields", {}).get("error_message", {})
     if field.get("status") == "provided" and isinstance(field.get("value"), str):
