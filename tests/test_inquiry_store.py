@@ -4,6 +4,7 @@ import sqlite3
 import tempfile
 import unittest
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from pathlib import Path
 
 from agent.inquiry_models import InquiryConflict
@@ -151,7 +152,9 @@ class InquiryStoreTests(unittest.TestCase):
 
     def test_old_schema_migrates_without_rewriting_message_table(self):
         legacy_path = Path(self.temp.name) / "old.db"
-        with sqlite3.connect(legacy_path) as conn:
+        # SQLite의 conn 문맥은 커밋/롤백만 수행하고 연결은 닫지 않는다.
+        # Windows에서도 임시 DB를 지울 수 있도록 트랜잭션 뒤 연결을 닫는다.
+        with closing(sqlite3.connect(legacy_path)) as conn, conn:
             conn.execute("CREATE TABLE messages (thread_id TEXT, role TEXT, content TEXT, created TEXT)")
             conn.execute("INSERT INTO messages VALUES ('old','user','이전 기록','2026-01-01')")
         old_sessions = SqliteSessionStore(legacy_path)
