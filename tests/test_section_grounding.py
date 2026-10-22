@@ -38,7 +38,9 @@ class SectionRetrievalTests(unittest.IsolatedAsyncioTestCase):
             [{'source':'intake','data':intake_for()}])
         context = json.loads(prompt)
         self.assertNotIn('504', context['user_documents'][0]['text'])
-        self.assertTrue(context['user_documents'][0]['applied_section_ids'])
+        self.assertNotIn('applied_section_ids', context['user_documents'][0])
+        self.assertNotIn('faq:connectivity:0', prompt)
+        self.assertEqual(context['user_documents'][0]['document_id'],'faq:connectivity')
 
     async def test_reported_504_keeps_both_sections_and_citation_id(self):
         docs = (await self.rag.search('504', 'gateway-service'))['documents']

@@ -378,7 +378,14 @@ async def write_node(state: AgentState, deps: SupervisorDeps) -> dict:
     from .answer_grounding import applicable_documents
     documents = user_documents(write_context)
     intake = state.get("intake") if state.get("selected_system") is not None else None
-    if documents and not applicable_documents(documents, intake):
+    applied_docs = applicable_documents(documents, intake)
+    # 절 ID는 추적 메타데이터에만 남긴다. 모델에 전달하면 faq:connectivity:2를
+    # 문서 ID처럼 인용할 수 있으므로 작성 프롬프트에는 문서 ID만 사용한다.
+    from .observability import annotate_run
+    annotate_run({"applied_document_sections": [
+        {"document_id": doc.get("document_id"), "section_ids": doc.get("applied_section_ids", [])}
+        for doc in applied_docs]})
+    if documents and not applied_docs:
         # 검색은 성공했지만 적용할 문서가 전부 제외됐다면 조치를 추측시키지 않는다.
         # 고정된 제한 안내도 아래 validate 노드를 거쳐 관측 수치·대상 검사를 받는다.
         draft = evidence_fallback(state.get("selected_system"), write_context, intake=intake)

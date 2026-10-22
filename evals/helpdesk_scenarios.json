@@ -1,0 +1,19 @@
+{
+  "version": "2026-10-22-v1",
+  "scope": "합성 회귀 사례. 공개된 기준으로 같은 입력을 반복하며 독립적인 일반 정확도 평가가 아니다.",
+  "cases": [
+    {"id":"missing_followup","system":"auth-service","turns":[
+      {"message":"로그인 후 화면이 넘어가지 않아요.","statuses":{"symptom":"provided","occurred_at":"unmentioned","error_message":"unmentioned","environment":"unmentioned"},"question_field":"occurred_at"},
+      {"message":"오전 9시부터요. 오류 메시지는 없어요. 윈도우 크롬을 사용해요.","statuses":{"symptom":"provided","occurred_at":"provided","error_message":"none","environment":"provided"},"contains":{"symptom":"로그인","occurred_at":"9시","environment":"크롬"},"question_field":null}
+    ]},
+    {"id":"explicit_unknown","system":"auth-service","turns":[
+      {"message":"로그인 후 화면이 넘어가지 않아요. 발생 시각은 모르겠어요. 오류 메시지는 없어요. 사용 환경은 모르겠어요.","statuses":{"symptom":"provided","occurred_at":"unknown","error_message":"none","environment":"unknown"},"question_field":null}
+    ]},
+    {"id":"outside_documents","system":"web-01","turns":[
+      {"message":"토성의 고리와 고양이 털 색깔의 관계를 알려주세요.","statuses":{"occurred_at":"unmentioned","error_message":"unmentioned","environment":"unmentioned"},"retrieval_status":"no_match"}
+    ]},
+    {"id":"reported_504","system":"gateway-service","turns":[
+      {"message":"오전 10시부터 사내 페이지가 열리지 않아요. 오류 메시지는 HTTP 504입니다. 윈도우 크롬을 사용해요.","statuses":{"symptom":"provided","occurred_at":"provided","error_message":"provided","environment":"provided"},"contains":{"error_message":"504"},"question_field":null}
+    ]}
+  ]
+}

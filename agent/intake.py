@@ -187,6 +187,7 @@ async def analyze_intake(query: str, previous: dict | None, llm) -> dict:
     """추출→근거 검증→누적 병합→다음 질문을 수행한다. 외부 LLM 실패도 접수는 유지한다."""
     fields = _previous_fields(previous)
     warnings, usage, source = [], {}, "model"
+    supplemented_fields = []
     try:
         method = llm.extract_intake
         if inspect.iscoroutinefunction(method):
@@ -201,10 +202,19 @@ async def analyze_intake(query: str, previous: dict | None, llm) -> dict:
         warnings.extend(validation_warnings)
         if isinstance(raw, dict) and raw.get("source") == "rules":
             source = "rules"
-        # 유효한 정보가 하나도 없고 형식/근거 오류가 있으면 명시적 표현만 재확인한다.
-        if not patch and validation_warnings:
-            source = "rules_fallback"
-            patch, _ = _validate_patch(extract_rules(query, previous), query)
+        # 모델의 정상 항목 하나 때문에 다른 누락 항목까지 방치하지 않는다.
+        # 현재 발화에서 명시적으로 확인한 규칙 결과로 빈 항목만 보완하며,
+        # 유효한 모델 값과 이전 대화의 정보는 임의로 덮어쓰지 않는다.
+        # '모름/없음'도 응답 완료이므로 보완 후 같은 항목을 다시 묻지 않는다.
+        if source == "model":
+            rules, _ = _validate_patch(extract_rules(query, previous), query)
+            supplement = {name: value for name, value in rules.items() if name not in patch}
+            if supplement:
+                source = "model_with_rules" if patch else "rules_fallback"
+                supplemented_fields = list(supplement)
+                patch.update(supplement)
+            elif not patch and validation_warnings:
+                source = "rules_fallback"
     except Exception as exc:
         source = "rules_fallback"
         warnings.append(f"추출 모델 처리 실패({type(exc).__name__}); 명시적 표현만 규칙으로 확인했습니다.")
@@ -221,4 +231,5 @@ async def analyze_intake(query: str, previous: dict | None, llm) -> dict:
         asked.append(next_field)
     return {"fields": fields, "questions": questions, "missing_fields": missing,
             "asked_fields": asked, "last_question_field": next_field,
-            "source": source, "warnings": warnings, "usage": usage}
+            "source": source, "supplemented_fields": supplemented_fields,
+            "warnings": warnings, "usage": usage}

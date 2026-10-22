@@ -44,6 +44,15 @@ class AdminUiTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_supplemented_fields_have_user_facing_labels(self):
+        self.run_browser(r"""
+const { app } = await boot();
+app.detail.value = { intake: { source: 'model_with_rules', supplemented_fields: ['occurred_at', 'environment', 'invalid'] } };
+assert.deepEqual(Array.from(app.supplementedLabels.value), ['발생 시각', '사용 환경']);
+app.detail.value = { intake: { supplemented_fields: 'invalid' } };
+assert.deepEqual(Array.from(app.supplementedLabels.value), []);
+""")
+
     def test_latest_failure_keeps_previous_evidence_explicit(self):
         self.run_browser(r"""
 const payload = { inquiry_id: 'inq-1', status: 'failed', selected_system: 'auth-service',

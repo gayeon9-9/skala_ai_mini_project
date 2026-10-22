@@ -12,9 +12,9 @@
 | 목적 | 문서 |
 |---|---|
 | 실행·설정·전체 기능 | [루트 README](../README.md) |
-| 발표 자료 | [20장 최종 PPT와 발표 노트 안내](presentation/README.md) |
+| 발표 자료 | [21장 템플릿 PPT와 발표 노트 안내](presentation/README.md) |
 | 기존 문제와 개선 설명 | [기획·분석 보고서](final_report.md) |
-| 실제 Qwen·OpenAI 화면 | [UI·LangSmith 실행 기록](evidence/final_openai/README.md) |
+| 실제 Qwen·OpenAI 화면 | [템플릿용 UI·LangSmith 실행 기록](evidence/template_final_20261021/README.md) |
 | 시연 후 발견한 문제의 보완 | [접수 스키마·HTTP 코드 안내 검증](evidence/post_demo_fixes/README.md) |
 | 원본과 6단계 완료본 비교 | [고정 버전·화면·조건](evidence/final/README.md) |
 | 검색 공급자 선택 근거 | [Ollama/OpenAI 실측 결과](evidence/embedding_comparison/RESULTS.md) |
@@ -58,15 +58,23 @@ flowchart TD
 
 후속 보완에서는 접수 필드의 상태별 JSON Schema와 출력 예시를 명확히 하고, 원문 검사를
 거친 누적 접수 정보를 작성 단계에 구조화해 전달한다. 접수된 오류 메시지에 없는 HTTP
-4xx/5xx 코드가 제목·본문에 있으면 그 문서 전체를 작성 근거에서 제외한다. 프롬프트·검증·
-fake 작성기·제한된 안내가 같은 문서 선택 규칙을 쓰며, 원본 검색 결과와 관리자 근거는 보존한다.
+4xx/5xx 코드가 있는 절은 작성 근거에서 제외한다. 10월 22일부터 문서를 H2 절로 분리해
+일반 안내를 유지하며, 절 정보가 없는 과거 결과는 문서 전체 검사로 처리한다. 프롬프트·검증·
+fake 작성기·제한된 안내가 같은 절 선택 규칙을 쓰며, 원본 검색 결과와 관리자 근거는 보존한다.
 검색은 됐지만 적용할 문서가 모두 제외되면 답변 생성 LLM을 호출하지 않고 고정 안내를
-검증한다. 일반 작성의 검증 실패는 기존 최대 3회 작성·검증 후 제한된 안내로 종료한다.
+검증한다. 일반 작성은 최초 1회와 재작성 최대 2회, 총 3회 작성·검증 후 제한된 안내로 종료한다.
 모델이 출처처럼 붙인 내부 항목명 표시는 검증 전에 제거하며, 문장과 실제 문서 인용은 유지한다.
 허용 근거는 상태가 `provided`인 접수 오류 메시지 값이다. 없음·모름·미언급 상태나 문서·
 샘플 지표의 코드만으로 허용하지 않는다. 이 검사는 HTTP 4xx/5xx 형식 규칙이며 모든 문장
 의미와 장애 원인을 판단하는 기능은 아니다.
-코드 변경과 후속 검증은 [별도 기록](evidence/post_demo_fixes/README.md)을 따른다.
+기존 보완은 [별도 기록](evidence/post_demo_fixes/README.md)을 따른다. 최신 절 분리와
+제한된 해석 오류 규칙은 [루트 README의 후속 보완](../README.md#2026-10-22-후속-보완과-코드-읽는-순서)을 참고한다.
+`answer_claims.py`는 원인 추정·인용 문서 무관 단정·근거 없는 캐시 삭제 같은 알려진
+표현을 검사하며 범용 의미 판정이나 두 번째 AI 에이전트가 아니다.
+
+모델이 일부 항목을 잘못 추출해도 정상 항목을 버리지 않는다. 원문 규칙으로 누락 항목을
+보완한 경우 `model_with_rules`와 `supplemented_fields`를 기록하고 화면에 표시한다.
+문서 절 ID는 실행 추적에만 남겨 모델의 문서 인용과 구분한다.
 
 POST와 SSE는 같은 `ChatService`를 사용한다. 원문을 먼저 저장하고, 결과·답변·상태의
 저장을 마친 뒤 완료 응답을 보낸다. 동일 `request_id`의 완료 요청은 저장 결과를 재사용한다.
@@ -87,7 +95,9 @@ POST와 SSE는 같은 `ChatService`를 사용한다. 원문을 먼저 저장하�
 | `agent/retrieval.py` | 문서 분할·색인 캐시·시스템/용도 필터·유사도 검색 |
 | `agent/answer_generation.py` | 적용 가능한 문서의 프롬프트·제한 안내, 내부 항목명 표시 정리 |
 | `agent/answer_validation.py` | 대상·수치·출처·표현 규칙 검사 |
-| `agent/answer_grounding.py` | 접수 오류 메시지의 허용 HTTP 코드 추출, 작성 문서 선택과 미확인 코드 검사 |
+| `agent/document_sections.py` | H2 절 경계를 구분하고 하위 제목·코드 블록의 적용 조건 보존 |
+| `agent/answer_grounding.py` | 접수 오류 메시지의 허용 HTTP 코드와 적용 가능한 검색 절 선택 |
+| `agent/answer_claims.py` | 저장된 실패 사례에서 확인한 해석 오류의 제한된 규칙 검사 |
 | `agent/inquiry_summary.py` | 저장된 결과로 관리자 응답 구성 |
 | `agent/observability.py` | 코드·모델·접수·검색 근거·검증 결과 추적 |
 | `agent/fake_llm.py`, `ollama_llm.py`, `openai_llm.py` | 생성 공급자별 공통 인터페이스 |
@@ -203,7 +213,7 @@ LangSmith의 POST/SSE 요청 추적과 고정 검색 평가 CLI는 이미 구현
   실행은 위 `run_agent_hybrid.sh`와 직접 웹 서버 실행을 기준으로 한다.
 
 실제 기업 적용에는 인증·권한, 운영 데이터 연동, 문서 갱신, 충분한 실제 문의 평가와
-다중 워커 저장 설계가 필요하다. 문서 전체 제외 방식은 같은 문서의 유용한 일반 안내까지
-빠질 수 있어 적용 조건별 문서 분할이 후속 과제다. `adce28f`의 최종 UI 시연 당시에는 소형 모델 추출 실패로
+다중 워커 저장 설계가 필요하다. 절 분리를 적용했지만 같은 절에 일반 안내와 특정 오류
+안내가 섞여 있으면 해당 절 전체가 제외될 수 있다. 문서 작성 기준과 다양한 표현의 평가가 필요하다. `adce28f`의 최종 UI 시연 당시에는 소형 모델 추출 실패로
 `rules_fallback`을 사용했다. 이 결과와 의미 판단 한계를 보존한 [당시 UI 실행의 한계](evidence/final_openai/README.md#함께-남겨야-할-한계)를
 [후속 보완 기록](evidence/post_demo_fixes/README.md)과 구분해 확인한다. 기존 PPT와 실측 자료는 변경하지 않는다.

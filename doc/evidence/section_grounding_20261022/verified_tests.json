@@ -1,0 +1,8 @@
+{
+  "tests_passed": 236,
+  "subtests_passed": 173,
+  "failures": 0,
+  "errors": 0,
+  "seconds": 14.323,
+  "scope": "부분 접수 보완·화면 표시·절 ID 문맥 분리·내부 표기 정리까지 포함한 전체 회귀 검사"
+}

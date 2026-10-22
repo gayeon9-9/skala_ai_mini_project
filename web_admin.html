@@ -120,6 +120,7 @@
         <div class="panel">
           <h3>사용자가 알려준 정보</h3>
           <p v-if="detail.intake?.source === 'rules_fallback'" class="muted review-note">자동 추출에 확인이 필요한 내용이 있어, 원문에서 명시적인 표현만 규칙으로 반영했습니다.</p>
+          <p v-else-if="detail.intake?.source === 'model_with_rules'" class="muted review-note">모델 추출 결과의 누락 항목을 원문 규칙으로 보완했습니다. 보완 항목: {{ supplementedLabels.join(', ') }}</p>
           <p v-else-if="detail.intake?.source === 'rules'" class="muted">시연 모드: 정해진 표현을 바탕으로 접수 정보를 정리했습니다.</p>
           <p v-else-if="detail.intake?.source === 'model'" class="muted">모델이 정리한 내용을 사용자 원문과 함께 확인해주세요.</p>
           <dl class="fields"><div v-for="field in intakeRows" :key="field.key"><dt>{{ field.label }}<span class="badge" :class="field.status">{{ field.statusLabel }}</span></dt><dd>{{ field.text }}<span v-if="field.evidence" class="evidence">원문: {{ field.evidence }}</span></dd></div></dl>
@@ -186,6 +187,7 @@ createApp({
       return { key, label, status, statusLabel: fieldStatusLabels[status], evidence: typeof field.evidence === 'string' ? field.evidence : '',
         text: status === 'provided' ? field.value : { unmentioned: '아직 전달되지 않은 정보', none: '사용자가 없다고 답함', unknown: '사용자가 모른다고 답함' }[status] };
     }));
+    const supplementedLabels = computed(() => (Array.isArray(detail.value?.intake?.supplemented_fields) ? detail.value.intake.supplemented_fields : []).filter(key => Object.hasOwn(fieldLabels, key)).map(key => fieldLabels[key]));
     const missingLabels = computed(() => intakeRows.value.filter(field => field.status === 'unmentioned').map(field => field.label));
     const observations = computed(() => Array.isArray(detail.value?.observations) ? detail.value.observations : []);
     const messages = computed(() => Array.isArray(detail.value?.messages) ? detail.value.messages : []);
@@ -272,7 +274,7 @@ createApp({
     }
     loadList(0);
     return { items, limit, offset, hasMore, statusFilter, listLoading, listError, selectedId,
-      detail, detailLoading, detailError, detailStale, previousEvidence, intakeRows, missingLabels,
+      detail, detailLoading, detailError, detailStale, previousEvidence, intakeRows, missingLabels, supplementedLabels,
       observations, messages, requests, validationLabel, validationErrors, documentGroups, executionModels,
       statusLabel, retrievalLabel, formatDate, metric, formatScore, elapsed, loadList,
       refreshList, changeFilter, selectInquiry };

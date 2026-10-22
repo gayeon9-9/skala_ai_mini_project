@@ -88,7 +88,9 @@ class IntakeTests(unittest.IsolatedAsyncioTestCase):
         }))
         self.assertEqual(result["fields"]["symptom"]["value"], "화면이 멈춰요")
         self.assertEqual(result["fields"]["occurred_at"]["status"], "unmentioned")
-        self.assertEqual(result["source"], "model")
+        self.assertEqual(result["source"], "model_with_rules")
+        self.assertEqual(result["fields"]["environment"]["value"], "사파리")
+        self.assertEqual(result["supplemented_fields"], ["environment"])
         self.assertEqual(len(result["warnings"]), 1)
 
     async def test_model_error_falls_back_with_label_without_exposing_error_text(self):

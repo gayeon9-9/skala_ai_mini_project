@@ -1,0 +1,8 @@
+{
+  "tests_passed": 230,
+  "subtests_passed": 173,
+  "failures": 0,
+  "errors": 0,
+  "seconds": 11.927,
+  "scope": "평가 도구의 실패 분모·fallback 집계 검사 3건을 포함한 전체 자동 회귀 검사"
+}

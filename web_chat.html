@@ -158,6 +158,7 @@
     <details v-if="intake" class="intake-card" open>
       <summary>정리된 문의 정보 · {{ selectedSystem }}</summary>
       <p v-if="intake.source === 'rules_fallback'" class="system-note" role="status">자동 정리 중 확인이 어려운 내용이 있어, 원문에서 명확히 확인된 표현만 반영했습니다.</p>
+      <p v-else-if="intake.source === 'model_with_rules'" class="system-note" role="status">모델이 정리한 항목을 유지하고, 빠진 정보는 원문에서 확인해 보완했습니다.</p>
       <p v-else-if="intake.source === 'rules'" class="system-note">시연 모드: 정해진 표현을 바탕으로 문의 정보를 정리했습니다.</p>
       <p class="system-note">{{ sending || restoring || pendingRequest || restoreError
         ? '이전 응답까지 저장된 정보입니다. 현재 요청의 처리 결과는 아직 반영되지 않았습니다.'

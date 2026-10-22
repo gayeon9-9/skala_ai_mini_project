@@ -218,7 +218,7 @@ fake 생성 모델을 썼고, [Qwen UI 확인](doc/evidence/final_openai/README.
 2. `agent/answer_grounding.py`의 `applicable_documents`: 일반 접속 안내를 남기고,
    사용자가 확인하지 않은 HTTP 오류 절을 제외한다. 문서 제목 자체가 오류 조건이면 전체를 제외한다.
 3. `agent/answer_generation.py`: 관측 사실·문서 안내·추가 확인을 나누어 생성하도록 지시한다.
-   작성 문맥에 실제 사용한 절 ID도 남겨 출처를 확인할 수 있다.
+   실제 사용한 절 ID는 실행 추적에만 남긴다. 모델에는 문서 ID만 전달해 절 ID를 인용으로 혼동하지 않게 한다.
 4. `agent/answer_claims.py` → `agent/answer_validation.py`: 실제 실패 답변에서 발견한
    원인 추정, 인용 문서가 무관하다는 단정, 문서에 없는 캐시·쿠키 삭제 안내를 반려한다.
    범용 의미 검증이 아니며 새로운 표현을 놓치거나 정상 문장을 오차단할 수 있다.
@@ -234,7 +234,26 @@ fake 생성 모델을 썼고, [Qwen UI 확인](doc/evidence/final_openai/README.
 검색 문턱값 미달 절 제외, 원본 검색 결과 불변, 보관된 실패 답변 반려를 검사한다.
 [후속 자동 검사](doc/evidence/section_grounding_20261022/tests.json)는 227개 테스트와 173개 하위 검사를 통과했다.
 [변경 전](doc/evidence/section_grounding_20261022/before.json)·[변경 후](doc/evidence/section_grounding_20261022/after.json)에는 일반 안내 보존과 저장된 실패 답변 재검증 결과를 남겼다.
+반복 평가에서 모델이 일부 필드만 올바르게 추출하면 나머지를 보완하지 않는 문제가 확인됐다.
+`agent/intake.py`는 유효한 모델 값을 유지하고 누락 항목만 현재 원문의 명시적 표현으로 보완한다.
+혼합 결과는 `model_with_rules`로 표시하며 `supplemented_fields`에 항목명을 남긴다.
+사용자·관리자 화면에서도 보완 여부를 구분한다. 이 결과를 순수 모델 추출 성공으로 집계하지 않는다.
+
 인증·권한 관리는 이번 범위에 포함하지 않고 추후 기업 활용 단계로 남긴다.
+
+실제 모델 반복 평가는 아래 명령으로 별도 실행한다. OpenAI 임베딩 API를 호출한다.
+
+```bash
+PYTHON_DOTENV_DISABLED=1 LANGSMITH_TRACING=false LANGCHAIN_TRACING_V2=false \
+  .venv/bin/python evals/evaluate_live_helpdesk.py --repeat 2 --output /tmp/helpdesk-live-evaluation.json
+```
+
+`evals/helpdesk_scenarios.json`에 정보 누락·후속 답변·명시적 모름·문서 범위 밖·확인된 504
+사례의 기대 상태를 적었다. 네 시나리오를 2회 반복하며 후속 답변을 포함해 총 10턴이다.
+기존 서버를 띄우거나 변경하지 않고 임시 DB·캐시와 실제 MCP 샘플을 사용한다.
+실패와 제한 안내도 저장하며, 접수 계약 통과 수와 생성 답변 검증 통과 수를 구분한다.
+실행 결과 파일은 덮어쓰지 않으므로 재실행할 때 새 경로를 사용한다.
+
 
 ## 현재 한계와 후속 범위
 

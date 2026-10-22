@@ -16,9 +16,17 @@ def clean_internal_annotations(draft: str) -> str:
     실제 문서 ID·오류 코드·문장 내용은 그대로 두어 이후 검증을 피할 수 없게 한다.
     예를 들어 [confirmed_http_error_codes]는 사용자가 열 수 있는 문서 출처가 아니다.
     """
-    return re.sub(
+    draft = re.sub(
         r"[ \t]*\[(?:sample_monitoring|confirmed_http_error_codes|verified_intake|"
         r"applicability_status|withheld_document_count)\]", "", draft)
+    # 실제 모델이 대괄호 대신 백틱/일반 문장으로 항목명을 내보내기도 한다.
+    # 값이나 문장을 삭제하지 않고 알려진 내부 이름만 읽을 수 있는 표현으로 바꾼다.
+    labels = {"sample_monitoring": "샘플 점검", "confirmed_http_error_codes": "확인된 HTTP 오류 코드",
+              "verified_intake": "확인된 접수 정보", "applicability_status": "문서 적용 상태",
+              "withheld_document_count": "제외된 문서 수"}
+    for name, label in labels.items():
+        draft = re.sub(r"(?<![A-Za-z0-9_])`?" + name + r"`?(?![A-Za-z0-9_])", label, draft)
+    return draft
 
 
 def user_documents(collected: list[dict]) -> list[dict]:
@@ -90,8 +98,7 @@ def build_answer_prompt(query: str, collected: list[dict], feedback: str | None 
         "observations": facts,
         "retrieval_status": retrieval_status(collected),
         "user_documents": [{"document_id": doc.get("document_id"), "title": doc.get("title"),
-                            "text": doc.get("text", ""), "path": doc.get("path"),
-                            "applied_section_ids": doc.get("applied_section_ids", [])}
+                            "text": doc.get("text", ""), "path": doc.get("path")}
                            for doc in docs],
     }
     if intake is not None:

@@ -270,6 +270,14 @@ class AnswerGroundingTests(unittest.TestCase):
         self.assertTrue(any("HTTP 오류 코드" in error and "504" in error
                             for error in result["errors"]), result)
 
+    def test_bare_internal_names_are_readable_without_hiding_http_codes(self):
+        text = "`confirmed_http_error_codes`에 504가 없으며 verified_intake를 확인했습니다."
+        cleaned = clean_internal_annotations(text)
+        self.assertNotIn("confirmed_http_error_codes", cleaned)
+        self.assertIn("확인된 HTTP 오류 코드", cleaned)
+        self.assertIn("504", cleaned)
+        self.assertTrue(unsupported_http_error_codes(cleaned, intake_for()))
+
     def test_archived_model_answer_cleanup_removes_only_internal_annotations(self):
         # 실모델의 실제 저장 답변을 재생한다. 표시 정리로 문장·지표·실제 출처가
         # 바뀌지 않아야 하며, 이를 위해 모델을 다시 호출할 필요는 없다.
