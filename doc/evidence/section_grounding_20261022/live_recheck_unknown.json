@@ -1,0 +1,548 @@
+{
+  "created_at": "2026-10-22T01:44:12.420795+00:00",
+  "code_revision": "efc4f21f7f92db9f59058adc3176463f9954dd55",
+  "source_sha256": {
+    "agent/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "agent/answer_claims.py": "6f0239085faf13072a47f50b20939bb43c80605ee541e96eafadaa4a1d50765d",
+    "agent/answer_generation.py": "289cff949c34061204236dc01d9253da4b5ac760ec1f8ffce32fa0c5dab8caed",
+    "agent/answer_grounding.py": "7af309ce9c4a63434da77dd4ef9b2e49fef621ffd4ebff3069a50d3a9177255e",
+    "agent/answer_validation.py": "144a6475e6be387f6d4deb7cc3411c89e35fba2233dad35c94607ed04311180b",
+    "agent/chat_service.py": "1553abf9e97d4fc01a0b480f2d2eb84aafe85f3299ec331e77d911a4e1c71af0",
+    "agent/deps.py": "7ca264fd007d6ba4f1b1e63a329eff56e055f0aaec8b12b61c4b82f399070e5b",
+    "agent/document_sections.py": "d891f5f4a480a6d5e8860376ef71bc7ac4d9562792554f343415374c4988efd9",
+    "agent/embeddings.py": "f12807fffaee124d5a37c82db720efcdc4fb6a1251e256b3b4628426417a05aa",
+    "agent/fake_llm.py": "5e358f9cce89f9cfd8f239925f21718031e13dc5eacaf74977ae63bd29b8cfdd",
+    "agent/graph.py": "b5166d3a423fd5d8a8c50d265b287f938e7fc8ff18a4eece3c39a2fe34cad5d9",
+    "agent/inquiry_models.py": "9e5ad1c3121441d2f1b421f86483014d98ab3b74edf1a6dfbcf451a8fb14a87e",
+    "agent/inquiry_store.py": "7ae050a8019b8811b9474071cb8fff566d607f6b4b938daefeaf984941783998",
+    "agent/inquiry_summary.py": "afccdd75223d8785de93b6bc74782bdd572a2487f59060d7efc3155480ca739e",
+    "agent/intake.py": "d9ffa85653678d2f2d3c29864e47b598588c8fc3ca7ba03de165e77bc236303b",
+    "agent/intake_llm.py": "01caa0e041d00b9f3c905c920b7fc94a87d1da3d8a9000c80db8d1091816e5a3",
+    "agent/mcp_client.py": "eadff6c7bf2c5c69834b78d064b4a059934cc8aac14253da578edbf8e0b27542",
+    "agent/observability.py": "0a45a17ec9ed7f34c2a3e51311b3dd504eba1a31f0d1850d040a8c70d4868c9f",
+    "agent/ollama_llm.py": "7e0d6a3d446c2ec3bb5a668ce74e049225f59672ba6fc9d3c57bcf42456f6dfe",
+    "agent/openai_llm.py": "cdf10945276a5ad78bcde83b605a8b26e179fdecc7c4681b0103a24ff3bd50dc",
+    "agent/retrieval.py": "15b4a191e433d7021c2ba5212ad4f7189ec4db22b69312d450506bf12691e7fc",
+    "agent/retry.py": "d2524552348c9faa08b5ce446434bf593677c7028fb38c9e11b03de8839d2a3a",
+    "agent/session_store.py": "14677a1ac5df0f3f65cd1e64e38728062b8096d322abfb73b9ed537b2fc506bc",
+    "agent/supervisor_v1.py": "6080b4b8c3a6bd56c617a560a64d644d5f1e5e2721ad65324a09886a2df6cab8",
+    "agent/system_catalog.py": "e18d064a9d8664b5e782cd658f83cc16118fb869a56fa7f9f28a57ed02fd5ef3"
+  },
+  "runner_sha256": "310ca9868dbe7eb9423de55f68e5428f3adb87a2eb47c5fb7e9507e842e12384",
+  "cases_sha256": "edcfdfc5abcedd6af1b17a3fb254f921b5670c8a2a8465b45185340fecb1ef3f",
+  "case_version": "2026-10-22-v1",
+  "selected_case_ids": [
+    "explicit_unknown"
+  ],
+  "repeats": 2,
+  "models": {
+    "intake": "qwen3:0.6b",
+    "answer": "qwen3:8b",
+    "embedding": "text-embedding-3-small",
+    "dimensions": 1536
+  },
+  "min_score": 0.3,
+  "sample_monitoring": true,
+  "langsmith_enabled": false,
+  "scope": "합성 회귀 사례. 공개된 기준으로 같은 입력을 반복하며 독립적인 일반 정확도 평가가 아니다.",
+  "results": [
+    {
+      "case_id": "explicit_unknown",
+      "repeat": 1,
+      "turn": 1,
+      "input": "로그인 후 화면이 넘어가지 않아요. 발생 시각은 모르겠어요. 오류 메시지는 없어요. 사용 환경은 모르겠어요.",
+      "result": {
+        "final": "1) **샘플 점검**  \n- **시스템 상태**: `auth-service`는 `degraded` 상태입니다.  \n- **CPU 사용률**: 78.5% (정상 범위를 벗어남).  \n- **메모리 사용률**: 61.3% (정상 범위를 벗어남).  \n- **알림**:  \n  - `p95 latency 2.4s (threshold 1.0s)` → 응답 지연 가능.  \n  - `connection pool 92% used` → 연결 풀 사용률 과다.  \n*참고: 샘플 데이터이므로 실제 장애 원인은 확인할 수 없습니다.*  \n\n2) **문서 안내**  \n- [faq:login] 로그인 후 화면이 넘어가지 않을 때:  \n  - 사용 환경(브라우저, 기기)과 발생 시각을 확인해 달라고 안내.  \n  - 브라우저 새로고침 및 시크릿 창에서의 재현 여부를 확인해 달라고 안내.  \n  - \"오류 메시지 없음\"에 따라 문서의 1단계와 3단계를 참고.  \n- [faq:connectivity] 페이지 접속 문제 확인:  \n  - 사용 환경(네트워크, VPN 등)을 확인해 달라고 안내.  \n  - \"오류 메시지 없음\"에 따라 문서의 1단계와 2단계를 참고.  \n\n3) **추가 확인 사항**  \n- **사용 환경**: 브라우저 종류, 기기 정보, 네트워크 환경(예: 와이파이/유선)이 확인되지 않았습니다.  \n- **모니터링 데이터**: 샘플 데이터이므로 실제 서버 상태와 무관합니다.  \n- **담당자 확인**:  \n  - 로그인 후 멈춘 화면의 재현 순서와 사용 환경을 제공해 주셔야 합니다.  \n  - \"오류 메시지 없음\"에 따라 추가 진단이 필요합니다.  \n- **HTTP 오류 코드**: 확인된 HTTP 오류 코드에 해당하지 않으므로 관련 문서 적용 불가.",
+        "draft": "1) **샘플 점검**  \n- **시스템 상태**: `auth-service`는 `degraded` 상태입니다.  \n- **CPU 사용률**: 78.5% (정상 범위를 벗어남).  \n- **메모리 사용률**: 61.3% (정상 범위를 벗어남).  \n- **알림**:  \n  - `p95 latency 2.4s (threshold 1.0s)` → 응답 지연 가능.  \n  - `connection pool 92% used` → 연결 풀 사용률 과다.  \n*참고: 샘플 데이터이므로 실제 장애 원인은 확인할 수 없습니다.*  \n\n2) **문서 안내**  \n- [faq:login] 로그인 후 화면이 넘어가지 않을 때:  \n  - 사용 환경(브라우저, 기기)과 발생 시각을 확인해 달라고 안내.  \n  - 브라우저 새로고침 및 시크릿 창에서의 재현 여부를 확인해 달라고 안내.  \n  - \"오류 메시지 없음\"에 따라 문서의 1단계와 3단계를 참고.  \n- [faq:connectivity] 페이지 접속 문제 확인:  \n  - 사용 환경(네트워크, VPN 등)을 확인해 달라고 안내.  \n  - \"오류 메시지 없음\"에 따라 문서의 1단계와 2단계를 참고.  \n\n3) **추가 확인 사항**  \n- **사용 환경**: 브라우저 종류, 기기 정보, 네트워크 환경(예: 와이파이/유선)이 확인되지 않았습니다.  \n- **모니터링 데이터**: 샘플 데이터이므로 실제 서버 상태와 무관합니다.  \n- **담당자 확인**:  \n  - 로그인 후 멈춘 화면의 재현 순서와 사용 환경을 제공해 주셔야 합니다.  \n  - \"오류 메시지 없음\"에 따라 추가 진단이 필요합니다.  \n- **HTTP 오류 코드**: 확인된 HTTP 오류 코드에 해당하지 않으므로 관련 문서 적용 불가.",
+        "intake": {
+          "fields": {
+            "symptom": {
+              "status": "provided",
+              "value": "로그인 후 화면이 넘어가지 않아요",
+              "evidence": "로그인 후 화면이 넘어가지 않아요"
+            },
+            "occurred_at": {
+              "status": "unknown",
+              "value": null,
+              "evidence": "발생 시각은 모르겠"
+            },
+            "error_message": {
+              "status": "none",
+              "value": null,
+              "evidence": "오류 메시지는 없어요"
+            },
+            "environment": {
+              "status": "unknown",
+              "value": null,
+              "evidence": "사용 환경은 모르겠"
+            }
+          },
+          "questions": [],
+          "missing_fields": [],
+          "asked_fields": [],
+          "last_question_field": null,
+          "source": "model_with_rules",
+          "supplemented_fields": [
+            "symptom",
+            "occurred_at",
+            "environment"
+          ],
+          "warnings": [
+            "symptom: 없음/모름의 명시적 근거가 없어 추출 값을 제외했습니다.",
+            "occurred_at: 없음/모름의 명시적 근거가 없어 추출 값을 제외했습니다.",
+            "environment: 없음/모름의 명시적 근거가 없어 추출 값을 제외했습니다."
+          ],
+          "usage": {
+            "model": "ollama:qwen3:0.6b",
+            "tokens": 686,
+            "usd": 0.000103
+          }
+        },
+        "retrieval": {
+          "status": "ok",
+          "documents": [
+            {
+              "document_id": "faq:login",
+              "title": "로그인 후 화면이 넘어가지 않을 때",
+              "audience": "user",
+              "systems": [
+                "auth-service"
+              ],
+              "version": "1",
+              "path": "data/faq/login.md",
+              "chunk_id": "faq:login:0",
+              "section_title": "",
+              "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+              "document_hash": "c02f5aced04faacba5745a01f02d79a8bf675abe03644f1189bcc481036cd02c",
+              "score": 0.657812,
+              "sections": [
+                {
+                  "chunk_id": "faq:login:0",
+                  "section_title": "",
+                  "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+                  "score": 0.657812
+                }
+              ]
+            },
+            {
+              "document_id": "faq:browser",
+              "title": "브라우저에서 업무 화면이 하얗거나 비어 보일 때",
+              "audience": "user",
+              "systems": [
+                "web-01",
+                "auth-service"
+              ],
+              "version": "1",
+              "path": "data/faq/browser.md",
+              "chunk_id": "faq:browser:0",
+              "section_title": "",
+              "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+              "document_hash": "50e0ca26c88de4ca0123324d58df72efee86a7392ccf4ebf03dd8f6c617a5c64",
+              "score": 0.425203,
+              "sections": [
+                {
+                  "chunk_id": "faq:browser:0",
+                  "section_title": "",
+                  "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+                  "score": 0.425203
+                }
+              ]
+            },
+            {
+              "document_id": "faq:connectivity",
+              "title": "페이지 접속 문제 확인",
+              "audience": "user",
+              "systems": [
+                "*"
+              ],
+              "version": "2",
+              "path": "data/faq/connectivity.md",
+              "chunk_id": "faq:connectivity:1",
+              "section_title": "일반 접속 확인",
+              "text": "## 일반 접속 확인\n\n업무 페이지가 열리지 않거나 다음 화면으로 이동하지 않는 경우의 일반 안내입니다. 특정 오류 코드가 표시되지 않아도 사용할 수 있습니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 페이지가 열리지 않는 증상만으로 특정 서버나 네트워크 장비의 고장을 확정하지 않습니다.",
+              "document_hash": "80d03bdddbf586cae444ab1a15b488307b95ca186778da67ebab49c9ffd8f1e3",
+              "score": 0.400707,
+              "sections": [
+                {
+                  "chunk_id": "faq:connectivity:1",
+                  "section_title": "일반 접속 확인",
+                  "text": "## 일반 접속 확인\n\n업무 페이지가 열리지 않거나 다음 화면으로 이동하지 않는 경우의 일반 안내입니다. 특정 오류 코드가 표시되지 않아도 사용할 수 있습니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 페이지가 열리지 않는 증상만으로 특정 서버나 네트워크 장비의 고장을 확정하지 않습니다.",
+                  "score": 0.400707
+                },
+                {
+                  "chunk_id": "faq:connectivity:0",
+                  "section_title": "",
+                  "text": "# 페이지 접속 문제 확인",
+                  "score": 0.389758
+                },
+                {
+                  "chunk_id": "faq:connectivity:2",
+                  "section_title": "HTTP 504 오류가 표시된 경우",
+                  "text": "## HTTP 504 오류가 표시된 경우\n\n이 절은 사용자가 HTTP 504 Gateway Timeout 오류 문구를 실제로 확인한 경우에만 적용합니다.\n\n1. 오류가 표시된 페이지와 시각, 문구를 기록해 담당자에게 전달합니다.\n2. 시간 초과 메시지만으로 네트워크 장비나 특정 서버가 고장 났다고 확정하지 않습니다. 실제 로그와 요청 경로는 담당자의 추가 확인이 필요합니다.",
+                  "score": 0.360921
+                }
+              ]
+            }
+          ],
+          "index_version": "ba46f8e30edbb9b774099a80ff2f44b1b25e0030d4505408541900d5d3c9551f",
+          "model": "text-embedding-3-small",
+          "provider": "openai",
+          "dimensions": 1536,
+          "query_format": "raw",
+          "min_score": 0.3
+        },
+        "validation": {
+          "status": "passed",
+          "errors": [],
+          "citations": [
+            "faq:login",
+            "faq:connectivity"
+          ]
+        },
+        "validation_attempts": 1,
+        "events": [
+          {
+            "type": "RouteDecided",
+            "route": "incident",
+            "source": "explicit_selection",
+            "selected_system": "auth-service"
+          },
+          {
+            "type": "IntakeUpdated",
+            "source": "model_with_rules",
+            "missing_fields": []
+          },
+          {
+            "type": "PlanCreated",
+            "task_count": 1,
+            "targets": [
+              "auth-service"
+            ],
+            "source": "explicit_selection"
+          },
+          {
+            "type": "GateApplied",
+            "removed_analysis_tasks": 0
+          },
+          {
+            "type": "TaskCompleted",
+            "id": "task-0",
+            "source": "monitoring",
+            "target": "auth-service",
+            "retries": 0
+          },
+          {
+            "type": "ReplanCheck",
+            "round": 0,
+            "is_sufficient": true,
+            "runbook_skipped": true,
+            "reason": "관련 문서는 다음 RAG 단계에서 검색합니다."
+          },
+          {
+            "type": "AnalysisSkipped",
+            "reason": "analysis task 0개"
+          },
+          {
+            "type": "RetrievalCompleted",
+            "status": "ok",
+            "document_ids": [
+              "faq:login",
+              "faq:browser",
+              "faq:connectivity"
+            ]
+          },
+          {
+            "type": "DraftWritten",
+            "attempt": 1,
+            "length": 871
+          },
+          {
+            "type": "Validation",
+            "attempt": 1,
+            "verdict": "합격",
+            "errors": []
+          },
+          {
+            "type": "Finalize",
+            "pipeline": "incident-v2"
+          }
+        ]
+      },
+      "checks": {
+        "terminal_answer": true,
+        "symptom_status": true,
+        "occurred_at_status": true,
+        "error_message_status": true,
+        "environment_status": true,
+        "next_question": true,
+        "question_present": true,
+        "no_unreported_http_code": true
+      },
+      "seconds": 53.772
+    },
+    {
+      "case_id": "explicit_unknown",
+      "repeat": 2,
+      "turn": 1,
+      "input": "로그인 후 화면이 넘어가지 않아요. 발생 시각은 모르겠어요. 오류 메시지는 없어요. 사용 환경은 모르겠어요.",
+      "result": {
+        "final": "1) **샘플 점검**  \n- **시스템 상태**: `auth-service` 시스템은 `degraded` 상태입니다.  \n- **CPU 사용률**: 75.2% (정상 범위를 벗어남).  \n- **메모리 사용률**: 59.6% (정상 범위를 벗어남).  \n- **알림**: `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`로, 시스템의 응답 지연 및 연결 풀 사용률 과부하가 관측되었습니다.  \n\n2) **문서 안내**  \n- [faq:login] 문서에 따르면, 로그인 후 화면이 넘어가지 않는 경우 사용자 환경(브라우저, 기기, 발생 시각)을 확인하고, 페이지 새로고침 또는 다른 브라우저에서 재현 여부를 확인해야 합니다.  \n- [faq:connectivity] 문서에 따르면, 페이지 접속 문제 시 네트워크 환경(유선/무선, VPN 등)을 확인하고, 잠시 후 재시도하는 것이 권장됩니다.  \n\n3) **추가 확인 사항**  \n- 사용 환경(브라우저, 기기, 네트워크 상태)이 확인되지 않았습니다.  \n- 오류 메시지가 없으므로, 시스템 상태와 사용자 환경을 종합적으로 분석해야 합니다.  \n- 샘플 모니터링 데이터는 실습용으로 제한되므로, 실제 장애 원인을 확정하기 위해 담당자 확인이 필요합니다.",
+        "draft": "1) **샘플 점검**  \n- **시스템 상태**: `auth-service` 시스템은 `degraded` 상태입니다.  \n- **CPU 사용률**: 75.2% (정상 범위를 벗어남).  \n- **메모리 사용률**: 59.6% (정상 범위를 벗어남).  \n- **알림**: `p95 latency 2.4s (threshold 1.0s)` 및 `connection pool 92% used`로, 시스템의 응답 지연 및 연결 풀 사용률 과부하가 관측되었습니다.  \n\n2) **문서 안내**  \n- [faq:login] 문서에 따르면, 로그인 후 화면이 넘어가지 않는 경우 사용자 환경(브라우저, 기기, 발생 시각)을 확인하고, 페이지 새로고침 또는 다른 브라우저에서 재현 여부를 확인해야 합니다.  \n- [faq:connectivity] 문서에 따르면, 페이지 접속 문제 시 네트워크 환경(유선/무선, VPN 등)을 확인하고, 잠시 후 재시도하는 것이 권장됩니다.  \n\n3) **추가 확인 사항**  \n- 사용 환경(브라우저, 기기, 네트워크 상태)이 확인되지 않았습니다.  \n- 오류 메시지가 없으므로, 시스템 상태와 사용자 환경을 종합적으로 분석해야 합니다.  \n- 샘플 모니터링 데이터는 실습용으로 제한되므로, 실제 장애 원인을 확정하기 위해 담당자 확인이 필요합니다.",
+        "intake": {
+          "fields": {
+            "symptom": {
+              "status": "provided",
+              "value": "로그인 후 화면이 넘어가지 않아요",
+              "evidence": "로그인 후 화면이 넘어가지 않아요"
+            },
+            "occurred_at": {
+              "status": "unknown",
+              "value": null,
+              "evidence": "발생 시각은 모르겠"
+            },
+            "error_message": {
+              "status": "none",
+              "value": null,
+              "evidence": "오류 메시지는 없어요"
+            },
+            "environment": {
+              "status": "unknown",
+              "value": null,
+              "evidence": "사용 환경은 모르겠"
+            }
+          },
+          "questions": [],
+          "missing_fields": [],
+          "asked_fields": [],
+          "last_question_field": null,
+          "source": "model_with_rules",
+          "supplemented_fields": [
+            "symptom",
+            "occurred_at",
+            "environment"
+          ],
+          "warnings": [
+            "symptom: 없음/모름의 명시적 근거가 없어 추출 값을 제외했습니다.",
+            "occurred_at: 없음/모름의 명시적 근거가 없어 추출 값을 제외했습니다.",
+            "environment: 없음/모름의 명시적 근거가 없어 추출 값을 제외했습니다."
+          ],
+          "usage": {
+            "model": "ollama:qwen3:0.6b",
+            "tokens": 686,
+            "usd": 0.000103
+          }
+        },
+        "retrieval": {
+          "status": "ok",
+          "documents": [
+            {
+              "document_id": "faq:login",
+              "title": "로그인 후 화면이 넘어가지 않을 때",
+              "audience": "user",
+              "systems": [
+                "auth-service"
+              ],
+              "version": "1",
+              "path": "data/faq/login.md",
+              "chunk_id": "faq:login:0",
+              "section_title": "",
+              "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+              "document_hash": "c02f5aced04faacba5745a01f02d79a8bf675abe03644f1189bcc481036cd02c",
+              "score": 0.657812,
+              "sections": [
+                {
+                  "chunk_id": "faq:login:0",
+                  "section_title": "",
+                  "text": "# 로그인 후 화면이 넘어가지 않을 때\n\n계정 인증 뒤 다음 페이지로 이동하지 않거나 로그인 버튼을 누른 뒤 계속 로딩만 표시되는 경우의 사용자 확인 안내입니다. 이 문서는 원인을 확정하는 진단 결과가 아닙니다.\n\n1. 발생 시각, 사용하는 기기와 브라우저, 표시되는 오류 문구를 기록합니다. 오류 문구가 없으면 '없음'이라고 알려주세요.\n2. 저장 중인 작업이 없다면 로그인 페이지를 새로고침하고 다시 시도합니다. 같은 요청을 빠르게 반복하지 않습니다.\n3. 다른 브라우저나 시크릿 창에서도 같은 현상인지 확인하고 결과를 전달합니다. 계정 비밀번호나 인증 코드는 문의에 적지 않습니다.\n4. 계속 발생하면 로그인 후 멈추는 화면과 재현 순서를 담당자에게 전달합니다. 샘플 모니터링의 응답 지연 알림만으로 계정이나 DB 장애라고 단정할 수 없습니다.",
+                  "score": 0.657812
+                }
+              ]
+            },
+            {
+              "document_id": "faq:browser",
+              "title": "브라우저에서 업무 화면이 하얗거나 비어 보일 때",
+              "audience": "user",
+              "systems": [
+                "web-01",
+                "auth-service"
+              ],
+              "version": "1",
+              "path": "data/faq/browser.md",
+              "chunk_id": "faq:browser:0",
+              "section_title": "",
+              "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+              "document_hash": "50e0ca26c88de4ca0123324d58df72efee86a7392ccf4ebf03dd8f6c617a5c64",
+              "score": 0.425203,
+              "sections": [
+                {
+                  "chunk_id": "faq:browser:0",
+                  "section_title": "",
+                  "text": "# 브라우저에서 업무 화면이 하얗거나 비어 보일 때\n\n크롬·엣지·사파리에서 홈페이지나 업무 화면이 하얗게 표시되거나 내용이 나오지 않는 경우의 사용자 안내입니다.\n\n1. 사용 중인 브라우저와 기기, 문제가 나타난 페이지, 처음 발생한 시각을 기록합니다.\n2. 입력 중인 내용을 보관한 뒤 페이지를 새로고침해 봅니다. 다른 브라우저 또는 시크릿 창에서도 빈 화면이 나타나는지 확인합니다.\n3. 오류 문구가 표시되면 원문을 전달하고, 없으면 '없음'이라고 알려주세요. 동일한 문제가 다른 사람에게도 발생하는지 확인하면 도움이 됩니다.\n4. 모니터링 상태가 healthy여도 화면 문제가 해결되었다는 뜻은 아닙니다. 사용자 환경과 브라우저 오류 로그는 담당자의 추가 확인이 필요합니다.",
+                  "score": 0.425203
+                }
+              ]
+            },
+            {
+              "document_id": "faq:connectivity",
+              "title": "페이지 접속 문제 확인",
+              "audience": "user",
+              "systems": [
+                "*"
+              ],
+              "version": "2",
+              "path": "data/faq/connectivity.md",
+              "chunk_id": "faq:connectivity:1",
+              "section_title": "일반 접속 확인",
+              "text": "## 일반 접속 확인\n\n업무 페이지가 열리지 않거나 다음 화면으로 이동하지 않는 경우의 일반 안내입니다. 특정 오류 코드가 표시되지 않아도 사용할 수 있습니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 페이지가 열리지 않는 증상만으로 특정 서버나 네트워크 장비의 고장을 확정하지 않습니다.",
+              "document_hash": "80d03bdddbf586cae444ab1a15b488307b95ca186778da67ebab49c9ffd8f1e3",
+              "score": 0.400707,
+              "sections": [
+                {
+                  "chunk_id": "faq:connectivity:1",
+                  "section_title": "일반 접속 확인",
+                  "text": "## 일반 접속 확인\n\n업무 페이지가 열리지 않거나 다음 화면으로 이동하지 않는 경우의 일반 안내입니다. 특정 오류 코드가 표시되지 않아도 사용할 수 있습니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 페이지가 열리지 않는 증상만으로 특정 서버나 네트워크 장비의 고장을 확정하지 않습니다.",
+                  "score": 0.400707
+                },
+                {
+                  "chunk_id": "faq:connectivity:0",
+                  "section_title": "",
+                  "text": "# 페이지 접속 문제 확인",
+                  "score": 0.389758
+                },
+                {
+                  "chunk_id": "faq:connectivity:2",
+                  "section_title": "HTTP 504 오류가 표시된 경우",
+                  "text": "## HTTP 504 오류가 표시된 경우\n\n이 절은 사용자가 HTTP 504 Gateway Timeout 오류 문구를 실제로 확인한 경우에만 적용합니다.\n\n1. 오류가 표시된 페이지와 시각, 문구를 기록해 담당자에게 전달합니다.\n2. 시간 초과 메시지만으로 네트워크 장비나 특정 서버가 고장 났다고 확정하지 않습니다. 실제 로그와 요청 경로는 담당자의 추가 확인이 필요합니다.",
+                  "score": 0.360921
+                }
+              ]
+            }
+          ],
+          "index_version": "ba46f8e30edbb9b774099a80ff2f44b1b25e0030d4505408541900d5d3c9551f",
+          "model": "text-embedding-3-small",
+          "provider": "openai",
+          "dimensions": 1536,
+          "query_format": "raw",
+          "min_score": 0.3
+        },
+        "validation": {
+          "status": "passed",
+          "errors": [],
+          "citations": [
+            "faq:login",
+            "faq:connectivity"
+          ]
+        },
+        "validation_attempts": 1,
+        "events": [
+          {
+            "type": "RouteDecided",
+            "route": "incident",
+            "source": "explicit_selection",
+            "selected_system": "auth-service"
+          },
+          {
+            "type": "IntakeUpdated",
+            "source": "model_with_rules",
+            "missing_fields": []
+          },
+          {
+            "type": "PlanCreated",
+            "task_count": 1,
+            "targets": [
+              "auth-service"
+            ],
+            "source": "explicit_selection"
+          },
+          {
+            "type": "GateApplied",
+            "removed_analysis_tasks": 0
+          },
+          {
+            "type": "TaskCompleted",
+            "id": "task-0",
+            "source": "monitoring",
+            "target": "auth-service",
+            "retries": 0
+          },
+          {
+            "type": "ReplanCheck",
+            "round": 0,
+            "is_sufficient": true,
+            "runbook_skipped": true,
+            "reason": "관련 문서는 다음 RAG 단계에서 검색합니다."
+          },
+          {
+            "type": "AnalysisSkipped",
+            "reason": "analysis task 0개"
+          },
+          {
+            "type": "RetrievalCompleted",
+            "status": "ok",
+            "document_ids": [
+              "faq:login",
+              "faq:browser",
+              "faq:connectivity"
+            ]
+          },
+          {
+            "type": "DraftWritten",
+            "attempt": 1,
+            "length": 655
+          },
+          {
+            "type": "Validation",
+            "attempt": 1,
+            "verdict": "합격",
+            "errors": []
+          },
+          {
+            "type": "Finalize",
+            "pipeline": "incident-v2"
+          }
+        ]
+      },
+      "checks": {
+        "terminal_answer": true,
+        "symptom_status": true,
+        "occurred_at_status": true,
+        "error_message_status": true,
+        "environment_status": true,
+        "next_question": true,
+        "question_present": true,
+        "no_unreported_http_code": true
+      },
+      "seconds": 51.38
+    }
+  ],
+  "status": "completed",
+  "timeout_seconds": 180,
+  "note": "모델 응답 원문을 보존한다. 최초 색인 구축 시간은 요청 시간과 별도이며 속도 개선률이 아니다.",
+  "index": {
+    "status": "ok",
+    "index_version": "ba46f8e30edbb9b774099a80ff2f44b1b25e0030d4505408541900d5d3c9551f",
+    "model": "text-embedding-3-small",
+    "provider": "openai",
+    "query_format": "raw",
+    "document_count": 10,
+    "chunk_count": 12,
+    "dimensions": 1536
+  },
+  "index_build_seconds": 0.551,
+  "summary": {
+    "expected_turns": 2,
+    "recorded_turns": 2,
+    "contract_passed_turns": 2,
+    "validation_status_counts": {
+      "passed": 2
+    },
+    "model_intake_turns": 0,
+    "error_turns": 0
+  },
+  "embedding_usage": {
+    "successful_api_calls": 5,
+    "input_tokens": 3195,
+    "failed_api_calls": 0,
+    "unknown_usage_api_calls": 0
+  }
+}

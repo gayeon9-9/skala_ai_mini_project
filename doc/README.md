@@ -20,7 +20,8 @@
 | 검색 공급자 선택 근거 | [Ollama/OpenAI 실측 결과](evidence/embedding_comparison/RESULTS.md) |
 | 개발 순서와 기록 원칙 | [구현 계획](implementation_plan.md), [변경·증거 기록 방법](change_evidence_workflow.md) |
 
-발표·UI 자료는 [adce28f](https://github.com/gayeon9-9/skala_ai_mini_project/commit/adce28f),
+템플릿 21장과 해당 UI 자료는 [284e0db](https://github.com/gayeon9-9/skala_ai_mini_project/commit/284e0db),
+이전 발표·UI 자료는 [adce28f](https://github.com/gayeon9-9/skala_ai_mini_project/commit/adce28f),
 7단계 실제 임베딩 비교는 [1517e8d](https://github.com/gayeon9-9/skala_ai_mini_project/commit/1517e8d)에
 기록했다. 후속 코드 변경을 이 과거 측정의 결과로 소급하지 않는다.
 

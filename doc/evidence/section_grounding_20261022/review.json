@@ -1,0 +1,47 @@
+{
+  "baseline_code_revision": "f31ef18bae589f80613640c8293283f75ed8f69d",
+  "recheck_code_revision": "efc4f21f7f92db9f59058adc3176463f9954dd55",
+  "initial_evaluation": {
+    "expected_turns": 10,
+    "recorded_turns": 10,
+    "contract_passed_turns": 8,
+    "validation_status_counts": {
+      "passed": 6,
+      "fallback": 4
+    },
+    "model_intake_turns": 4,
+    "error_turns": 0
+  },
+  "targeted_recheck": {
+    "expected_turns": 2,
+    "recorded_turns": 2,
+    "contract_passed_turns": 2,
+    "validation_status_counts": {
+      "passed": 2
+    },
+    "model_intake_turns": 0,
+    "error_turns": 0
+  },
+  "initial_intake_sources": {
+    "rules_fallback": 6,
+    "model": 4
+  },
+  "recheck_intake_sources": {
+    "model_with_rules": 2
+  },
+  "changes_after_initial_evaluation": [
+    "일부 모델 추출 성공 시에도 누락 필드를 현재 원문 규칙으로 보완",
+    "절 ID를 모델 문맥에서 제거하고 추적 메타데이터에만 보존",
+    "알려진 내부 항목명을 사용자 표현으로 바꾸되 코드·수치 검사는 유지"
+  ],
+  "recheck_scope": "초기 10턴 전체 재실행이 아니라 explicit_unknown 동일 질문의 2회 재검증. 접수 상태·추가 질문 목록·문서 상태·미확인 오류 코드 등 명시한 계약만 평가.",
+  "remaining_observations": [
+    "재검증 답변에도 CPU·메모리가 정상 범위를 벗어났다는 근거 부족 해석이 남음",
+    "접수 질문 목록이 비어 있어도 생성된 문장의 일반 안내에는 사용자 환경 확인 요구가 남을 수 있음",
+    "규칙 검증 통과는 문장 전체의 의미·인과관계 정확도 보장이 아님",
+    "초기 gateway 문의에서는 샘플 알림의 다른 서비스 이름을 답변에 포함해 제한 안내로 종료. 이 시나리오는 최종 코드로 재실행하지 않음"
+  ],
+  "performance_note": "초기 요청 21.059~156.939초, 재검증 53.772/51.38초. 입력·샘플 관측·재작성 횟수가 달라 속도 개선률로 비교하지 않음.",
+  "authentication": "사용자 선택에 따라 이번 범위 제외.",
+  "reproduction": "initial_runner.py는 최초 실행 파일의 바이트 보존본이다. f31ef18 체크아웃의 evals/evaluate_live_helpdesk.py 위치에서 사용해야 ROOT 경로가 맞는다. 현재 도구는 --case-id로 표적 재검증을 지원한다."
+}
