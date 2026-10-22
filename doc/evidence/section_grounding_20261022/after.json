@@ -1,0 +1,70 @@
+{
+  "baseline_revision": "09fef4f",
+  "scope": "고정 벡터의 적용 조건 회귀 검사. 실제 의미 검색 정확도 아님. 보관된 실제 답변을 동일 입력으로 재검증함.",
+  "source_sha256": {
+    "agent/answer_claims.py": "6f0239085faf13072a47f50b20939bb43c80605ee541e96eafadaa4a1d50765d",
+    "agent/answer_generation.py": "dc36ee81eb56b2b66550d353114261739c29ea2af9a9d8c9ae0344da8c414406",
+    "agent/answer_grounding.py": "7af309ce9c4a63434da77dd4ef9b2e49fef621ffd4ebff3069a50d3a9177255e",
+    "agent/answer_validation.py": "144a6475e6be387f6d4deb7cc3411c89e35fba2233dad35c94607ed04311180b",
+    "agent/document_sections.py": "d891f5f4a480a6d5e8860376ef71bc7ac4d9562792554f343415374c4988efd9",
+    "agent/retrieval.py": "15b4a191e433d7021c2ba5212ad4f7189ec4db22b69312d450506bf12691e7fc",
+    "data/faq/connectivity.md": "770ea6bda234e2c9abc8885473758e299c4d1e81cd903d68aee60e2c1073b9e2",
+    "data/knowledge_catalog.json": "d2098a633124ef791832bfd21ddf56d4798c89272687ae9afd1b13f85879364d"
+  },
+  "applied_documents": [
+    {
+      "document_id": "faq:connectivity",
+      "title": "페이지 접속 문제 확인",
+      "audience": "user",
+      "systems": [
+        "*"
+      ],
+      "version": "2",
+      "path": "data/faq/connectivity.md",
+      "chunk_id": "faq:connectivity:0",
+      "section_title": "",
+      "text": "# 페이지 접속 문제 확인\n\n일반 접속 확인\n## 일반 접속 확인\n\n업무 페이지가 열리지 않거나 다음 화면으로 이동하지 않는 경우의 일반 안내입니다. 특정 오류 코드가 표시되지 않아도 사용할 수 있습니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 페이지가 열리지 않는 증상만으로 특정 서버나 네트워크 장비의 고장을 확정하지 않습니다.",
+      "document_hash": "80d03bdddbf586cae444ab1a15b488307b95ca186778da67ebab49c9ffd8f1e3",
+      "score": 1.0,
+      "sections": [
+        {
+          "chunk_id": "faq:connectivity:0",
+          "section_title": "",
+          "text": "# 페이지 접속 문제 확인",
+          "score": 1.0
+        },
+        {
+          "chunk_id": "faq:connectivity:1",
+          "section_title": "일반 접속 확인",
+          "text": "## 일반 접속 확인\n\n업무 페이지가 열리지 않거나 다음 화면으로 이동하지 않는 경우의 일반 안내입니다. 특정 오류 코드가 표시되지 않아도 사용할 수 있습니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 페이지가 열리지 않는 증상만으로 특정 서버나 네트워크 장비의 고장을 확정하지 않습니다.",
+          "score": 1.0
+        }
+      ],
+      "applied_section_ids": [
+        "faq:connectivity:0",
+        "faq:connectivity:1"
+      ],
+      "excluded_section_ids": [
+        "faq:connectivity:2"
+      ]
+    }
+  ],
+  "archived_answer_validation": {
+    "ok": false,
+    "errors": [
+      "제공된 수치에 없는 고부하 판정을 추가하지 말고 샘플 수치와 알림을 그대로 설명하세요.",
+      "샘플 지표를 실제 원인의 가능성으로 연결하지 말고, 관측 사실과 필요한 확인을 구분하세요.",
+      "검색된 문서와 증상이 무관하다고 단정하지 말고 적용 여부의 추가 확인이 필요하다고 설명하세요.",
+      "작성에 사용하는 문서에 없는 캐시·쿠키 삭제 절차를 추가하지 마세요."
+    ],
+    "citations": [
+      "faq:login",
+      "faq:browser"
+    ]
+  },
+  "checks": {
+    "general_instructions_retained": true,
+    "unreported_504_excluded": true,
+    "archived_bad_answer_rejected": true
+  }
+}

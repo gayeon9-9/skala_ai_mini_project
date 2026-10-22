@@ -9,6 +9,7 @@ import math
 import re
 
 from .system_catalog import SystemCatalogError, get_system_names
+from .answer_claims import claim_errors
 from .answer_grounding import applicable_documents, unsupported_http_error_codes
 
 
@@ -143,6 +144,9 @@ def validate_answer(draft: str, selected_system: str | None,
         errors.append("검색 문서를 사용한 답변에는 실제 문서 ID 인용이 필요합니다.")
 
     errors.extend(_metric_errors(draft, selected_system, collected, docs))
+    if intake is not None:
+        # 접수 기반 헬프데스크에 적용한다. 레거시 교육 경로의 계약은 유지한다.
+        errors.extend(claim_errors(draft, docs))
     # 출처가 맞아도 문서의 오류 사례가 이번 사용자에게 발생한 것은 아니다.
     # 기존의 제한된 재작성→fallback 흐름으로 돌려 검증 전 안내가 노출되지 않게 한다.
     unsupported = unsupported_http_error_codes(draft, intake)

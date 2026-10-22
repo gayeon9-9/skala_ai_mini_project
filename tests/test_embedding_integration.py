@@ -77,9 +77,9 @@ class EmbeddingIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([call["path"] for call in local_calls], ["/api/tags"])
         self.assertEqual(len(cloud_calls), 1)
 
-    async def test_old_ollama_manifest_is_loaded_without_document_embedding(self):
-        # 공급자 분리 전 저장 형식으로 캐시를 만든다. 새 필드가 끼면 이 캐시를 못 읽고
-        # 문서를 재임베딩하므로, 단순 클래스 형식 검사보다 실제 하위 호환을 검증한다.
+    async def test_old_manifest_is_rebuilt_for_section_boundaries_without_deletion(self):
+        # 과거 색인에는 절의 적용 조건이 없다. 새 청크 전략에서는 재사용하지 않고
+        # 한 번 재생성하되 과거 파일은 지우지 않는다. 이후 새 색인은 재사용한다.
         digest = lambda value: hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True,
                                                         separators=(",", ":")).encode()).hexdigest()
         old_instruction = "Retrieve relevant IT helpdesk guidance or incident response procedures for the query."
@@ -97,7 +97,12 @@ class EmbeddingIntegrationTests(unittest.IsolatedAsyncioTestCase):
         }))
         local, calls = await self.embedder("ollama")
         result = await KnowledgeRetriever(root=self.root, embedder=local).build_index()
-        self.assertEqual(result["index_version"], signature)
+        self.assertNotEqual(result["index_version"], signature)
+        self.assertEqual([call["path"] for call in calls], ["/api/tags", "/api/embed"])
+        self.assertTrue((cache / f"{signature}.json").exists())
+        calls.clear()
+        restored = await KnowledgeRetriever(root=self.root, embedder=local).build_index()
+        self.assertEqual(restored["index_version"], result["index_version"])
         self.assertEqual([call["path"] for call in calls], ["/api/tags"])
 
     async def test_dimension_and_query_format_change_invalidate_cache(self):

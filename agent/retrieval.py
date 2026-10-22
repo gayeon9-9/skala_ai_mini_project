@@ -13,6 +13,7 @@ import os
 import tempfile
 from pathlib import Path
 
+from agent.document_sections import markdown_sections
 from agent.embeddings import QUERY_INSTRUCTION, RetrievalError, OllamaEmbedder
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,21 +96,24 @@ class KnowledgeRetriever:
             if not text:
                 raise RetrievalError("내용이 없는 문서입니다.")
             seen.add(item["document_id"])
-            # 현재 매뉴얼은 작아 대개 한 청크다. 긴 문서도 유니코드 문자 단위로
-            # 상한을 두고 조금 겹쳐 잘라 문단 경계의 내용 손실을 줄인다.
-            offset, number = 0, 0
-            while offset < len(text):
-                body = text[offset:offset + CHUNK_SIZE]
-                chunk = {key: item[key] for key in
-                         ("document_id", "title", "audience", "systems", "version")}
-                chunk.update({"path": resolved.relative_to(self.root).as_posix(),
-                              "chunk_id": f"{item['document_id']}:{number}",
-                              "text": body, "document_hash": _hash(text)})
-                chunks.append(chunk)
-                if offset + CHUNK_SIZE >= len(text):
-                    break
-                offset += CHUNK_SIZE - CHUNK_OVERLAP
-                number += 1
+            # H2 절을 먼저 나누고 긴 절만 잘라낸다. 각 청크에 부모 제목을
+            # 붙여, 뒤쪽 청크도 '504 오류일 때'라는 적용 조건을 잃지 않게 한다.
+            number = 0
+            for section_title, section_text in markdown_sections(text):
+                offset = 0
+                while offset < len(section_text):
+                    body = section_text[offset:offset + CHUNK_SIZE]
+                    chunk = {key: item[key] for key in
+                             ("document_id", "title", "audience", "systems", "version")}
+                    chunk.update({"path": resolved.relative_to(self.root).as_posix(),
+                                  "chunk_id": f"{item['document_id']}:{number}",
+                                  "section_title": section_title,
+                                  "text": body, "document_hash": _hash(text)})
+                    chunks.append(chunk)
+                    number += 1
+                    if offset + CHUNK_SIZE >= len(section_text):
+                        break
+                    offset += CHUNK_SIZE - CHUNK_OVERLAP
         return str(catalog["version"]), chunks
 
     async def _ensure_index(self) -> dict:
@@ -120,10 +124,11 @@ class KnowledgeRetriever:
             dimensions = identity.get("dimensions")
             if dimensions is not None and (type(dimensions) is not int or dimensions <= 0):
                 raise RetrievalError("모델의 임베딩 차원이 올바르지 않습니다.")
-            # 제공자별 벡터 공간·질의 형식을 캐시 서명에 포함한다. 기존 Qwen은
-            # 과거 서명을 그대로 유지하고 OpenAI는 별도 색인을 만들어 섞이지 않는다.
+            # 제공자별 벡터 공간·질의 형식과 절 분리 전략을 캐시 서명에 포함한다.
+            # schema 1에는 절 조건이 없어 재사용하지 않는다. 과거 파일은 보존하고
+            # schema 2 색인을 한 번 생성한 뒤 같은 구성에서는 다시 사용한다.
             query_format = getattr(self.embedder, "query_format", QUERY_INSTRUCTION)
-            manifest = {"schema_version": 1, "catalog_version": version,
+            manifest = {"schema_version": 2, "section_strategy": "markdown-h2-v1", "catalog_version": version,
                         "embedding": identity, "query_instruction": query_format,
                         "chunk_size": CHUNK_SIZE, "chunk_overlap": CHUNK_OVERLAP,
                         "content_hash": _hash(chunks)}
@@ -225,7 +230,13 @@ class KnowledgeRetriever:
             for chunk in ranked:
                 if chunk["document_id"] not in seen:
                     seen.add(chunk["document_id"])
-                    documents.append(chunk)
+                    # 문서 수 제한(k)은 유지한다. 같은 문서에서 문턱값을 통과한
+                    # 절을 함께 보존해야 최고점 절을 제외해도 일반 안내를 쓸 수 있다.
+                    # 원본 최고 청크와 점수는 UI/평가 호환을 위해 그대로 남긴다.
+                    sections = [{key: part[key] for key in
+                                 ("chunk_id", "section_title", "text", "score")}
+                                for part in ranked if part["document_id"] == chunk["document_id"]]
+                    documents.append({**chunk, "sections": sections})
                 if len(documents) == k:
                     break
             return {"status": "ok" if documents else "no_match", "documents": documents, **metadata}

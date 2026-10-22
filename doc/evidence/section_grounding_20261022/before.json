@@ -1,0 +1,61 @@
+{
+  "revision": "09fef4fdfbabad5c13243a9567b3790f7b4a52fa",
+  "synthetic_only": true,
+  "input": "오류 메시지는 없어요",
+  "original_document": {
+    "document_id": "faq:connectivity",
+    "title": "페이지 접속 실패와 504 시간 초과 확인",
+    "path": "data/faq/connectivity.md",
+    "audience": "user",
+    "systems": [
+      "*"
+    ],
+    "version": "1",
+    "text": "# 페이지 접속 실패와 504 시간 초과 확인\n\n업무 페이지에 접속하지 못하거나 다른 서비스로 이동할 때 504 Gateway Timeout, 연결 시간 초과가 표시되는 경우의 사용자 안내입니다.\n\n1. 문제가 생긴 페이지 주소와 발생 시각, 오류 문구를 기록합니다. 주소에 비밀번호나 인증 토큰이 있다면 제외합니다.\n2. 사내 와이파이·유선망·VPN 등 사용 중인 연결 환경을 확인하고, 다른 업무 페이지도 열리지 않는지 살펴봅니다.\n3. 잠시 후 한 번 다시 시도한 결과를 기록합니다. 회사의 보안 설정이나 방화벽을 임의로 끄지 않습니다.\n4. 계속되면 영향받는 페이지와 사용 환경을 담당자에게 전달합니다. 시간 초과 메시지만으로 네트워크 장비나 특정 서버가 고장 났다고 확정하지 않습니다.\n"
+  },
+  "intake": {
+    "questions": [],
+    "missing_fields": [],
+    "asked_fields": [],
+    "last_question_field": null,
+    "source": "model",
+    "warnings": [],
+    "fields": {
+      "symptom": {
+        "status": "provided",
+        "value": "로그인 후 화면이 넘어가지 않아요",
+        "evidence": "로그인 후 화면이 넘어가지 않아요"
+      },
+      "occurred_at": {
+        "status": "provided",
+        "value": "오전 9시",
+        "evidence": "오전 9시"
+      },
+      "error_message": {
+        "status": "none",
+        "value": null,
+        "evidence": "오류 메시지는 없어요"
+      },
+      "environment": {
+        "status": "provided",
+        "value": "윈도우 크롬",
+        "evidence": "윈도우 크롬"
+      }
+    },
+    "usage": {
+      "model": "ollama:qwen3:0.6b",
+      "tokens": 702,
+      "usd": 0.000105
+    }
+  },
+  "applicable_document_count": 0,
+  "archived_answer_source": "doc/evidence/template_final_20261021/admin_detail.json",
+  "archived_answer_validation": {
+    "ok": true,
+    "errors": [],
+    "citations": [
+      "faq:login",
+      "faq:browser"
+    ]
+  }
+}

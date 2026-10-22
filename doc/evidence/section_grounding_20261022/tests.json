@@ -1,0 +1,9 @@
+{
+  "tests_passed": 227,
+  "subtests_passed": 173,
+  "failures": 0,
+  "errors": 0,
+  "seconds": 11.168,
+  "initial_failure": "초기 전체 검사에서 schema 1 캐시 재사용을 요구한 과거 계약 1건 실패. 절 조건 보존을 위한 schema 2 마이그레이션 계약(재생성·과거 파일 보존·다음 실행 재사용)으로 갱신 후 통과.",
+  "scope": "모델/임베딩 대역을 포함한 회귀 검사, 의미 검색·LLM 정확도 아님"
+}

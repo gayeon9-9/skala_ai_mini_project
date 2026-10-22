@@ -48,15 +48,39 @@ def unsupported_http_error_codes(text: str, intake: dict | None) -> set[str]:
 
 
 def applicable_documents(documents: list[dict], intake: dict | None) -> list[dict]:
-    """접수에 없는 HTTP 코드가 든 문서는 작성 근거에서 보수적으로 제외한다.
+    """문턱값을 통과한 검색 절 중 접수에 적용 가능한 부분만 작성에 사용한다.
 
-    지시만 추가하면 모델이 '504는 확인되지 않았으나'처럼 불필요한 코드를 다시
-    언급할 수 있다. 원본 검색 결과를 수정하지 않고 작성에 사용할 문서를 고른다.
-    문서에 일반적인 안내도 함께 있으면 그것까지 제외되는 한계가 있다. 향후
-    문서를 적용 조건별로 나누면 더 세밀하게 선택할 수 있다.
+    예: 같은 접속 안내의 '일반 확인'은 남기고 '504 오류' 절은 제외할 수 있다.
+    절 제목도 검사하므로 뒤쪽 청크에 코드가 없어도 적용 조건을 우회하지 않는다.
+    절 정보가 없는 과거 결과는 문서 전체 검사로 유지한다. 검색 원본은 변경하지
+    않고 복사본만 만든다. 문서 ID 인용은 유지하되 실제 본문은 통과한 절로 한정한다.
     """
-    return [doc for doc in documents if not unsupported_http_error_codes(
-        doc.get("title", "") + "\n" + doc.get("text", ""), intake)]
+    result = []
+    for doc in documents:
+        if unsupported_http_error_codes(doc.get("title", ""), intake):
+            continue  # 문서 제목 자체가 특정 오류 조건이면 모든 절에 적용된다.
+        if "sections" not in doc:
+            if not unsupported_http_error_codes(doc.get("text", ""), intake):
+                result.append(doc)
+            continue
+        sections = doc["sections"]
+        if not isinstance(sections, list):
+            continue  # 손상된 절 정보를 원본 전체 본문으로 되돌려 우회하지 않는다.
+        allowed, excluded = [], []
+        for section in sections:
+            if not isinstance(section, dict) or not isinstance(section.get("text"), str):
+                continue
+            condition = str(section.get("section_title", ""))
+            if unsupported_http_error_codes(condition + "\n" + section["text"], intake):
+                excluded.append(section.get("chunk_id"))
+            elif section["text"].strip():
+                allowed.append(section)
+        if allowed:
+            result.append({**doc, "text": "\n\n".join(
+                f"{part.get('section_title', '')}\n{part['text']}".strip() for part in allowed),
+                "sections": allowed, "applied_section_ids": [part.get("chunk_id") for part in allowed],
+                "excluded_section_ids": excluded})
+    return result
 
 
 def collected_intake(collected: list[dict]) -> dict | None:
